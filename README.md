@@ -6,7 +6,8 @@
 
 Two useful resources about the experimental and computational methods are:
 
- 1. List item
+- [Advances in CLIP Technologies for Studies of Protein-RNA Interactions](https://doi.org/10.1016/j.molcel.2018.01.005)
+- 
 
 Please put info about CLIP in general here (links to papers etc.)
 
@@ -29,5 +30,5 @@ You will need the following software and tools installed on your dev machine to 
 Add extensions to VS code
 Log into luslab on docker
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMzc1MTk5NF19
+eyJoaXN0b3J5IjpbMTA4NTY0NDQxXX0=
 -->
