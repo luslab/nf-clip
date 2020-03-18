@@ -10,7 +10,9 @@ To collaborate on this pipeline please follow the contribution guidelines writte
 
 ### Software
 
-Y
+You will need the following software and tools installed on your dev machine to contribute to this project:
+
+- Docker
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTM0MDEwODg2MiwtOTk0NTA0MTk0XX0=
+eyJoaXN0b3J5IjpbODA4MjA3NTM4LC05OTQ1MDQxOTRdfQ==
 -->
