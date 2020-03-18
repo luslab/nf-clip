@@ -1,2 +1,5 @@
-# group-nextflow-clip
-Repo for the CLIP nextflow analysis pipeline
+# CLIP nextflow analysis pipeline
+
+## Development
+
+To develope on this pipeline please do blah blah blah
