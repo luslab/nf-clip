@@ -1,7 +1,6 @@
 # CLIP nextflow analysis pipeline
 
 ![logo](https://github.com/luslab/group-nextflow-clip/blob/dev/images/clip_1.jpg)
-[logo]: https://github.com/luslab/group-nextflow-clip/blob/dev/images/clip_1.jpg "Logo Title Text 2"
 
 ## Info
 
