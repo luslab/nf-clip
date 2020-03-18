@@ -12,7 +12,7 @@ To collaborate on this pipeline please follow the contribution guidelines writte
 
 You will need the following software and tools installed on your dev machine to contribute to this project:
 
-- Docker
+- [Docker](https://hub.docker.com/editions/community/docker-ce-desktop-mac]
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODA4MjA3NTM4LC05OTQ1MDQxOTRdfQ==
+eyJoaXN0b3J5IjpbMTI3MTM2MTA0MywtOTk0NTA0MTk0XX0=
 -->
