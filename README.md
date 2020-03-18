@@ -27,6 +27,3 @@ You will need the following software and tools installed on your dev machine to 
 
 Add extensions to VS code
 Log into luslab on docker
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbLTc3MjI0MjAwN119
--->
