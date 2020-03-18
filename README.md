@@ -4,12 +4,14 @@
 
 ## Info
 
-The original CLIP method was first published 
+The original CLIP method was first [published](CLIP%20Identifies%20Nova-Regulated%20RNA%20Networks%20in%20the%20Brain) in 2003. 
 
 Two useful papers about the experimental and computational methods are:
 
 - [Advances in CLIP Technologies for Studies of Protein-RNA Interactions](https://doi.org/10.1016/j.molcel.2018.01.005)
 - [Data Science Issues in Studying Protein–RNA Interactions with CLIP Technologies](https://doi.org/10.1146/annurev-biodatasci-080917-013525)
+
+There are a number of public data resources available
 
 ## Development
 
@@ -30,5 +32,5 @@ You will need the following software and tools installed on your dev machine to 
 Add extensions to VS code
 Log into luslab on docker
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk3ODY2MDAyN119
+eyJoaXN0b3J5IjpbMjAwOTc2MDcyOV19
 -->
