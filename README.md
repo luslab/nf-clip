@@ -2,4 +2,4 @@
 
 ## Development
 
-To develope on this pipeline please do blah blah blah
+To develop on this pipeline please do blah blah blah
