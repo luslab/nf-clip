@@ -4,6 +4,8 @@
 
 ## Info
 
+The original CLIP method was first published 
+
 Two useful papers about the experimental and computational methods are:
 
 - [Advances in CLIP Technologies for Studies of Protein-RNA Interactions](https://doi.org/10.1016/j.molcel.2018.01.005)
@@ -27,3 +29,6 @@ You will need the following software and tools installed on your dev machine to 
 
 Add extensions to VS code
 Log into luslab on docker
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTk3ODY2MDAyN119
+-->
