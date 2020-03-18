@@ -2,10 +2,7 @@
 
 ## Development
 
-To develop on this pipeline please do blah blah blah
-
-
-test
+To collaberate on this 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk5NDUwNDE5NF19
+eyJoaXN0b3J5IjpbLTEyMTU4MjY0MzcsLTk5NDUwNDE5NF19
 -->
