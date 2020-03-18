@@ -13,7 +13,8 @@ Two useful papers about the experimental and computational methods are:
 
 There are a number of public data resources available:
 
- 1. eCLIP in K562 and HepG2 cell lines.
+ 1. iCLIP in a range of cells and tissues by the Ule lab on [iMaps](https://imaps.genialis.com/)
+ 2. eCLIP in K562 and HepG2 cell lines by [ENCODE](https://www.encodeproject.org/matrix/?type=Experiment&status=released&assay_slims=RNA%20binding&award.project=ENCODE&assay_title=eCLIP&biosample_ontology.classification=cell%20line).
 
 ## Development
 
@@ -34,5 +35,5 @@ You will need the following software and tools installed on your dev machine to 
 Add extensions to VS code
 Log into luslab on docker
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAyMjU1NjA5OF19
+eyJoaXN0b3J5IjpbNzI1MTQxMjQ5XX0=
 -->
