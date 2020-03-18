@@ -11,7 +11,9 @@ Two useful papers about the experimental and computational methods are:
 - [Advances in CLIP Technologies for Studies of Protein-RNA Interactions](https://doi.org/10.1016/j.molcel.2018.01.005)
 - [Data Science Issues in Studying Protein–RNA Interactions with CLIP Technologies](https://doi.org/10.1146/annurev-biodatasci-080917-013525)
 
-There are a number of public data resources available
+There are a number of public data resources available:
+
+ 1. eCLIP in K562 and HepG2 cell lines.
 
 ## Development
 
@@ -32,5 +34,5 @@ You will need the following software and tools installed on your dev machine to 
 Add extensions to VS code
 Log into luslab on docker
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjAwOTc2MDcyOV19
+eyJoaXN0b3J5IjpbMTAyMjU1NjA5OF19
 -->
