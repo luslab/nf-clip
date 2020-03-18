@@ -18,9 +18,9 @@ There are a number of public data resources available:
 
 ## Development
 
-To collaborate on this pipeline please follow the contribution guidelines written below. These documents will evolve over time so please keep checking regulary.
+To collaborate on this pipeline please follow the contribution guidelines written below. These documents will evolve over time so please keep checking regularly.
 
-There is a set process to follow for submitting code, so that the codebase is always clear, robust and well tested.
+There is a set process to follow for submitting code so that the codebase is always clear, robust and well tested.
 
 ### Software
 
@@ -32,8 +32,56 @@ You will need the following software and tools installed on your dev machine to 
 
 ### Setup
 
-Add extensions to VS code
-Log into luslab on docker
-<!--stackedit_data:
-eyJoaXN0b3J5IjpbNzI1MTQxMjQ5XX0=
--->
+- Install the nextflow code extensions to VS code
+- Clone this repo to a dev folder on your machine
+- Make sure you are logged into docker hub on your desktop and that you can see the luslab docker hub repo
+
+### Changing code and contributing
+
+This project uses the "branch-pull" method of development rather than the "fork-pull". Forking a repository is good when you have a public collaboration but it introduces a lot of overhead; instead, we will create topical branches for features or releases that we can then merge into the `dev` branch.
+
+Read [this](https://nvie.com/posts/a-successful-git-branching-model/) article on branching to get an idea about how code is managed on a small/medium project. More information on pull requests can be found [here](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-collaborative-development-models) and [here](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-reviews).
+
+![branching](https://github.com/luslab/group-nextflow-clip/blob/dev/images/git-model@2x.png)
+
+The `master` branch is locked and can only be added to using pull requests (PRs). Each pull request **must** be reviewed by at least one other code reviewer. PR's to the master branch will also be subject to automatic testing and code checks. Once the project hits the `beta` milestone, then the `master` branch should always be in a releasable state.
+
+The `dev` branch is a kind of staging area where changes can be assembled into releases. This branch is not explicitly locked as we may at times wish to commit to this directly, especially at the beginning; however, please try to create a different branch for most things.
+
+To start working on a feature first create a set of one or more issues which describe what you want to do. These are automatically populated on the project board and provide a common place to work on various things. **Important**, make sure to fill in the assignees, labels, projects and milestones fields of every issue to ensure proper tracking.
+
+Create a feature branch with the naming scheme `feat-*`, make it short and descriptive.
+
+> make sure you switch to the branch in your local repo after creating it
+
+Proceed to make code changes and commit them regularly with good, descriptive commit messages in your local repo. If more than one person is working on the same branch, be sure to push your changes and pull others changes regularly.
+
+> You may also wish to pull changes from `dev` at times if you want to test the newest updates against your feature branch
+
+To merge your feature branch changes to the `dev` branch, create a PR and select at least one reviewer. **Important**, make sure to fill in the assignees, labels, projects and milestones fields of every issue to ensure proper tracking.
+
+After the PR has been reviewed and any automated tests have been performed, the PR can be merged with `dev`. You can still work on a feature branch after it has had a completed PR, you just need to create a new one.
+
+After enough changes have been made in `dev` we may decide to create a release branch with the naming convention `release-<VERSION-NUMBER>`. Release branches can only contain bug fixes and other small changes. Once the release is stable, a PR can be created to merge with `master`. PRs to `master` will be subject to the full set of automatic tests so that we ensure it is as stable as possible.
+
+To summarise, the general process for contributing is as follows:
+
+- Discuss the new feature on slack
+- Create issues that cover the work you will do
+- Create a feature branch
+- Commit regularly and don't forget to push/pull changes
+- Create a PR for the feature branch to the `dev` branch
+
+### Project board management
+
+The project board can be found [here](https://github.com/luslab/group-nextflow-clip/projects/1). It contains a list of all issues and PRs currently in the project. all newly created issues will be added to the `todo` column. These must be manually moved through the appropriate columns eventually ending in the `done` column.
+
+All PRs are automatically added **and** moved along the board, there is no need to manually move them.
+
+### Docker
+
+This will be fleshed out soon but will contain details for how docker images are automatically built and how to manually run and test the pipeline.
+
+### Slack
+
+All changes to the project are communicated automatically by slack in the dev channel. This channel should be the centre for all information for the project.
