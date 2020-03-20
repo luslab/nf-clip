@@ -79,9 +79,40 @@ The project board can be found [here](https://github.com/luslab/group-nextflow-c
 All PRs are automatically added **and** moved along the board, there is no need to manually move them.
 
 ### Docker
-
 This will be fleshed out soon but will contain details for how docker images are automatically built and how to manually run and test the pipeline.
 
 ### Slack
-
 All changes to the project are communicated automatically by slack in the dev channel. This channel should be the centre for all information for the project.
+
+### Running the pipeline on CAMP
+To run the pipeline you first need to save your github credentials on CAMP to be able to access the private repos on luslab. Full details on configuring repo credentials can be found [here](https://www.nextflow.io/docs/latest/sharing.html). 
+
+First go to your github settings and create a [personal access token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line). Then create a config file to add your settings into on the CAMP login node.
+
+```
+nano $HOME/.nextflow/scm
+```
+
+Then fill the file with your username and access token string from github.
+
+```
+providers {
+
+    github {
+	user = 'luslab-user'
+        password = '531ce109e288a017609a3852c1b3dda067cc9cef'
+    }
+
+}
+```
+
+Create a working environment for nextflow on CAMP by creating a folder structure in your CAMP storage folder specifically for nextflow runs. Then, create a run folder for each nextflow project.
+
+Nextflow generates a lot of logging and config data during runs, which will fill up your storage on the login node. To mitigate this, run **ALL** nextflow runs from the CAMP storage mentioned above. Next, move your `.nextflow` config folder over to your nextflow CAMP storage folder and symlink back again.
+
+```
+mv ~/.nextflow/ /camp/lab/luscomben/PATH
+ln -s /camp/lab/luscomben/PATH/.nextflow ~/.nextflow
+```
+
+Running nextflow on CAMP requires the loading of several modules and needs different syntax depending on what branch or profile of the pipeline you are running. There are some helper scripts in the repo which can be used directly or as a template for creating your own run scripts. These are located in `run_scripts/crick`. To use a run script, copy the file to your run folder on CAMP storage and type `./SCRIPT-NAME.sh`.

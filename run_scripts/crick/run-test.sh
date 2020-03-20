@@ -1,10 +1,7 @@
 #!/bin/sh
 
 ## Script to run luslab/group-nextflow-clip on CAMP
-## Copy the script to a working folder
-
-echo $1
-export NXF_WORK=$1
+## Copy this script to a working folder
 
 ## LOAD REQUIRED MODULES
 ml purge
