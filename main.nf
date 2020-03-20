@@ -9,4 +9,16 @@ Luscombe lab CLIP analysis pipeline.
 ----------------------------------------------------------------------------------------
 */
 
+// Define DSL2
 nextflow.preview.dsl=2
+
+/* Module inclusions 
+--------------------------------------------------------------------------------------*/
+
+include luslabHeader from './modules/overhead'
+
+/*------------------------------------------------------------------------------------*/
+
+log.info luslabHeader()
+
+exit 0

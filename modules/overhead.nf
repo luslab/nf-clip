@@ -31,13 +31,21 @@ def luslabHeader() {
     c_cyan = params.monochrome_logs ? '' : "\033[0;36m";
     c_white = params.monochrome_logs ? '' : "\033[0;37m";
 
-    return """    -${c_dim}--------------------------------------------------${c_reset}-
-                                            ${c_green},--.${c_black}/${c_green},-.${c_reset}
-    ${c_blue}        ___     __   __   __   ___     ${c_green}/,-._.--~\'${c_reset}
-    ${c_blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${c_yellow}}  {${c_reset}
-    ${c_blue}  | \\| |       \\__, \\__/ |  \\ |___     ${c_green}\\`-._,-`-,${c_reset}
-                                            ${c_green}`._,._,\'${c_reset}
-    ${c_purple}  nf-core/rnaseq v${workflow.manifest.version}${c_reset}
-    -${c_dim}--------------------------------------------------${c_reset}-
+    return """  -${c_dim}-----------------------------------------------------------------${c_reset}-
+    ${c_purple} __       __    __       _______. __          ___      .______ ${c_reset}
+    ${c_purple}|  |     |  |  |  |     /       ||  |        /   \\     |   _  \\ ${c_reset}
+    ${c_purple}|  |     |  |  |  |    |   (----`|  |       /  ^  \\    |  |_)  | ${c_reset}
+    ${c_purple}|  |     |  |  |  |     \\   \\    |  |      /  /_\\  \\   |   _  < ${c_reset}
+    ${c_purple}|  `----.|  `--'  | .----)   |   |  `----./  _____  \\  |  |_)  | ${c_reset}
+    ${c_purple}|_______| \\______/  |_______/    |_______/__/     \\__\\ |______/ ${c_reset}
+
+    ${c_blue}  ______  __       __  .______ ${c_reset}                
+    ${c_blue} /      ||  |     |  | |   _  \\ ${c_reset}                         
+    ${c_blue}|  ,----'|  |     |  | |  |_)  | ${c_reset}                      
+    ${c_blue}|  |     |  |     |  | |   ___/ ${c_reset}                      
+    ${c_blue}|  `----.|  `----.|  | |  | ${c_reset}                       
+    ${c_blue} \\______||_______||__| | _| ${c_reset}                            
+
+    -${c_dim}---------------------------------------------------------------${c_reset}-        
     """.stripIndent()
 }
