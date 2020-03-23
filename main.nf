@@ -15,7 +15,7 @@ nextflow.preview.dsl=2
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include luslabHeader from './modules/overhead'
+include luslabHeader from './modules/overhead/overhead'
 
 /*------------------------------------------------------------------------------------*/
 
