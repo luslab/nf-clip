@@ -1,0 +1,10 @@
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f environment.yml
+name: luslab-clip-0.1
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  ## bioconda packages, see above
+  - fastqc=0.11.8
