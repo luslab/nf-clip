@@ -2,24 +2,18 @@
 
 name: dev-actions
 
-#Trigger on master PR
 on:
-  push:
-    branches: [ workflow-testing ]
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  issues:
+    types: [opened]
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  applyTriageLabel:
+    name: Apply Triage Label
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    
-    - name: Lint Dockerfile
-      uses: brpaz/hadolint-action@master
-      with:
-        dockerfile: "Dockerfile"
+      - uses: actions/checkout@v2
+      - name: Apply Triage Label
+        uses: actions/github@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: label triage
