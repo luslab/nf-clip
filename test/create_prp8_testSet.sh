@@ -4,6 +4,8 @@
 chr="chr6"
 start="34,000,000"
 end="35,000,000"
+start_annot="34,100,000"
+end_annot="34,900,000"
 bam_dir="/camp/lab/luscomben/working/charlotte/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_bams/"
 genome_fq="/camp/lab/luscomben/working/charlotte/spliceosome_iCLIP/permanent_files/GRCh38.primary_assembly.genome.fa"
 genome_annot="/camp/lab/luscomben/working/charlotte/hg38_regions/gencode.v30.primary_assembly.annotation.gtf"
@@ -29,7 +31,7 @@ samtools faidx ${genome_fq} ${chr}:${start}-${end} > ${newgenome}_${chr}_${start
 
 # ~~ To get the genome annotation ~~ #
 # First make bed file of region
-echo -e "${chr}\t${start//,}\t${end//,}" > region.bed
-echo -e "${chr}\t${start//,}\t${end//,}" >> region.bed
+echo -e "${chr}\t${start_annot//,}\t${end_annot//,}" > region.bed
+echo -e "${chr}\t${start_annot//,}\t${end_annot//,}" >> region.bed
 newannot="$(basename ${genome_annot} | sed s'/\.gtf//g')"
-bedtools intersect -a region.bed -b ${genome_annot} -wb > ${newannot}_${chr}_${start//,}_${end//,}.gtf
+bedtools intersect -a ${genome_annot} -b region.bed -u > ${newannot}_${chr}_${start//,}_${end//,}.gtf
