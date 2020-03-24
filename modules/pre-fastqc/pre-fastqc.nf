@@ -21,3 +21,11 @@ process fastqc {
     """
 
 }
+
+ workflow my_pipeline {
+    main:
+      foo(data)
+      bar(foo.out)
+    emit:
+      my_data = bar.out
+}
