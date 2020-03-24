@@ -6,5 +6,17 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  ## basic packages
+  - pigz=2.3.4
+
   ## bioconda packages, see above
   - fastqc=0.11.8
+  - cutadapt=2.6
+  - bowtie=1.2.3
+  - star=2.7.1a
+  - bedtools=2.28.0
+  - umitools=0.3.4
+  - ucsc-bedsort=377
+  - sambamba=0.7.1
+  - samtools=1.9
+  #- ucsc-bedgraphtobigwig=377
