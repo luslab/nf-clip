@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3:4.8
+FROM continuumio/miniconda3:4.8.2
 LABEL authors="chris.cheshire@crick.ac.uk" \
       description="Docker image containing all requirements for the luslab/group-nextflow-clip pipeline"
 
