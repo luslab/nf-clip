@@ -1,5 +1,7 @@
 # CLIP nextflow analysis pipeline
 
+![master-pr](https://github.com/luslab/group-nextflow-clip/workflows/master-pr/badge.svg)
+
 ![logo](https://github.com/luslab/group-nextflow-clip/blob/dev/images/clip_1.jpg)
 
 ## Info
