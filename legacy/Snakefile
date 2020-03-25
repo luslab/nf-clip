@@ -1,0 +1,260 @@
+# iCLIP mapping pipeline for Flora
+# A. M. Chakrabarti & C. Capitanchik
+# Last updated: 24th March 2020
+
+# sbatch -N 1 --time=8:00:00 --wrap="time snakemake -k --cluster 'sbatch {params.cluster}' --jobs 200 --latency-wait 60"
+
+from os.path import join
+
+# Import config file & parameters
+
+configfile: 'config.yaml'
+
+rule all:
+    input:
+        expand("results/pre_fastqc/{sample}_fastqc.html", sample=config["samples"]),
+        expand("results/post_fastqc/{sample}_fastqc.html", sample=config["samples"]),
+        expand("results/mapped/{sample}.Aligned.sortedByCoord.out.bam", sample=config["samples"]),
+        expand("results/xlinks/{sample}.xl.bed.gz", sample=config["samples"]),
+        # expand("results/xlinks/{sample}.xl.annotated.bed.gz", sample=config["samples"]),
+        expand("results/xlinks/bigwig/{sample}.normalised.pos.bigwig", sample=config["samples"]),
+        # expand("results/peaks/{sample}.xl.3nt_peaks.bed.gz", sample=config["samples"]),
+        # expand("results/clusters/{sample}.xl.3nt_peaks.3nt_clusters.bed.gz", sample=config["samples"])
+
+# =============================================================================
+# FastQC
+# =============================================================================
+rule pre_fastqc:
+    input:
+        lambda wildcards: config["samples"][wildcards.sample]
+    output:
+        html="results/pre_fastqc/{sample}_fastqc.html",
+    params:
+        fc="--outdir results/pre_fastqc",
+        cluster="-J pre_fastqc -N 1 --mem=16G -t 12:00:00 -o logs/pre_fastqc.{sample}.%A.log"
+    run:
+        shell("fastqc {input} {params.fc}")
+        fastqc_out = "/".join(("results/pre_fastqc", os.path.basename(input[0])))
+        fastqc_out = "_".join((fastqc_out, "fastqc.html"))
+        fastqc_out = fastqc_out.replace(".fq.gz","")
+        shell("echo {fastqc_out}")
+        shell("mv {fastqc_out} {output.html}")
+
+# =============================================================================
+# Pre-processing
+# =============================================================================
+
+rule removeAdapters:
+    input:
+        lambda wildcards: config["samples"][wildcards.sample]
+    output:
+        fastq="results/trimmed/{sample}.fq.gz"
+    params:
+        cluster="-N 1 -c 8 --mem=16G -t 12:00:00 -J removeAdapters -o logs/removeAdapters.{sample}.%A.log"
+    shell:
+        """
+        cutadapt -j 8 --minimum-length 10 -q 20 -a AGATCGGAAGAGC -o {output.fastq} {input}
+        """
+
+rule post_fastqc:
+    input:
+        fastq="results/trimmed/{sample}.fq.gz"
+    output:
+        html="results/post_fastqc/{sample}_fastqc.html",
+        zipped=temp("results/post_fastqc/{sample}_fastqc.zip")
+    params:
+        fc="--outdir results/post_fastqc",
+        cluster="-J post_fastqc -N 1 --mem=16G -t 12:00:00 -o logs/post_fastqc.{sample}.%A.log"
+    shell:
+        """
+        fastqc {params.fc} {input.fastq} 
+        """
+
+# =============================================================================
+# Pre-mapping
+# =============================================================================
+
+rule bowtieMapsmRNA:
+    input:
+        fastq="results/trimmed/{sample}.fq.gz"
+    output:
+        sam=temp("results/premapping/{sample}.Aligned.out.sam"),
+        log="results/logs/{sample}.bowtie.smallrna.log",
+        unmapped_reads="results/premapping/{sample}.Unmapped.fq",
+        bam="results/premapping/{sample}.Aligned.out.sorted.bam",
+        bai="results/premapping/{sample}.Aligned.out.sorted.bam.bai"
+    params:
+        bowtie_index=config['rRNA_tRNA_index'],
+        cluster="-N 1 -c 8 -J bt_map_rRNA_tRNA --mem=32G -t 1:00:00"
+    threads:
+        8
+    shell:
+        """
+        gunzip -c {input.fastq} | \
+        bowtie -v 2 -m 1 --best --strata --threads 8 -q --sam --norc --un {output.unmapped_reads} {params.bowtie_index} - {output.sam} 2> {output.log}
+        samtools view -hu -F 4 {output.sam} | sambamba sort -t 8 -o {output.bam} /dev/stdin
+        """
+
+# =============================================================================
+# Genome mapping
+# =============================================================================
+
+rule mapStarLenient5p:
+    input:
+        fastq="results/premapping/{sample}.Unmapped.fq",
+    output:
+        bam="results/mapped/{sample}.Aligned.sortedByCoord.out.bam",
+        bai="results/mapped/{sample}.Aligned.sortedByCoord.out.bam.bai",
+        log="results/logs/{sample}.genome.log",
+    params:
+        genome_index=config['genome_index'],
+        outprefix="results/mapped/{sample}.",
+        log="results/mapped/{sample}.Log.final.out",
+        cluster="-J mapStar -N 1 -c 8 --mem-per-cpu=4GB -t 6:00:00 -o logs/mapStar.{sample}.%A.log"
+    threads:
+        8
+    shell:
+        """
+        STAR --runThreadN {threads} \
+        --genomeDir {params.genome_index} --genomeLoad NoSharedMemory \
+        --readFilesIn {input.fastq} \
+        --outFileNamePrefix {params.outprefix} \
+        --outFilterMultimapNmax 1 --outFilterMultimapScoreRange 1 \
+        --outSAMattributes All --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --outFilterType BySJout \
+        --alignIntronMin 20 --alignIntronMax 1000000 --outFilterScoreMin 10 --alignEndsType Extend5pOfRead1 \
+        --twopassMode Basic \
+        --outSAMtype BAM SortedByCoordinate --limitBAMsortRAM 60000000000
+
+        sambamba index -t {threads} {output.bam}
+        mv {params.log} {output.log}
+        """
+
+# =============================================================================
+# Collapse PCR duplicates
+# =============================================================================
+
+rule UMItools:
+    input:
+        bam="results/mapped/{sample}.Aligned.sortedByCoord.out.bam",
+    output:
+        bam="results/dedup/{sample}.dedup.bam",
+        stats="results/dedup/stats/{sample}_edit_distance.tsv"
+    params:
+        stats="results/dedup/stats/{sample}",
+        cluster="-N 1 -c 1 --mem-per-cpu=32GB -J UMItools -t 6:00:00 -o logs/UMItools.{sample}.%A.log"
+    shell:
+        """
+        # umi_tools dedup -I {input.bam} -S {output.bam} --output-stats={params.stats}
+        umi_tools dedup --umi-separator=":" -I {input.bam} -S {output.bam} --output-stats={params.stats}
+        """
+
+
+# =============================================================================
+# Peak calling
+# =============================================================================
+
+rule getXlinks:
+    input:
+        bam="results/dedup/{sample}.dedup.bam",
+    output:
+        dedupbed=temp("results/xlinks/{sample}.dedup.bed"),
+        shiftedbed=temp("results/xlinks/{sample}.shifted.bed"),
+        posbed=temp("results/xlinks/{sample}.pos.bed"),
+        negbed=temp("results/xlinks/{sample}.neg.bed"),
+        bed="results/xlinks/{sample}.xl.bed.gz",
+    params:
+        fai=config['fai'],
+        cluster="-N 1 -c 1 --mem-per-cpu=16GB -J getXlinks -t 6:00:00 -o logs/getXlinks.{sample}.%A.log"
+    shell:
+        """
+        bedtools bamtobed -i {input.bam} > {output.dedupbed}
+        bedtools shift -m 1 -p -1 -i {output.dedupbed} -g {params.fai} > {output.shiftedbed}
+        bedtools genomecov -dz -strand + -5 -i {output.shiftedbed} -g {params.fai} | awk '{{OFS="\t"}}{{print $1, $2, $2+1, ".", $3, "+"}}' > {output.posbed}
+        bedtools genomecov -dz -strand - -5 -i {output.shiftedbed} -g {params.fai} | awk '{{OFS="\t"}}{{print $1, $2, $2+1, ".", $3, "-"}}' > {output.negbed}
+        cat {output.posbed} {output.negbed} | sort -k1,1 -k2,2n | pigz > {output.bed}
+        """
+
+# rule annotatexlinks:
+#     input:
+#         bed="results/xlinks/{sample}.xl.bed.gz",
+#     output:
+#         bed="results/xlinks/{sample}.xl.annotated.bed.gz",
+#     params:
+#         regions=config['regions'],
+#         annotateclip=config['annotateclip'],
+#         cluster="-N 1 -c 1 --mem-per-cpu=16GB -J annotatexlinks -t 12:00:00 -o logs/annotatexlinks.{sample}.%A.log"
+#     shell:
+#         """
+#         Rscript --vanilla {params.annotateclip} -i {input.bed} -a {params.regions} -o {output.bed}
+#         """
+
+# rule iCountPeaks:
+#     input:
+#         bed="results/xlinks/{sample}.xl.bed.gz",
+#     output:
+#         peaks="results/peaks/{sample}.xl.3nt_peaks.bed.gz",
+#         regionpeaks="results/peaks/regions/{sample}.xl.3nt_regionpeaks.bed.gz",
+#         scores="results/peaks/scores/{sample}.xl.3nt.tsv.gz",
+#         regionscores="results/peaks/regions/scores/{sample}.xl.3nt.tsv.gz"    
+#     params:
+#         segment=config['segment'],
+#         cluster="-N 1 -c 1 --mem-per-cpu=32GB -J iCountPeaks -t 12:00:00 -o logs/iCountPeaks.{sample}.%A.log"
+#     shell:
+#         """
+#         iCount peaks {params.segment} {input.bed} {output.peaks} --scores {output.scores} --half_window 3 --fdr 0.05
+#         iCount peaks {params.segment} {input.bed} {output.regionpeaks} --scores {output.regionscores} --features CDS intron UTR3 UTR5 ncRNA intergenic --group_by transcript_id --half_window 3 --fdr 0.05
+#         """
+
+# rule clusterPeaks:
+#     input:
+#         peaks="results/peaks/{sample}.xl.3nt_peaks.bed.gz",
+#         regionpeaks="results/peaks/regions/{sample}.xl.3nt_regionpeaks.bed.gz",
+#     output:
+#         clusters="results/clusters/{sample}.xl.3nt_peaks.3nt_clusters.bed.gz",
+#         regionclusters="results/clusters/regions/{sample}.xl.3nt_regionpeaks.3nt_clusters.bed.gz",
+#     params:
+#         clusterdist="3",
+#         cluster="-N 1 -c 1 --mem-per-cpu=32GB -J clusterPeaks -t 12:00:00 -o logs/clusterPeaks.{sample}.%A.log"
+#     shell:
+#         """
+#         zcat {input.peaks} | bedtools merge -s -d {params.clusterdist} -c 4,5,6 -o distinct,sum,distinct | pigz > {output.clusters}
+#         zcat {input.regionpeaks} | bedtools merge -s -d {params.clusterdist} -c 4,5,6 -o distinct,sum,distinct | pigz > {output.regionclusters}
+#         """
+
+
+# =============================================================================
+# Generate coverage tracks
+# =============================================================================
+
+rule coverageXlinks:
+    input:
+        "results/xlinks/{sample}.xl.bed.gz"
+    output:
+        raw="results/xlinks/bedgraph/{sample}.bedgraph.gz",
+        xpmbg="results/xlinks/bedgraph/{sample}.normalised.bedgraph.gz",
+        xpmbgpos=temp("results/xlinks/bigwig/{sample}.normalised.pos.bedgraph"),
+        xpmbgneg=temp("results/xlinks/bigwig/{sample}.normalised.neg.bedgraph"),
+        xpmbwpos="results/xlinks/bigwig/{sample}.normalised.pos.bigwig",
+        xpmbwneg="results/xlinks/bigwig/{sample}.normalised.neg.bigwig",
+    params:
+        normaliseclip=config['normaliseclip'],
+        fai=config['fai'],
+        cluster="-N 1 -c 1 --mem-per-cpu=16GB -J coverageXlinks -t 12:00:00 -o logs/coverageXlinks.{sample}.%A.log"
+    shell:
+        """
+        # Raw
+        zcat {input} | awk '{{OFS = "\t"}}{{if ($6 == "+") {{print $1, $2, $3, $5}} else {{print $1, $2, $3, -$5}}}}' | pigz > {output.raw}
+
+        # Normalised to xlinks per million
+        {params.normaliseclip} {input} {output.xpmbg}
+
+        # Convert to bigwigs
+        zcat {output.xpmbg} | awk '{{OFS="\t"}}{{if($4>0.0) {{print}}}}' > {output.xpmbgpos}
+        zcat {output.xpmbg} | awk '{{OFS="\t"}}{{if($4<0.0) {{print}}}}' > {output.xpmbgneg}
+
+        bedSort {output.xpmbgpos} {output.xpmbgpos}
+        bedSort {output.xpmbgneg} {output.xpmbgneg}
+
+        bedGraphToBigWig {output.xpmbgpos} {params.fai} {output.xpmbwpos}
+        bedGraphToBigWig {output.xpmbgneg} {params.fai} {output.xpmbwneg}
+        """

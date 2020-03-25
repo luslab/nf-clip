@@ -1,0 +1,24 @@
+# Config for iCLIP mapping for STAU1 and STAU2 in mouse
+# A. M. Chakrabarti
+# Last updated: 12th March 2020
+
+datapath: /camp/lab/luscombent/working/charlotte/icount_paper
+
+# Indices
+rRNA_tRNA_index: /camp/lab/luscomben/working/charlotte/tRNA_rRNA_for_iMaps/Homo_sapiens/small_rna_bowtie/small_rna_bowtie
+genome_index: /camp/lab/luscomben/working/charlotte/icount_paper/reduced_star_index
+
+fai: /camp/lab/luscomben/working/charlotte/spliceosome_iCLIP/permanent_files/GRCh38.primary_assembly.genome.fa.fai
+segment: /camp/lab/luscomben/working/charlotte/hg38_regions/gencode.30.prim.segmentation.gtf.gz
+regions: /camp/lab/luscomben/working/charlotte/hg38_regions/gencode.30.prim.regions.gtf
+
+# scripts
+normaliseclip: /camp/lab/luscomben/working/nobby/projects/martina/iclip/scripts/NormaliseCLIP.sh
+
+samples:
+  prpf8_eif4a3_rep2: /camp/lab/luscomben/working/charlotte/icount_paper/reads/prpf8-hela-eif4a3-sirna-20190611-ju-2_trimmed_chr6_34000000_35000000_tRNAadded.fq.gz
+  prpf8_eif4a3_rep4: /camp/lab/luscomben/working/charlotte/icount_paper/reads/prpf8-hela-eif4a3-sirna-20190611-ju-4_trimmed_chr6_34000000_35000000_tRNAadded.fq.gz
+  prpf8_eif4a3_rep1: /camp/lab/luscomben/working/charlotte/icount_paper/reads/prpf8-hela-eif4a3-sirna-20190611-ju_trimmed_chr6_34000000_35000000_tRNAadded.fq.gz
+  prpf8_ctrl_rep2: /camp/lab/luscomben/working/charlotte/icount_paper/reads/prpf8-hela-scramble-sirna-20190611-ju-2_trimmed_chr6_34000000_35000000_tRNAadded.fq.gz
+  prpf8_ctrl_rep4: /camp/lab/luscomben/working/charlotte/icount_paper/reads/prpf8-hela-scramble-sirna-20190611-ju-4_trimmed_chr6_34000000_35000000_tRNAadded.fq.gz
+  prpf8_ctrl_rep1: /camp/lab/luscomben/working/charlotte/icount_paper/reads/prpf8-hela-scramble-sirna-20190611-ju_trimmed_chr6_34000000_35000000_tRNAadded.fq.gz
