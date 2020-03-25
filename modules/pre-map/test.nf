@@ -27,7 +27,7 @@ workflow {
     index = Channel.fromPath( params.bowtie_index )
 
     // Run pre-map
-    pre-map( ch_testData; index )
+    pre-map( ch_testData, index )
 
     // Collect file names and view output
     pre-map.out.collect() | view
