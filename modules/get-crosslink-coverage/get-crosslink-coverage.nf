@@ -20,7 +20,8 @@ process getcrosslinkcoverage {
 
     # Normalised bedgraphs
     TOTAL=`zcat $bed | awk 'BEGIN {total=0} {total=total+\$5} END {print total}'`
-    zcat $bed | awk -v total=\$TOTAL '{printf "%s\t%i\t%i\t%s\t%f\t%s\n", \$1, \$2, \$3, \$4, 1000000*\$5/total, \$6}' | \
+    echo \$TOTAL
+    zcat $bed | awk -v total=\$TOTAL '{printf "%s\\t%i\\t%i\\t%s\\t%f\\t%s\\n", \$1, \$2, \$3, \$4, 1000000*\$5/total, \$6}' | \
     awk '{OFS = "\t"}{if (\$6 == "+") {print \$1, \$2, \$3, \$5} else {print \$1, \$2, \$3, -\$5}}' | \
     sort -k1,1 -k2,2n | pigz > ${bed.baseName}.norm.bedgraph.gz
     """
@@ -72,3 +73,4 @@ process getcrosslinkcoverage {
 // zcat ${OUT}.tmp | awk '{OFS = "\t"}{if ($6 == "+") {print $1, $2, $3, $5} else {print $1, $2, $3, -$5}}' | sort -k1,1 -k2,2n | pigz > $OUT
 // rm ${OUT}.tmp(base)
 
+// zcat $bed | awk -v total=\$TOTAL '{printf "%s\t%i\t%i\t%s\t%f\t%s\n", \$1, \$2, \$3, \$4, 1000000*\$5/total, \$6}' | pigz > ${bed.baseName}.norm.bedgraph.gz \
