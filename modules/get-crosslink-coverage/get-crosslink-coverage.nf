@@ -14,7 +14,7 @@ process getcrosslinkcoverage {
 
     script:
     """
-    // Raw bedgraphs
+    # Raw bedgraphs
     zcat $bed | awk '{OFS = "\t"}{if (\$6 == "+") {print \$1, \$2, \$3, \$5} else {print \$1, \$2, \$3, -\$5}}' | pigz > ${bed.baseName}.bedgraph.gz
 
     """
