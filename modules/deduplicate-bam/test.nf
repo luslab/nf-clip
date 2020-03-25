@@ -4,31 +4,31 @@
 nextflow.preview.dsl=2
 
 // Log
-log.info ("Starting test pipeline for genome mapping")
+log.info ("Starting test pipeline for BAM deduplication")
 
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include genomemap from './genome-map.nf'
+include bamdedup from './deduplicate-bam.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
 --------------------------------------------------------------------------------------*/
 
-params.reads = "$baseDir/input/*.fq"
-params.genome_index = "$baseDir/input/reduced_star_index"
-
+//params.bams = "$baseDir/input/*.bam"
+//params.bais = "$baseDir/input/*.bai"
+params.inputDir = "$baseDir/input"
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
-    // Create test data channel from all read files
-    ch_testData = Channel.fromPath( params.reads )
-    ch_testIndex = Channel.fromPath( params.genome_index )
+    // Create test data channel from all bam files
+    ch_bamBaiFiles = Channel.fromFilePairs( params.inputDir + '/*.{bam,bai}' )
+  //  ch_baiFiles = Channel.fromPath( params.bais )
     
-    // Run star
-    genomemap( ch_testData, ch_testIndex )
+    // Run dedup
+    bamdedup( ch_bamBaiFiles )
 
     // Collect file names and view output
-    genomemap.out.collect() | view
+    bamdedup.out.collect() | view
 }
