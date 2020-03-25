@@ -16,10 +16,26 @@ nextflow.preview.dsl=2
 --------------------------------------------------------------------------------------*/
 
 include luslabHeader from './modules/overhead/overhead'
+include prefastqc from './modules/pre-fastqc/pre-fastqc.nf'
+
+/*------------------------------------------------------------------------------------*/
+/* Params
+--------------------------------------------------------------------------------------*/
+
+params.reads = "$baseDir/test/reads/*.fq.gz"
 
 /*------------------------------------------------------------------------------------*/
 
+// Run workflow
 log.info luslabHeader()
+workflow {
+    // Create test data channel from all read files
+    ch_testData = Channel.fromPath( params.reads )
 
-// this is a comment
-// this is a comment2
+    // Run fastqc
+    prefastqc( ch_testData )
+
+    // Collect file names and view output
+    prefastqc.out.collect() | view
+}
+/*------------------------------------------------------------------------------------*/
