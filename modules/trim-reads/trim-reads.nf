@@ -6,8 +6,10 @@ nextflow.preview.dsl = 2
 // Cutadapt reusable component
 process cutadapt {
     input:
+        path reads
 
     output:
+        file "*_fastqc.{zip,html}"
 
     shell:
     """
@@ -16,6 +18,10 @@ process cutadapt {
 }
 
 workflow trimreads {
-    input 
-
+    take: 
+    inputReads
+    main:
+        cutadapt(reads)
+    emit:
+        cutadapt.out
 }
