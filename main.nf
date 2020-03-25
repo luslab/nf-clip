@@ -50,12 +50,12 @@ workflow {
     // pre-map to rRNA and tRNA
     bowtie_rrna( cutadapt.out, ch_bowtieIndex )
     // map unmapped reads to the genome
-    // genomemap( bowtie_rrna.out.groupTuple(), ch_starIndex )
+    genomemap( bowtie_rrna.out.unmappedFq, ch_starIndex )
 
     // Collect file names and view output
     //prefastqc.out.collect() | view
     //genomemap.out.collect() | view
-    bowtie_rrna.out.collect() | view
+    genomemap.out.collect() | view
     
 }
 /*------------------------------------------------------------------------------------*/
