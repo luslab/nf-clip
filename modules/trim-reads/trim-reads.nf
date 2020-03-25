@@ -16,12 +16,3 @@ process cutadapt {
     cutadapt -j 8 --minimum-length 16 -q 10 -a AGATCGGAAGAGC -o ${reads.baseName}.trimmed.fq.gz $reads
     """
 }
-
-workflow trimreads {
-    take: 
-    inputReads
-    main:
-        cutadapt(inputReads)
-    emit:
-        cutadapt.out
-}
