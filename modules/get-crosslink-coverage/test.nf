@@ -30,6 +30,6 @@ workflow {
     getcrosslinkcoverage( ch_testData, ch_fai )
 
     // Collect file names and view output
-    getcrosslinks.out.collect() | view
+    getcrosslinkcoverage.out.collect() | view
 
 }
