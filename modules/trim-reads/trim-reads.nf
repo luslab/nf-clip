@@ -9,11 +9,11 @@ process cutadapt {
         path reads
 
     output:
-        file "*_fastqc.{zip,html}"
+        file "trimmed_reads*"
 
     shell:
     """
-    
+    cutadapt --quiet --threads 
     """
 }
 
@@ -21,7 +21,7 @@ workflow trimreads {
     take: 
     inputReads
     main:
-        cutadapt(reads)
+        cutadapt(inputReads)
     emit:
-        cutadapt.out
+        trimreads.out
 }
