@@ -20,6 +20,3 @@ include luslabHeader from './modules/overhead/overhead'
 /*------------------------------------------------------------------------------------*/
 
 log.info luslabHeader()
-
-// this is a comment
-// this is a comment2
