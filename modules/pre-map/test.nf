@@ -16,7 +16,7 @@ include premap from './pre-map.nf'
 --------------------------------------------------------------------------------------*/
 
 params.reads = "$baseDir/input/*.fq.gz"
-params.bowtie_index = "$baseDir/input/small_rna_bowtie/small_rna_bowtie.*"
+params.bowtie_index = "$baseDir/input/small_rna_bowtie/small_rna_bowtie"
 
 /*------------------------------------------------------------------------------------*/
 
@@ -24,10 +24,9 @@ params.bowtie_index = "$baseDir/input/small_rna_bowtie/small_rna_bowtie.*"
 workflow {
     // Create test data channel from all read files
     ch_testData = Channel.fromPath( params.reads )
-    ch_index = Channel.fromPath( params.bowtie_index )
-
+    
     // Run pre-map
-    premap( ch_testData , ch_index )
+    premap( ch_testData , params.bowtie_index )
 
     // Collect file names and view output
     premap.out.collect() | view

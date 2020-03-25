@@ -10,14 +10,16 @@ process bowtie_rrna {
         path bowtie_index
 
     output:
-        file 'unmapped_reads_*'
-        file '*_mapped.sam'
+         file 'unmapped_reads_*'
+         file '*_mapped.sam'
 
     script:
     """
-    gunzip -c $reads | bowtie -v 2 -m 1 --best --strata --threads 8 -q --sam --norc --un unmapped_reads_ $bowtie_index - _mapped.sam
-    samtools view -hu -F 4 $sam | sambamba sort -t 8 -o $bam
+    echo $reads
+    echo $bowtie_index
     """    
+ // gunzip -c $reads | bowtie -v 2 -m 1 --best --strata --threads 8 -q --sam --norc --un unmapped_reads_ $bowtie_index - _mapped.sam
+//     samtools view -hu -F 4 $sam | sambamba sort -t 8 -o $bam
 }
 
 
