@@ -42,7 +42,7 @@ rule mapStarLenient5p:
 // star reusable component
 process star {
     input:
-      path reads
+      each reads
       path star_index
 
     output:
@@ -72,7 +72,7 @@ process star {
              --alignEndsType Extend5pOfRead1 \
              --twopassMode Basic \
              --outSAMtype BAM SortedByCoordinate \
-             --limitBAMsortRAM 600000000
+             --limitBAMsortRAM 6000000000
 
 
     """
