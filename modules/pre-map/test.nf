@@ -9,7 +9,7 @@ log.info ("Starting test pipeline for Bowtie Pre-mapping to rRNA and tRNA")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include pre-map from './pre-map.nf'
+include pre-map from 'modules/pre-map/pre-map.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
