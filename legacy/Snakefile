@@ -1,8 +1,8 @@
 # iCLIP mapping pipeline for Flora
-# A. M. Chakrabarti
-# Last updated: 27th January 2020
+# A. M. Chakrabarti & C. Capitanchik
+# Last updated: 24th March 2020
 
-# sbatch -N 1 -J mouse -o mouse_%A.out --wrap="time snakemake -k --cluster 'sbatch {params.cluster}' --jobs 200 --latency-wait 60"
+# sbatch -N 1 --time=8:00:00 --wrap="time snakemake -k --cluster 'sbatch {params.cluster}' --jobs 200 --latency-wait 60"
 
 from os.path import join
 
@@ -16,9 +16,7 @@ rule all:
         expand("results/post_fastqc/{sample}_fastqc.html", sample=config["samples"]),
         expand("results/mapped/{sample}.Aligned.sortedByCoord.out.bam", sample=config["samples"]),
         expand("results/xlinks/{sample}.xl.bed.gz", sample=config["samples"]),
-        expand("results/xlinks/{sample}.xl.annotated.bed.gz", sample=config["samples"]),
-        expand("results/coverage/{sample}.unique_plus.bigwig", sample=config["samples"]),
-        expand("results/norm_coverage/{sample}.unique_plus.bigwig", sample=config["samples"]),
+        # expand("results/xlinks/{sample}.xl.annotated.bed.gz", sample=config["samples"]),
         expand("results/xlinks/bigwig/{sample}.normalised.pos.bigwig", sample=config["samples"]),
         # expand("results/peaks/{sample}.xl.3nt_peaks.bed.gz", sample=config["samples"]),
         # expand("results/clusters/{sample}.xl.3nt_peaks.3nt_clusters.bed.gz", sample=config["samples"])
@@ -26,7 +24,6 @@ rule all:
 # =============================================================================
 # FastQC
 # =============================================================================
-
 rule pre_fastqc:
     input:
         lambda wildcards: config["samples"][wildcards.sample]
@@ -39,7 +36,7 @@ rule pre_fastqc:
         shell("fastqc {input} {params.fc}")
         fastqc_out = "/".join(("results/pre_fastqc", os.path.basename(input[0])))
         fastqc_out = "_".join((fastqc_out, "fastqc.html"))
-        fastqc_out = fastqc_out.replace(".fastq.gz","")
+        fastqc_out = fastqc_out.replace(".fq.gz","")
         shell("echo {fastqc_out}")
         shell("mv {fastqc_out} {output.html}")
 
@@ -51,17 +48,17 @@ rule removeAdapters:
     input:
         lambda wildcards: config["samples"][wildcards.sample]
     output:
-        fastq="results/trimmed/{sample}.fastq.gz"
+        fastq="results/trimmed/{sample}.fq.gz"
     params:
         cluster="-N 1 -c 8 --mem=16G -t 12:00:00 -J removeAdapters -o logs/removeAdapters.{sample}.%A.log"
     shell:
         """
-        cutadapt -j 8 --minimum-length 16 -q 10 -a AGATCGGAAGAGC -o {output.fastq} {input}
+        cutadapt -j 8 --minimum-length 10 -q 20 -a AGATCGGAAGAGC -o {output.fastq} {input}
         """
 
 rule post_fastqc:
     input:
-        fastq="results/trimmed/{sample}.fastq.gz"
+        fastq="results/trimmed/{sample}.fq.gz"
     output:
         html="results/post_fastqc/{sample}_fastqc.html",
         zipped=temp("results/post_fastqc/{sample}_fastqc.zip")
@@ -77,48 +74,25 @@ rule post_fastqc:
 # Pre-mapping
 # =============================================================================
 
-rule mapBowtie:
+rule bowtieMapsmRNA:
     input:
-        fastq="results/trimmed/{sample}.fastq.gz"
+        fastq="results/trimmed/{sample}.fq.gz"
     output:
-        rRNA_sam=temp("results/premapping/{sample}.rRNA.sam"),
-        rRNA_unmapped=temp("results/premapping/{sample}.rRNA_unmapped.fq"),
-        rRNA_bam="results/premapping/{sample}.rRNA.bam",
-        rRNA_log="results/logs/{sample}.rRNA.log",
-        snRNA_sam=temp("results/premapping/{sample}.snRNA.sam"),
-        snRNA_unmapped=temp("results/premapping/{sample}.snRNA_unmapped.fq"),
-        snRNA_bam="results/premapping/{sample}.snRNA.bam",
-        snRNA_log="results/logs/{sample}.snRNA.log",
-        tRNA_sam=temp("results/premapping/{sample}.tRNA.sam"),
-        tRNA_unmapped="results/premapping/{sample}.tRNA_unmapped.fq.gz",
-        tRNA_bam="results/premapping/{sample}.tRNA.bam",
-        tRNA_log="results/logs/{sample}.tRNA.log",
+        sam=temp("results/premapping/{sample}.Aligned.out.sam"),
+        log="results/logs/{sample}.bowtie.smallrna.log",
+        unmapped_reads="results/premapping/{sample}.Unmapped.fq",
+        bam="results/premapping/{sample}.Aligned.out.sorted.bam",
+        bai="results/premapping/{sample}.Aligned.out.sorted.bam.bai"
     params:
-        bt_rRNA=config['bt_rRNA'],
-        bt_tRNA=config['bt_tRNA'],
-        bt_snRNA=config['bt_snRNA'],
-        tRNA_unmapped="results/premapping/{sample}.tRNA_unmapped.fq",
-        cluster="-N 1 -c 8 -J mapBowtie --mem=32G -o logs/mapBowtie.{sample}.%A.log -t 6:00:00"
+        bowtie_index=config['rRNA_tRNA_index'],
+        cluster="-N 1 -c 8 -J bt_map_rRNA_tRNA --mem=32G -t 1:00:00"
     threads:
         8
     shell:
         """
-        ml Bowtie
-
-        # 1. Map to rRNA
-        zcat {input.fastq} | \
-        bowtie -a -v 2 -m 50 --best --strata --threads {threads} -q --sam --norc --un {output.rRNA_unmapped} {params.bt_rRNA} - {output.rRNA_sam} 2> {output.rRNA_log}
-        samtools view -hu {output.rRNA_sam} | sambamba sort -t {threads} -o {output.rRNA_bam} /dev/stdin
-
-        # 2. Map to snRNA
-        bowtie -a -v 2 -m 50 --best --strata --threads {threads} -q --sam --norc --un {output.snRNA_unmapped} {params.bt_snRNA} {output.rRNA_unmapped} {output.snRNA_sam} 2> {output.snRNA_log}
-        samtools view -hu {output.snRNA_sam} | sambamba sort -t {threads} -o {output.snRNA_bam} /dev/stdin
-
-        # 3. Map to tRNA
-        bowtie -a -v 2 -m 50 --best --strata --threads {threads} -q --sam --norc --un {params.tRNA_unmapped} {params.bt_tRNA} {output.snRNA_unmapped} {output.tRNA_sam} 2> {output.tRNA_log}
-        samtools view -hu {output.tRNA_sam} | sambamba sort -t {threads} -o {output.tRNA_bam} /dev/stdin
-
-        pigz {params.tRNA_unmapped}
+        gunzip -c {input.fastq} | \
+        bowtie -v 2 -m 1 --best --strata --threads 8 -q --sam --norc --un {output.unmapped_reads} {params.bowtie_index} - {output.sam} 2> {output.log}
+        samtools view -hu -F 4 {output.sam} | sambamba sort -t 8 -o {output.bam} /dev/stdin
         """
 
 # =============================================================================
@@ -127,13 +101,13 @@ rule mapBowtie:
 
 rule mapStarLenient5p:
     input:
-        fastq="results/premapping/{sample}.tRNA_unmapped.fq.gz",
+        fastq="results/premapping/{sample}.Unmapped.fq",
     output:
         bam="results/mapped/{sample}.Aligned.sortedByCoord.out.bam",
         bai="results/mapped/{sample}.Aligned.sortedByCoord.out.bam.bai",
         log="results/logs/{sample}.genome.log",
     params:
-        STAR_GRCm38_GencodeM24=config['STAR_GRCm38_GencodeM24'],
+        genome_index=config['genome_index'],
         outprefix="results/mapped/{sample}.",
         log="results/mapped/{sample}.Log.final.out",
         cluster="-J mapStar -N 1 -c 8 --mem-per-cpu=4GB -t 6:00:00 -o logs/mapStar.{sample}.%A.log"
@@ -142,8 +116,8 @@ rule mapStarLenient5p:
     shell:
         """
         STAR --runThreadN {threads} \
-        --genomeDir {params.STAR_GRCm38_GencodeM24} --genomeLoad NoSharedMemory \
-        --readFilesIn {input.fastq} --readFilesCommand zcat \
+        --genomeDir {params.genome_index} --genomeLoad NoSharedMemory \
+        --readFilesIn {input.fastq} \
         --outFileNamePrefix {params.outprefix} \
         --outFilterMultimapNmax 1 --outFilterMultimapScoreRange 1 \
         --outSAMattributes All --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --outFilterType BySJout \
@@ -176,133 +150,76 @@ rule UMItools:
 
 
 # =============================================================================
-# Coverage tracks
-# =============================================================================
-
-rule createUniqueBigwig:
-    input:
-        "results/dedup/{sample}.dedup.bam",
-    output:
-        bigwig_pos="results/coverage/{sample}.unique_plus.bigwig",
-        bigwig_neg="results/coverage/{sample}.unique_minus.bigwig",
-        bg_pos=temp("results/coverage/{sample}.Signal.Unique.str1.out.bg"),
-        bg_neg=temp("results/coverage/{sample}.Signal.Unique.str2.out.bg"),
-        bg_multi_pos=temp("results/coverage/{sample}.Signal.UniqueMultiple.str1.out.bg"),
-        bg_multi_neg=temp("results/coverage/{sample}.Signal.UniqueMultiple.str2.out.bg"),
-        log=temp("results/coverage/{sample}.Log.out")
-    params:
-        outprefix="results/coverage/{sample}.",
-        fai=config['fai'],
-        cluster="-J create_bigwig -N 1 -c 1 --mem=16G -t 12:00:00 -o logs/create_bigwig.{sample}.%A.log"
-    shell:
-        """
-        STAR --runMode inputAlignmentsFromBAM --inputBAMfile {input} --outWigType bedGraph --outWigStrand Stranded --outWigNorm None --outFileNamePrefix {params.outprefix}
-
-        # Unique
-        bedSort {output.bg_pos} {output.bg_pos}
-        bedSort {output.bg_neg} {output.bg_neg}
-        bedGraphToBigWig {output.bg_pos} {params.fai} {output.bigwig_pos}
-        bedGraphToBigWig {output.bg_neg} {params.fai} {output.bigwig_neg}
-        """
-
-rule createNormUniqueBigwig:
-    input:
-        "results/dedup/{sample}.dedup.bam",
-    output:
-        bigwig_pos="results/norm_coverage/{sample}.unique_plus.bigwig",
-        bigwig_neg="results/norm_coverage/{sample}.unique_minus.bigwig",
-        bg_pos=temp("results/norm_coverage/{sample}.Signal.Unique.str1.out.bg"),
-        bg_neg=temp("results/norm_coverage/{sample}.Signal.Unique.str2.out.bg"),
-        bg_multi_pos=temp("results/norm_coverage/{sample}.Signal.UniqueMultiple.str1.out.bg"),
-        bg_multi_neg=temp("results/norm_coverage/{sample}.Signal.UniqueMultiple.str2.out.bg"),
-        log=temp("results/norm_coverage/{sample}.Log.out")
-    params:
-        outprefix="results/norm_coverage/{sample}.",
-        fai=config['fai'],
-        cluster="-J create_bigwig -N 1 -c 1 --mem=16G -t 12:00:00 -o logs/create_bigwig.{sample}.%A.log"
-    shell:
-        """
-        STAR --runMode inputAlignmentsFromBAM --inputBAMfile {input} --outWigType bedGraph --outWigStrand Stranded --outWigNorm RPM --outFileNamePrefix {params.outprefix}
-
-        # Unique
-        bedSort {output.bg_pos} {output.bg_pos}
-        bedSort {output.bg_neg} {output.bg_neg}
-        bedGraphToBigWig {output.bg_pos} {params.fai} {output.bigwig_pos}
-        bedGraphToBigWig {output.bg_neg} {params.fai} {output.bigwig_neg}
-        """
-
-# =============================================================================
 # Peak calling
 # =============================================================================
 
-rule bamtoxlink:
+rule getXlinks:
     input:
-        "results/dedup/{sample}.dedup.bam",
+        bam="results/dedup/{sample}.dedup.bam",
     output:
+        dedupbed=temp("results/xlinks/{sample}.dedup.bed"),
+        shiftedbed=temp("results/xlinks/{sample}.shifted.bed"),
+        posbed=temp("results/xlinks/{sample}.pos.bed"),
+        negbed=temp("results/xlinks/{sample}.neg.bed"),
         bed="results/xlinks/{sample}.xl.bed.gz",
-        bedgraph="results/xlinks/{sample}.xl.bedgraph.gz",
-        normbedgraph="results/xlinks/{sample}.xl.normalised.bedgraph.gz",
-    log:
-        rlog="results/logs/{sample}.xl.log",
     params:
-        bed="results/xlinks/{sample}.xl.bed",
-        bedgraph="results/xlinks/{sample}.xl.bedgraph",
-        normbedgraph="results/xlinks/{sample}.xl.normalised.bedgraph",
-        bamtoxlink=config['bamtoxlink'],
-        cluster="-N 1 -c 1 --mem-per-cpu=32GB -J bamtoxlink -t 12:00:00 -o logs/bamtoxlink.{sample}.%A.log"
+        fai=config['fai'],
+        cluster="-N 1 -c 1 --mem-per-cpu=16GB -J getXlinks -t 6:00:00 -o logs/getXlinks.{sample}.%A.log"
     shell:
         """
-        ml SAMtools
-        Rscript --vanilla {params.bamtoxlink} -i {input} -o {params.bed} -x > {log.rlog} 2>&1
-        pigz {params.bed} {params.bedgraph} {params.normbedgraph}
+        bedtools bamtobed -i {input.bam} > {output.dedupbed}
+        bedtools shift -m 1 -p -1 -i {output.dedupbed} -g {params.fai} > {output.shiftedbed}
+        bedtools genomecov -dz -strand + -5 -i {output.shiftedbed} -g {params.fai} | awk '{{OFS="\t"}}{{print $1, $2, $2+1, ".", $3, "+"}}' > {output.posbed}
+        bedtools genomecov -dz -strand - -5 -i {output.shiftedbed} -g {params.fai} | awk '{{OFS="\t"}}{{print $1, $2, $2+1, ".", $3, "-"}}' > {output.negbed}
+        cat {output.posbed} {output.negbed} | sort -k1,1 -k2,2n | pigz > {output.bed}
         """
 
-rule annotatexlinks:
-    input:
-        bed="results/xlinks/{sample}.xl.bed.gz",
-    output:
-        bed="results/xlinks/{sample}.xl.annotated.bed.gz",
-    params:
-        regions=config['regions'],
-        annotateclip=config['annotateclip'],
-        cluster="-N 1 -c 1 --mem-per-cpu=16GB -J annotatexlinks -t 12:00:00 -o logs/annotatexlinks.{sample}.%A.log"
-    shell:
-        """
-        Rscript --vanilla {params.annotateclip} -i {input.bed} -a {params.regions} -o {output.bed}
-        """
+# rule annotatexlinks:
+#     input:
+#         bed="results/xlinks/{sample}.xl.bed.gz",
+#     output:
+#         bed="results/xlinks/{sample}.xl.annotated.bed.gz",
+#     params:
+#         regions=config['regions'],
+#         annotateclip=config['annotateclip'],
+#         cluster="-N 1 -c 1 --mem-per-cpu=16GB -J annotatexlinks -t 12:00:00 -o logs/annotatexlinks.{sample}.%A.log"
+#     shell:
+#         """
+#         Rscript --vanilla {params.annotateclip} -i {input.bed} -a {params.regions} -o {output.bed}
+#         """
 
-rule iCountPeaks:
-    input:
-        bed="results/xlinks/{sample}.xl.bed.gz",
-    output:
-        peaks="results/peaks/{sample}.xl.3nt_peaks.bed.gz",
-        regionpeaks="results/peaks/regions/{sample}.xl.3nt_regionpeaks.bed.gz",
-        scores="results/peaks/scores/{sample}.xl.3nt.tsv.gz",
-        regionscores="results/peaks/regions/scores/{sample}.xl.3nt.tsv.gz"    
-    params:
-        segment=config['segment'],
-        cluster="-N 1 -c 1 --mem-per-cpu=32GB -J iCountPeaks -t 12:00:00 -o logs/iCountPeaks.{sample}.%A.log"
-    shell:
-        """
-        iCount peaks {params.segment} {input.bed} {output.peaks} --scores {output.scores} --half_window 3 --fdr 0.05
-        iCount peaks {params.segment} {input.bed} {output.regionpeaks} --scores {output.regionscores} --features CDS intron UTR3 UTR5 ncRNA intergenic --group_by transcript_id --half_window 3 --fdr 0.05
-        """
+# rule iCountPeaks:
+#     input:
+#         bed="results/xlinks/{sample}.xl.bed.gz",
+#     output:
+#         peaks="results/peaks/{sample}.xl.3nt_peaks.bed.gz",
+#         regionpeaks="results/peaks/regions/{sample}.xl.3nt_regionpeaks.bed.gz",
+#         scores="results/peaks/scores/{sample}.xl.3nt.tsv.gz",
+#         regionscores="results/peaks/regions/scores/{sample}.xl.3nt.tsv.gz"    
+#     params:
+#         segment=config['segment'],
+#         cluster="-N 1 -c 1 --mem-per-cpu=32GB -J iCountPeaks -t 12:00:00 -o logs/iCountPeaks.{sample}.%A.log"
+#     shell:
+#         """
+#         iCount peaks {params.segment} {input.bed} {output.peaks} --scores {output.scores} --half_window 3 --fdr 0.05
+#         iCount peaks {params.segment} {input.bed} {output.regionpeaks} --scores {output.regionscores} --features CDS intron UTR3 UTR5 ncRNA intergenic --group_by transcript_id --half_window 3 --fdr 0.05
+#         """
 
-rule clusterPeaks:
-    input:
-        peaks="results/peaks/{sample}.xl.3nt_peaks.bed.gz",
-        regionpeaks="results/peaks/regions/{sample}.xl.3nt_regionpeaks.bed.gz",
-    output:
-        clusters="results/clusters/{sample}.xl.3nt_peaks.3nt_clusters.bed.gz",
-        regionclusters="results/clusters/regions/{sample}.xl.3nt_regionpeaks.3nt_clusters.bed.gz",
-    params:
-        clusterdist="3",
-        cluster="-N 1 -c 1 --mem-per-cpu=32GB -J clusterPeaks -t 12:00:00 -o logs/clusterPeaks.{sample}.%A.log"
-    shell:
-        """
-        zcat {input.peaks} | bedtools merge -s -d {params.clusterdist} -c 4,5,6 -o distinct,sum,distinct | pigz > {output.clusters}
-        zcat {input.regionpeaks} | bedtools merge -s -d {params.clusterdist} -c 4,5,6 -o distinct,sum,distinct | pigz > {output.regionclusters}
-        """
+# rule clusterPeaks:
+#     input:
+#         peaks="results/peaks/{sample}.xl.3nt_peaks.bed.gz",
+#         regionpeaks="results/peaks/regions/{sample}.xl.3nt_regionpeaks.bed.gz",
+#     output:
+#         clusters="results/clusters/{sample}.xl.3nt_peaks.3nt_clusters.bed.gz",
+#         regionclusters="results/clusters/regions/{sample}.xl.3nt_regionpeaks.3nt_clusters.bed.gz",
+#     params:
+#         clusterdist="3",
+#         cluster="-N 1 -c 1 --mem-per-cpu=32GB -J clusterPeaks -t 12:00:00 -o logs/clusterPeaks.{sample}.%A.log"
+#     shell:
+#         """
+#         zcat {input.peaks} | bedtools merge -s -d {params.clusterdist} -c 4,5,6 -o distinct,sum,distinct | pigz > {output.clusters}
+#         zcat {input.regionpeaks} | bedtools merge -s -d {params.clusterdist} -c 4,5,6 -o distinct,sum,distinct | pigz > {output.regionclusters}
+#         """
 
 
 # =============================================================================
