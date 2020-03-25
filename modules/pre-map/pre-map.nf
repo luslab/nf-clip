@@ -6,9 +6,27 @@ nextflow.preview.dsl = 2
 // fastqc reusable component
 process pre-map {
     input:
-      path reads
+        path reads
 
     output:
+        file "${unmapped_reads}"
+        file "${bowtie_index}"
+        file "${sam}"
+
+
+
+
+        
+      file "*_fastqc.{zip,html}"
+
+    script:
+    """
+    gunzip -c $reads | \
+    bowtie -v 2 -m 1 --best --strata --threads 8 -q --sam --norc --un $unmapped_reads $bowtie_index - $sam 2> {output.log}
+    samtools view -hu -F 4 $sam | sambamba sort -t 8 -o $bam
+    """
+}
+
 
         output:
         sam=temp("results/premapping/{sample}.Aligned.out.sam"),
@@ -17,16 +35,8 @@ process pre-map {
         bam="results/premapping/{sample}.Aligned.out.sorted.bam",
         bai="results/premapping/{sample}.Aligned.out.sorted.bam.bai"
 
-        
-      file "*_fastqc.{zip,html}"
+params.unmapped_reads = 'modules/pre-map/output/unmapped_reads.fq'
 
-    script:
-    """
-    gunzip -c {input.fastq} | \
-    bowtie -v 2 -m 1 --best --strata --threads 8 -q --sam --norc --un {output.unmapped_reads} {params.bowtie_index} - {output.sam} 2> {output.log}
-    samtools view -hu -F 4 {output.sam} | sambamba sort -t 8 -o {output.bam} /dev/stdin
-    """
-}
 
  workflow pre-map {
     take: inputReads
