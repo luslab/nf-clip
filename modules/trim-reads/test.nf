@@ -15,6 +15,14 @@ include cutadapt from './trim-reads.nf'
 /* Params
 --------------------------------------------------------------------------------------*/
 
+readPaths = [
+  ['File1', ["$baseDir/input/readfile1.fq.gz"], ["$baseDir/output/readfile1.fq.gz"]],
+  ['File2', ["$baseDir/input/readfile1.fq.gz"]],
+  ['SRR4238359', []],
+  ['SRR4238379', []]
+]
+
+
 params.reads = "$baseDir/input/*.fq.gz"
 
 /*------------------------------------------------------------------------------------*/
