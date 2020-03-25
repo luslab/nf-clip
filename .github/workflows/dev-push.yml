@@ -1,4 +1,4 @@
-name: dev-pr
+name: dev-push
 
 on:
   push:
@@ -8,6 +8,7 @@ jobs:
   build-docker:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Build and push dev image
         uses: docker/build-push-action@v1.0.1
         with:
