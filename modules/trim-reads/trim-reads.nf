@@ -4,7 +4,7 @@
 nextflow.preview.dsl = 2
 
 // Cutadapt reusable component
-process Cutadapt {
+process cutadapt {
     input:
 
     output:
@@ -13,4 +13,9 @@ process Cutadapt {
     """
     
     """
+}
+
+workflow trimreads {
+    input 
+
 }
