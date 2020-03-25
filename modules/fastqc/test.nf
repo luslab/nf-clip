@@ -9,7 +9,7 @@ log.info ("Starting test pipeline for fastqc")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include prefastqc from './pre-fastqc.nf'
+include fastqc from './pre-fastqc.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
@@ -25,8 +25,8 @@ workflow {
     ch_testData = Channel.fromPath( params.reads )
 
     // Run fastqc
-    prefastqc( ch_testData )
+    fastqc( ch_testData )
 
     // Collect file names and view output
-    prefastqc.out.collect() | view
+    fastqc.out.collect() | view
 }
