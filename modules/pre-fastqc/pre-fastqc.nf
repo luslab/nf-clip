@@ -3,6 +3,7 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
+// fastqc reusable component
 process fastqc {
     input:
       path reads

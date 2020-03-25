@@ -21,14 +21,12 @@ params.reads = "$baseDir/input/*.fq.gz"
 
 // Run workflow
 workflow {
-    log.info ("starting workflow")
-
     // Create test data channel from all read files
     ch_testData = Channel.fromPath( params.reads )
 
+    // Run fastqc
     prefastqc( ch_testData )
-}
 
-//workflow.onComplete {// 
-//	log.info ( workflow.success ? "\nDone! Open the following report in your browser --> $params.outdir/multiqc_report.html\n" : "Oops .. something went wrong" )
-//}
+    // Collect file names and view output
+    prefastqc.out.collect() | view
+}
