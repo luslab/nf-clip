@@ -9,7 +9,7 @@ log.info ("Starting test pipeline for Bowtie Pre-mapping to rRNA and tRNA")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include pre-map from './modules/pre-map/pre-map.nf'
+include premap from './pre-map.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
@@ -24,11 +24,12 @@ params.bowtie_index = "$baseDir/input/small_rna_bowtie/small_rna_bowtie.*"
 workflow {
     // Create test data channel from all read files
     ch_testData = Channel.fromPath( params.reads )
-    index = Channel.fromPath( params.bowtie_index )
+    ch_index = Channel.fromPath( params.bowtie_index )
 
     // Run pre-map
-    pre-map( ch_testData, index )
+    premap( ch_testData , ch_index )
 
     // Collect file names and view output
-    pre-map.out.collect() | view
+    premap.out.collect() | view
 }
+
