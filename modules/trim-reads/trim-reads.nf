@@ -4,7 +4,7 @@
 nextflow.preview.dsl = 2
 
 // Trimming reusable component
-process trimreads {
+process cutadapt {
     input:
         path reads
 
@@ -21,7 +21,7 @@ workflow trimreads {
     take: 
     inputReads
     main:
-        trimreads(inputReads)
+        cutadapt(inputReads)
     emit:
-        trimreads.out
+        cutadapt.out
 }
