@@ -20,5 +20,3 @@ include luslabHeader from './modules/overhead/overhead'
 /*------------------------------------------------------------------------------------*/
 
 log.info luslabHeader()
-
-exit 0
