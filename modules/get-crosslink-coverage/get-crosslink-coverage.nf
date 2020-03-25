@@ -10,8 +10,9 @@ process getcrosslinkcoverage {
       path fai
 
     output:
-      path "${bed.baseName}.bedgraph.gz"
-      path "${bed.baseName}.norm.bedgraph.gz"
+      tuple path("${bed.baseName}.bedgraph.gz"), path("${bed.baseName}.norm.bedgraph.gz")
+    //   path "${bed.baseName}.norm.bedgraph.gz"
+
     script:
     """
     # Raw bedgraphs
