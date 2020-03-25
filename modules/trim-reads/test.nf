@@ -4,12 +4,12 @@
 nextflow.preview.dsl=2
 
 // Log
-log.info ("Starting test pipeline for trim reads")
+log.info ("Starting Cutadapt trimming pipeline")
 
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include trim-reads from './trim-reads.nf'
+include cutadapt from './trim-reads.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
