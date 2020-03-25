@@ -16,7 +16,6 @@ process dedup {
         fileName=`basename $bam`
         sampleName="\${fileName%.Aligned.sortedByCoord.out.bam}"
         umi_tools dedup --umi-separator=":" -I $bam -S \${sampleName}.dedup.bam --output-stats=\${sampleName}
-      # cp \${sampleName}/*_edit_distance.tsv .
     """
 }
 
