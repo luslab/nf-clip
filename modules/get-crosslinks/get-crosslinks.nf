@@ -6,7 +6,7 @@ nextflow.preview.dsl = 2
 // fastqc reusable component
 process getcrosslinks {
     input:
-      path bam
+      each bam
       path fai
 
     output:
