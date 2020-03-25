@@ -9,13 +9,14 @@ log.info ("Starting test pipeline for Bowtie Pre-mapping to rRNA and tRNA")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include prefastqc from './pre-fastqc.nf'
+include pre-map from './pre-map.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
 --------------------------------------------------------------------------------------*/
 
 params.reads = "$baseDir/input/*.fq.gz"
+params.bowtie_index = "$baseDir/input/small_rna_bowtie/small_rna_bowtie.*"
 
 /*------------------------------------------------------------------------------------*/
 
@@ -23,10 +24,11 @@ params.reads = "$baseDir/input/*.fq.gz"
 workflow {
     // Create test data channel from all read files
     ch_testData = Channel.fromPath( params.reads )
+    index = Channel.fromPath( params.bowtie_index )
 
-    // Run fastqc
-    prefastqc( ch_testData )
+    // Run pre-map
+    pre-map( ch_testData; index )
 
     // Collect file names and view output
-    prefastqc.out.collect() | view
+    pre-map.out.collect() | view
 }
