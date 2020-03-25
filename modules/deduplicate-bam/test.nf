@@ -15,17 +15,14 @@ include bamdedup from './deduplicate-bam.nf'
 /* Params
 --------------------------------------------------------------------------------------*/
 
-//params.bams = "$baseDir/input/*.bam"
-//params.bais = "$baseDir/input/*.bai"
 params.inputDir = "$baseDir/input"
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
     // Create test data channel from all bam files
-    ch_bamBaiFiles = Channel.fromFilePairs( params.inputDir + '/*.{bam,bai}' )
-  //  ch_baiFiles = Channel.fromPath( params.bais )
-    
+    ch_bamBaiFiles = Channel.fromFilePairs( params.inputDir + '/*.{bai,bam}', flat: true )
+
     // Run dedup
     bamdedup( ch_bamBaiFiles )
 
