@@ -4,7 +4,7 @@
 nextflow.preview.dsl=2
 
 // Log
-log.info ("Starting test pipeline for fastqc")
+log.info ("Starting test pipeline for Get Crosslinks")
 
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
