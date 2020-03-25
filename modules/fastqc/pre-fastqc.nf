@@ -16,11 +16,3 @@ process fastqc {
     fastqc --quiet --threads $task.cpus $reads
     """
 }
-
- workflow prefastqc {
-    take: inputReads
-    main:
-      fastqc(inputReads)
-    emit:
-      fastqc.out
-}
