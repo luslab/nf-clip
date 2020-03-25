@@ -3,42 +3,6 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-/*
-rule mapStarLenient5p:
-    input:
-        fastq="results/premapping/{sample}.tRNA_unmapped.fq.gz",
-    output:
-        bam="results/mapped/{sample}.Aligned.sortedByCoord.out.bam",
-        bai="results/mapped/{sample}.Aligned.sortedByCoord.out.bam.bai",
-        log="results/logs/{sample}.genome.log",
-    params:
-        STAR_GRCm38_GencodeM24=config['STAR_GRCm38_GencodeM24'],
-        outprefix="results/mapped/{sample}.",
-        log="results/mapped/{sample}.Log.final.out",
-        cluster="-J mapStar -N 1 -c 8 --mem-per-cpu=4GB -t 6:00:00 -o logs/mapStar.{sample}.%A.log"
-    threads:
-        8
-    shell:
-        """
-        STAR --runThreadN {threads} \
-        --genomeDir {params.STAR_GRCm38_GencodeM24} --genomeLoad NoSharedMemory \
-        --readFilesIn {input.fastq} --readFilesCommand zcat \
-        --outFileNamePrefix {params.outprefix} \
-        --outFilterMultimapNmax 1 --outFilterMultimapScoreRange 1 \
-        --outSAMattributes All --alignSJoverhangMin 8 --alignSJDBoverhangMin 1 --outFilterType BySJout \
-        --alignIntronMin 20 --alignIntronMax 1000000 --outFilterScoreMin 10 --alignEndsType Extend5pOfRead1 \
-        --twopassMode Basic \
-        --outSAMtype BAM SortedByCoordinate --limitBAMsortRAM 60000000000
-        sambamba index -t {threads} {output.bam}
-        mv {params.log} {output.log}
-        """
-*/
-
-//             --outFileNamePrefix ${reads%.unmapped.fq} \
-
-//        sambamba index -t 2 {output.bam}
-//        mv {params.log} {output.log}
-
 // star reusable component
 process star {
     input:
@@ -46,10 +10,8 @@ process star {
       path star_index
 
     output:
-      file "*.Aligned.sortedByCoord.out.{bam,log}"
-//      file "*.Aligned.sortedByCoord.out.{bam,bam.bai,log}"
-//      file "*.Aligned.sortedByCoord.out."
-//      file "*.genome.log"
+      path "*.Aligned.sortedByCoord.out.bam", emit: bamFiles
+      path "*.Log.final.out", emit: logFiles
 
     script:
     """
@@ -73,8 +35,48 @@ process star {
              --twopassMode Basic \
              --outSAMtype BAM SortedByCoordinate \
              --limitBAMsortRAM 6000000000
+    """
+}
 
+process sambamba {
+    input:
+      path bam
 
+    output:
+      path "*.bam.bai"
+    
+    script:
+    """
+        sambamba index -t 2 $bam
+    """
+}
+
+process rename_log {
+    input:
+      path logFile
+
+    output:
+      path "*.genome.log"
+    
+    script:
+    """
+        fileName=`basename $logFile`
+        sampleName="\${fileName%.Log.final.out}"
+        mv $logFile \${sampleName}.genome.log
+    """
+}
+
+process collect_outputs {
+    input:
+      path bamFile
+      path baiFile
+      path logFile
+
+    output:
+      tuple path(bamFile), path(baiFile), path(logFile)
+
+    script:
+    """
     """
 }
 
@@ -83,6 +85,9 @@ process star {
     take: starIndex
     main:
       star(inputReads, starIndex)
+      sambamba(star.out.bamFiles)
+      rename_log(star.out.logFiles)
+      collect_outputs(star.out.bamFiles, sambamba.out, rename_log.out)
     emit:
-      star.out
+      collect_outputs.out
 }

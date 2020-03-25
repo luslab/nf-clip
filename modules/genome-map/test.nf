@@ -26,7 +26,6 @@ workflow {
     ch_testData = Channel.fromPath( params.reads )
     ch_testIndex = Channel.fromPath( params.genome_index )
     
-
     // Run star
     genomemap( ch_testData, ch_testIndex )
 
