@@ -3,8 +3,8 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// Cutadapt reusable component
-process cutadapt {
+// Trimming reusable component
+process trimreads {
     input:
         path reads
 
@@ -13,7 +13,7 @@ process cutadapt {
 
     shell:
     """
-    cutadapt --quiet --threads 
+    trimgalore --quiet --threads 
     """
 }
 
@@ -21,7 +21,7 @@ workflow trimreads {
     take: 
     inputReads
     main:
-        cutadapt(inputReads)
+        trimreads(inputReads)
     emit:
         trimreads.out
 }
