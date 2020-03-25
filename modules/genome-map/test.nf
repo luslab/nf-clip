@@ -27,7 +27,7 @@ workflow {
     ch_testIndex = Channel.fromPath( params.genome_index )
     
 
-    // Run fastqc
+    // Run star
     genomemap( ch_testData, ch_testIndex )
 
     // Collect file names and view output
