@@ -29,5 +29,4 @@ workflow {
 
     // Collect file names and view output
     cutadapt.out.collect() | view
-
 }
