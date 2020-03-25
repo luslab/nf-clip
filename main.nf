@@ -17,6 +17,7 @@ nextflow.preview.dsl=2
 
 include luslabHeader from './modules/overhead/overhead'
 include prefastqc from './modules/pre-fastqc/pre-fastqc.nf'
+include prefastqc as postfastqc from './modules/pre-fastqc/pre-fastqc.nf' 
 include cutadapt from './modules/trim-reads/trim-reads.nf'
 
 /*------------------------------------------------------------------------------------*/
@@ -38,10 +39,11 @@ workflow {
 
     //Run read trimming
     cutadapt( ch_testData )
+    postfastqc( cutadapt.out )
 
     // Collect file names and view output
     //prefastqc.out.collect() | view
-    cutadapt.out.collect() | view
+    postfastqc.out.collect() | view
     
 }
 /*------------------------------------------------------------------------------------*/
