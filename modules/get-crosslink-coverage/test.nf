@@ -9,7 +9,7 @@ log.info ("Starting test pipeline for fastqc")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include getcrosslinkcoverage from './get-crosslinkcoverage.nf'
+include getcrosslinkcoverage from './get-crosslink-coverage.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
@@ -31,5 +31,5 @@ workflow {
 
     // Collect file names and view output
     getcrosslinks.out.collect() | view
-    
+
 }
