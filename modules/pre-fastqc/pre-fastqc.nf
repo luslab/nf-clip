@@ -4,28 +4,22 @@
 nextflow.preview.dsl = 2
 
 process fastqc {
-
-// Input is a tuple of sample ids and the path to the FASTQ file
     input:
-    tuple sample_id, path(reads) 
+      path reads
 
-// Output is the directory to which FastQC will put its files
-// FastQC outputs are *_fastqc.{html,zip}
     output:
-    path("fastqc_$sampleid")
+      file "*_fastqc.{zip,html}"
 
     script:
     """
-    mkdir fastqc_$sampleid
-    fastqc -q -o fastqc_$sampleid $reads
+    fastqc --quiet --threads $task.cpus $reads
     """
-
 }
 
- workflow my_pipeline {
+ workflow prefastqc {
+    take: inputReads
     main:
-      foo(data)
-      bar(foo.out)
+      fastqc(inputReads)
     emit:
-      my_data = bar.out
+      fastqc.out
 }
