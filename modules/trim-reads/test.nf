@@ -17,7 +17,11 @@ include cutadapt from './trim-reads.nf'
 
 testPaths = [
   ['Sample 1', ["$baseDir/input/readfile1.fq.gz"], ["$baseDir/output/output1.fq.gz"]],
-  ['Sample 2', ["$baseDir/input/readfile2.fq.gz"], ["$baseDir/output/output2.fq.gz"]]
+  ['Sample 2', ["$baseDir/input/readfile2.fq.gz"], ["$baseDir/output/output2.fq.gz"]],
+  ['Sample 3', ["$baseDir/input/readfile3.fq.gz"], ["$baseDir/output/output3.fq.gz"]],
+  ['Sample 4', ["$baseDir/input/readfile4.fq.gz"], ["$baseDir/output/output4.fq.gz"]],
+  ['Sample 5', ["$baseDir/input/readfile5.fq.gz"], ["$baseDir/output/output5.fq.gz"]],
+  ['Sample 6', ["$baseDir/input/readfile6.fq.gz"], ["$baseDir/output/output6.fq.gz"]]
 ]
 
 Channel
