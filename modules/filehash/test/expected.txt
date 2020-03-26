@@ -1,6 +1,0 @@
-0a96917b6d10e7f74380b74a1e82d7f1  readfile1.fq.gz
-2bcce87b2283016f15b2f0ecb5545cb3  readfile2.fq.gz
-f0c5684dd4df10310d305964fe44f52e  readfile3.fq.gz
-4bf7109dd530dce1386aeab415a9b022  readfile4.fq.gz
-d03ec6636e5825ffaac2a6fb7acee541  readfile5.fq.gz
-8c157887e8956ae076dd45d6e3b1e1a2  readfile6.fq.gz
