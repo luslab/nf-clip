@@ -18,11 +18,3 @@ process dedup {
         umi_tools dedup --umi-separator=":" -I $bam -S \${sampleName}.dedup.bam --output-stats=\${sampleName}
     """
 }
-
- workflow bamdedup {
-    take: inputBamsBais
-    main:
-      dedup(inputBamsBais)
-    emit:
-      dedup.out
-}

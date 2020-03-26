@@ -9,7 +9,8 @@ log.info ("Starting test pipeline for BAM deduplication")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include bamdedup from './deduplicate-bam.nf'
+//include bamdedup from './deduplicate-bam.nf'
+include dedup from './deduplicate-bam.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
@@ -24,8 +25,10 @@ workflow {
     ch_bamBaiFiles = Channel.fromFilePairs( params.inputDir + '/*.{bai,bam}', flat: true )
 
     // Run dedup
-    bamdedup( ch_bamBaiFiles )
+    //bamdedup( ch_bamBaiFiles )
+    dedup( ch_bamBaiFiles )
 
     // Collect file names and view output
-    bamdedup.out.collect() | view
+    //bamdedup.out.collect() | view
+    dedup.out.collect() | view
 }
