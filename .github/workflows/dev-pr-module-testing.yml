@@ -1,7 +1,7 @@
 name: dev-pr
 
 on:
-  pull_request:
+  push:
     branches: [ workflow-testing ]
 
 jobs:
