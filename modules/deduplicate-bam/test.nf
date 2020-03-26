@@ -9,7 +9,6 @@ log.info ("Starting test pipeline for BAM deduplication")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-//include bamdedup from './deduplicate-bam.nf'
 include dedup from './deduplicate-bam.nf'
 
 /*------------------------------------------------------------------------------------*/
