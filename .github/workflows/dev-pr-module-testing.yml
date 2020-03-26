@@ -5,11 +5,11 @@ on:
     branches: [ workflow-testing ]
 
 jobs:
-  lint-docker:
+  test-modules:
     runs-on: ubuntu-latest
+    container: luslab/nextflow-clip:dev
     steps:
       - uses: actions/checkout@v2
-      - name: Lint Dockerfile
-        uses: brpaz/hadolint-action@master
-        with:
-          dockerfile: "Dockerfile"
+      - name: Test trim-reads module
+        run: |
+          echo "this is a test"
