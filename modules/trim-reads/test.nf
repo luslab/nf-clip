@@ -15,26 +15,39 @@ include cutadapt from './trim-reads.nf'
 /* Params
 --------------------------------------------------------------------------------------*/
 
-readPaths = [
-  ['File1', ["$baseDir/input/readfile1.fq.gz"], ["$baseDir/output/readfile1.fq.gz"]],
-  ['File2', ["$baseDir/input/readfile1.fq.gz"]],
-  ['SRR4238359', []],
-  ['SRR4238379', []]
+testPaths = [
+  ['Sample 1', ["$baseDir/input/readfile1.fq.gz"], ["$baseDir/output/output1.fq.gz"]],
+  ['Sample 2', ["$baseDir/input/readfile2.fq.gz"], ["$baseDir/output/output2.fq.gz"]]
 ]
 
+Channel
+  .from(testPaths)
+  .map { row -> [ row[0], [ file(row[1][0]) ] ] }
+  .set { ch_test_inputs }
 
-params.reads = "$baseDir/input/*.fq.gz"
+  Channel
+  .from(testPaths)
+  .map { row -> [ row[0], [ file(row[2][0]) ] ] }
+  .set { ch_test_outputs }
+
+
+//params.reads = "$baseDir/input/*.fq.gz"
 
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
+
+
     // Create test data channel from all read files
-    ch_testData = Channel.fromPath( params.reads )
+    //ch_test_data = Channel.fromPath( params.reads )
 
     // Run fastqc
-    cutadapt( ch_testData )
+    cutadapt( ch_test_inputs )
+
+    //Join outputs to correct output test file
+    cutadapt.out.join(ch_test_outputs) | view
 
     // Collect file names and view output
-    cutadapt.out.collect() | view
+    //cutadapt.out | view
 }

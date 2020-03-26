@@ -6,13 +6,13 @@ nextflow.preview.dsl = 2
 // Trimming reusable component
 process cutadapt {
     input:
-        path reads
+        tuple val(sample_id), path(reads)
 
     output:
-        path "${reads.baseName}.trimmed.fq.gz"
+        tuple val(sample_id), path("${reads.simpleName}.trimmed.fq.gz")
 
     shell:
     """
-    cutadapt -j 8 --minimum-length 16 -q 10 -a AGATCGGAAGAGC -o ${reads.baseName}.trimmed.fq.gz $reads
+    cutadapt -j 8 --minimum-length 16 -q 10 -a AGATCGGAAGAGC -o ${reads.simpleName}.trimmed.fq.gz $reads
     """
 }
