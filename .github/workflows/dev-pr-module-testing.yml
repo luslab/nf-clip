@@ -1,8 +1,8 @@
-name: master-pr
+name: dev-pr
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ workflow-testing ]
 
 jobs:
   lint-docker:
