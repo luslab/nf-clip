@@ -4,7 +4,7 @@
 nextflow.preview.dsl=2
 
 // Log
-log.info ("Starting Cutadapt trimming pipeline")
+log.info ("Starting Cutadapt trimming test pipeline")
 
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
