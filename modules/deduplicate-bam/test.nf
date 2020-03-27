@@ -24,10 +24,8 @@ workflow {
     ch_bamBaiFiles = Channel.fromFilePairs( params.inputDir + '/*.{bai,bam}', flat: true )
 
     // Run dedup
-    //bamdedup( ch_bamBaiFiles )
     dedup( ch_bamBaiFiles )
 
     // Collect file names and view output
-    //bamdedup.out.collect() | view
     dedup.out.collect() | view
 }
