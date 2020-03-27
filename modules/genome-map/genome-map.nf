@@ -43,7 +43,7 @@ process sambamba {
       path bam
 
     output:
-      path "*.bam.bai"
+      path "*.bam.bai", emit: baiFiles
     
     script:
     """
@@ -51,18 +51,23 @@ process sambamba {
     """
 }
 
-process rename_log {
+process rename_files {
     input:
+      path baiFile
       path logFile
 
     output:
-      path "*.genome.log"
+      path "*.bai", emit: renamedBaiFiles
+      path "*.genome.log", emit: renamedLogFiles
     
     script:
     """
-        fileName=`basename $logFile`
-        sampleName="\${fileName%.Log.final.out}"
-        mv $logFile \${sampleName}.genome.log
+        logFileName=`basename $logFile`
+        logBaseName="\${logFileName%.Log.final.out}"
+        mv $logFile \${logBaseName}.genome.log
+        baiFileName=`basename $baiFile`
+        baiBaseName="\${baiFileName%.bam.bai}"
+        mv $baiFile \${baiBaseName}.bai
     """
 }
 
@@ -86,8 +91,8 @@ process collect_outputs {
     main:
       star(inputReads, starIndex)
       sambamba(star.out.bamFiles)
-      rename_log(star.out.logFiles)
-      collect_outputs(star.out.bamFiles, sambamba.out, rename_log.out)
+      rename_files(sambamba.out.baiFiles, star.out.logFiles)
+      collect_outputs(star.out.bamFiles, rename_files.out.renamedBaiFiles, rename_files.out.renamedLogFiles)
     emit:
       collect_outputs.out
 }
