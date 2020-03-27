@@ -1,0 +1,15 @@
+name: dev-pr
+
+on:
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  lint-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint Dockerfile
+        uses: brpaz/hadolint-action@master
+        with:
+          dockerfile: "Dockerfile"

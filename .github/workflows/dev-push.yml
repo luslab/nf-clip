@@ -3,7 +3,7 @@ name: dev-push
 # Only runs on pushes to dev
 on:
   push:
-    branches: [ workflow-testing ]
+    branches: [ dev ]
 
 jobs:
   build-docker:
