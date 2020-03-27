@@ -25,6 +25,10 @@ jobs:
         run: |
           docker pull luslab/nextflow-clip:dev
 
-      - name: Test trim-reads module
+      - name: Run module tests
         run: |
           nextflow run ${GITHUB_WORKSPACE}/modules/trim-reads/test.nf -c conf/module-test.config
+      
+      - name: Verify trim-read output
+        run: |
+          ./test/scripts/verify-checksum.sh "modules/trim-reads/output/*.gz" "results/cutadapt/*.gz"
