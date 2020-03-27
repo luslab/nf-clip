@@ -6,8 +6,6 @@
 ## LOAD REQUIRED MODULES
 ml purge
 ml Nextflow/19.10.0
-ml Singularity/3.4.2
-ml Graphviz
 
 ## UPDATE PIPLINE
 nextflow pull luslab/group-nextflow-clip
