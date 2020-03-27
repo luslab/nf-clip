@@ -11,9 +11,6 @@ ml Nextflow/19.10.0
 nextflow pull luslab/group-nextflow-clip
 
 ## RUN PIPELINE
-nextflow run  -r dev
-
-## RUN PIPELINE
 nextflow run luslab/group-nextflow-clip \
   -r dev \
   -profile crick,test
