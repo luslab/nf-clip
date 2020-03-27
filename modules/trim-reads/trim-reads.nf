@@ -3,7 +3,7 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-params.outdir = 'results'
+params.outdir = './results'
 
 // Trimming reusable component
 process cutadapt {
