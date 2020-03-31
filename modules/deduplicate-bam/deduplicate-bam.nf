@@ -3,8 +3,15 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
+// Local default params
+params.outdir = './results'
+params.dedup_processname = 'dedup'
+
 // dedup reusable component
 process dedup {
+    publishDir "${params.outdir}/${params.dedup_processname}",
+        mode: "copy", overwrite: true
+
     input:
       tuple val(pairId), path(bai), path(bam)
 
