@@ -3,10 +3,9 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// fastqc reusable component
 process getcrosslinks {
     input:
-      each bam
+      each path(bam)
       path fai
 
     output:
@@ -22,11 +21,3 @@ process getcrosslinks {
     cat pos.bed neg.bed | sort -k1,1 -k2,2n | pigz > ${bam.simpleName}.xl.bed.gz
     """
 }
-
-// workflow get_crosslinks {
-//     take: inputBam
-//     main:
-//       getcrosslinks(inputBam)
-//     emit:
-//       crosslinks.out
-// }

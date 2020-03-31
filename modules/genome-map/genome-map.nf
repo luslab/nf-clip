@@ -6,7 +6,7 @@ nextflow.preview.dsl = 2
 // star reusable component
 process star {
     input:
-      each reads
+      each path(reads)
       path star_index
 
     output:
@@ -15,26 +15,26 @@ process star {
 
     script:
     """
-        fileName=`basename $reads`
-        prefix="\${fileName%.fq}."
-        STAR --runThreadN 2 \
-             --genomeDir $star_index \
-             --genomeLoad NoSharedMemory \
-             --readFilesIn $reads \
-             --outFileNamePrefix \$prefix \
-             --outFilterMultimapNmax 1 \
-             --outFilterMultimapScoreRange 1 \
-             --outSAMattributes All \
-             --alignSJoverhangMin 8 \
-             --alignSJDBoverhangMin 1 \
-             --outFilterType BySJout \
-             --alignIntronMin 20 \
-             --alignIntronMax 1000000 \
-             --outFilterScoreMin 10  \
-             --alignEndsType Extend5pOfRead1 \
-             --twopassMode Basic \
-             --outSAMtype BAM SortedByCoordinate \
-             --limitBAMsortRAM 6000000000
+    fileName=`basename $reads`
+    prefix="\${fileName%.fq}."
+    STAR --runThreadN 2 \
+      --genomeDir $star_index \
+      --genomeLoad NoSharedMemory \
+      --readFilesIn $reads \
+      --outFileNamePrefix \$prefix \
+      --outFilterMultimapNmax 1 \
+      --outFilterMultimapScoreRange 1 \
+      --outSAMattributes All \
+      -alignSJoverhangMin 8 \
+      --alignSJDBoverhangMin 1 \
+      --outFilterType BySJout \
+      --alignIntronMin 20 \
+      --alignIntronMax 1000000 \
+      --outFilterScoreMin 10  \
+      --alignEndsType Extend5pOfRead1 \
+      --twopassMode Basic \
+      --outSAMtype BAM SortedByCoordinate \
+      --limitBAMsortRAM 6000000000
     """
 }
 
@@ -47,7 +47,7 @@ process sambamba {
     
     script:
     """
-        sambamba index -t 2 $bam
+    sambamba index -t 2 $bam
     """
 }
 
@@ -62,12 +62,12 @@ process rename_files {
     
     script:
     """
-        logFileName=`basename $logFile`
-        logBaseName="\${logFileName%.Log.final.out}"
-        mv $logFile \${logBaseName}.genome.log
-        baiFileName=`basename $baiFile`
-        baiBaseName="\${baiFileName%.bam.bai}"
-        mv $baiFile \${baiBaseName}.bai
+    logFileName=`basename $logFile`
+    logBaseName="\${logFileName%.Log.final.out}"
+    mv $logFile \${logBaseName}.genome.log
+    baiFileName=`basename $baiFile`
+    baiBaseName="\${baiFileName%.bam.bai}"
+    mv $baiFile \${baiBaseName}.bai
     """
 }
 

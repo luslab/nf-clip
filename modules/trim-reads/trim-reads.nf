@@ -11,10 +11,12 @@ process cutadapt {
         mode: "copy", overwrite: true
 
     input:
-        tuple val(sample_id), path(reads)
+        //tuple val(sample_id), path(reads)
+        path(reads)
 
     output:
-        tuple val(sample_id), path("${reads.simpleName}.trimmed.fq.gz")
+        //tuple val(sample_id), path("${reads.simpleName}.trimmed.fq.gz")
+        path("${reads.simpleName}.trimmed.fq.gz")
 
     shell:
     """
