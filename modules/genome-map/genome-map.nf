@@ -25,7 +25,7 @@ process star {
       --outFilterMultimapNmax 1 \
       --outFilterMultimapScoreRange 1 \
       --outSAMattributes All \
-      -alignSJoverhangMin 8 \
+      --alignSJoverhangMin 8 \
       --alignSJDBoverhangMin 1 \
       --outFilterType BySJout \
       --alignIntronMin 20 \

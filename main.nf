@@ -16,8 +16,8 @@ nextflow.preview.dsl=2
 --------------------------------------------------------------------------------------*/
 
 include luslabHeader from './modules/overhead/overhead'
-include fastqc as prefastqc from './modules/fastqc/pre-fastqc.nf'
-include fastqc as postfastqc from './modules/fastqc/pre-fastqc.nf' 
+include fastqc as prefastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_processname: 'pre_fastqc') 
+include fastqc as postfastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_processname: 'post_fastqc') 
 include cutadapt from './modules/trim-reads/trim-reads.nf'
 include bowtie_rrna from './modules/pre-map/pre-map.nf'
 include star as genomemap from './modules/genome-map/genome-map.nf'
@@ -60,4 +60,9 @@ workflow {
     // normalise crosslinks + get bedgraph files
     getcrosslinkcoverage( getcrosslinks.out)
 }
+
+workflow.onComplete {
+    log.info "\nPipeline complete!\n"
+}
+
 /*------------------------------------------------------------------------------------*/

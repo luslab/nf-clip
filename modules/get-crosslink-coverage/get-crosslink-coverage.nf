@@ -3,7 +3,14 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
+// Local default params
+params.outdir = './results'
+params.getcrosslinkcoverage_processname = 'crosslinkcoverage'
+
 process getcrosslinkcoverage {
+    publishDir "${params.outdir}/${params.getcrosslinkcoverage_processname}",
+        mode: "copy", overwrite: true
+
     input:
       each path(bed)
 

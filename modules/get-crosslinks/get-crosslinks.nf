@@ -3,7 +3,14 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
+// Local default params
+params.outdir = './results'
+params.crosslinks_processname = 'crosslinks'
+
 process getcrosslinks {
+    publishDir "${params.outdir}/${params.crosslinks_processname}",
+        mode: "copy", overwrite: true
+
     input:
       each path(bam)
       path fai

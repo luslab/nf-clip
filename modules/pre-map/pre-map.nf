@@ -3,7 +3,14 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
+// Local default params
+params.outdir = './results'
+params.bowtie_rrna_processname = 'bowtie_rrna'
+
 process bowtie_rrna {
+    publishDir "${params.outdir}/${params.bowtie_rrna_processname}",
+        mode: "copy", overwrite: true
+
     input:
         each path(reads)
         path bowtie_index
