@@ -11,6 +11,7 @@ params.dedup_processname = 'dedup'
 process dedup {
     publishDir "${params.outdir}/${params.dedup_processname}",
         mode: "copy", overwrite: true
+    label 'mid_memory'
 
     input:
       tuple val(pairId), path(bai), path(bam)

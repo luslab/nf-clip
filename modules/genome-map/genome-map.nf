@@ -5,6 +5,7 @@ nextflow.preview.dsl = 2
 
 // star reusable component
 process star {
+    label 'mid_memory'
     input:
       each path(reads)
       path star_index
@@ -39,6 +40,7 @@ process star {
 }
 
 process sambamba {
+    label 'mid_memory'
     input:
       path bam
 
@@ -52,6 +54,7 @@ process sambamba {
 }
 
 process rename_files {
+    label 'low_memory'
     input:
       path baiFile
       path logFile
@@ -72,6 +75,7 @@ process rename_files {
 }
 
 process collect_outputs {
+    label 'low_memory'
     input:
       path bamFile
       path baiFile
