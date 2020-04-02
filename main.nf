@@ -28,11 +28,11 @@ include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslin
 /* Params
 --------------------------------------------------------------------------------------*/
 
-params.reads = "$baseDir/test/data/reads/*.fq.gz"
-params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
-params.star_index = "$baseDir/test/data/reduced_star_index"
-params.genome_fai = "$baseDir/test/data/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
-params.results = "$baseDir/test/data/results"
+//params.reads = "$baseDir/test/data/reads/*.fq.gz"
+//params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
+//params.star_index = "$baseDir/test/data/reduced_star_index"
+//params.genome_fai = "$baseDir/test/data/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
+//params.results = "$baseDir/test/data/results"
 
 /*------------------------------------------------------------------------------------*/
 
