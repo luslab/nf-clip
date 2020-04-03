@@ -16,19 +16,24 @@ include cutadapt from './trim-reads.nf'
 --------------------------------------------------------------------------------------*/
 
 testPaths = [
-  ['Sample 1', ["$baseDir/input/readfile1.fq.gz"]],
-  ['Sample 2', ["$baseDir/input/readfile2.fq.gz"]],
-  ['Sample 3', ["$baseDir/input/readfile3.fq.gz"]],
-  ['Sample 4', ["$baseDir/input/readfile4.fq.gz"]],
-  ['Sample 5', ["$baseDir/input/readfile5.fq.gz"]],
-  ['Sample 6', ["$baseDir/input/readfile6.fq.gz"]]
+  ['Sample 1', "$baseDir/input/readfile1.fq.gz"],
+  ['Sample 2', "$baseDir/input/readfile2.fq.gz"],
+  ['Sample 3', "$baseDir/input/readfile3.fq.gz"],
+  ['Sample 4', "$baseDir/input/readfile4.fq.gz"],
+  ['Sample 5', "$baseDir/input/readfile5.fq.gz"],
+  ['Sample 6', "$baseDir/input/readfile6.fq.gz"]
 ]
 
 // Create channel of test data
-Channel
+//Channel
+ // .from(testPaths)
+ // .map { row -> [ row[0], [ file(row[1][0]) ] ] }
+ // .set { ch_test_inputs }
+
+ Channel
   .from(testPaths)
-  .map { row -> [ row[0], [ file(row[1][0]) ] ] }
-  .set { ch_test_inputs }
+  .map { row -> file(row[1]) }
+  .set {ch_test_inputs}
 
 /*------------------------------------------------------------------------------------*/
 
