@@ -9,7 +9,14 @@ log.info ("Starting Cutadapt trimming test pipeline")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include cutadapt from './trim-reads.nf' addParams(outdir: './results', cutadapt_processname: 'cutadapt')
+include cutadapt from './trim-reads.nf' \
+  params\
+  (outdir: './results', \
+   cutadapt_processname: 'cutadapt', \
+   task_cpus: 8, \
+   cutadapt_min_quality: 10, \
+   cutadapt_min_length: 16, \
+   adapter_sequence: 'AGATCGGAAGAGC')
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
