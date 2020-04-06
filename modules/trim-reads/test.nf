@@ -9,10 +9,10 @@ log.info ("Starting Cutadapt trimming test pipeline")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include cutadapt from './trim-reads.nf'
+include cutadapt from './trim-reads.nf' addParams(outdir: './results', cutadapt_processname: 'cutadapt')
 
 /*------------------------------------------------------------------------------------*/
-/* Params
+/* Define input channels
 --------------------------------------------------------------------------------------*/
 
 testPaths = [
@@ -24,11 +24,7 @@ testPaths = [
   ['Sample 6', "$baseDir/input/readfile6.fq.gz"]
 ]
 
-// Create channel of test data
-//Channel
- // .from(testPaths)
- // .map { row -> [ row[0], [ file(row[1][0]) ] ] }
- // .set { ch_test_inputs }
+// Create channel of test data (excluding the sample ID)
 
  Channel
   .from(testPaths)
@@ -39,9 +35,9 @@ testPaths = [
 
 // Run workflow
 workflow {
-    // Run fastqc
+    // Run cutadapt
     cutadapt( ch_test_inputs )
 
     // Collect file names and view output
-    cutadapt.out | view
+    cutadapt.out | view 
 }
