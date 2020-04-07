@@ -22,10 +22,10 @@ process cutadapt {
     shell:
     """
     cutadapt \
-        -j ${params.task_cpus} \
-        -q ${params.cutadapt_min_quality} \
-        --minimum-length ${params.cutadapt_min_length} \
-        -a ${params.adapter_sequence} \
+        -j 8 \
+        -q 10 \
+        --minimum-length 16 \
+        -a AGATCGGAAGAGC \
         -o ${reads.simpleName}.trimmed.fq.gz $reads
     """
 }

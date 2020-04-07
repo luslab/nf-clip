@@ -6,21 +6,16 @@ nextflow.preview.dsl=2
 // Log
 log.info ("Starting Cutadapt trimming test pipeline")
 
+params.test = 'hello'
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
 include cutadapt from './trim-reads.nf' \
-  params\
-  (outdir: './results', \
-   cutadapt_processname: 'cutadapt', \
-   task_cpus: 8, \
-   cutadapt_min_quality: 10, \
-   cutadapt_min_length: 16, \
-   adapter_sequence: 'AGATCGGAAGAGC')
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
 --------------------------------------------------------------------------------------*/
+
 
 testPaths = [
   ['Sample 1', "$baseDir/input/readfile1.fq.gz"],
