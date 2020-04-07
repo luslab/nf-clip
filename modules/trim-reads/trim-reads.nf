@@ -15,6 +15,7 @@ nextflow.preview.dsl = 2
 // Define default nextflow internals
 params.internal_outdir = './results'
 params.internal_process_name = 'cutadapt'
+params.internal_output_prefix = ''
 params.internal_min_quality = 10
 params.internal_min_length = 16
 params.internal_adapter_sequence = 'AGATCGGAAGAGC'
@@ -36,7 +37,7 @@ process cutadapt {
 
     output:
         //tuple val(sample_id), path("${reads.simpleName}.trimmed.fq.gz")
-        path("${reads.simpleName}.trimmed.fq.gz")
+        path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz")
 
     shell:
     """
@@ -45,6 +46,6 @@ process cutadapt {
         -q ${params.internal_min_quality} \
         --minimum-length ${params.internal_min_length} \
         -a ${params.internal_adapter_sequence} \
-        -o ${reads.simpleName}.trimmed.fq.gz $reads
+        -o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz $reads
     """
 }

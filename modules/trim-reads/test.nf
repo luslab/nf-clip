@@ -9,12 +9,14 @@ log.info ("Starting Cutadapt trimming test pipeline")
 /* Define global params
 --------------------------------------------------------------------------------------*/
 
-//params.cutadapt_process_name = 'wechangedit'
+//params.cutadapt_process_name = 'cutadapt_global'
+params.cutadapt_output_prefix = 'trimmed_'
 
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include cutadapt from './trim-reads.nf'
+include cutadapt from './trim-reads.nf' addParams(cutadapt_process_name: 'cutadapt1')
+include cutadapt as cutadapt2 from './trim-reads.nf' addParams(cutadapt_process_name: 'cutadapt2')
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
@@ -37,6 +39,11 @@ testPaths = [
   .map { row -> file(row[1]) }
   .set {ch_test_inputs}
 
+  Channel
+  .from(testPaths)
+  .map { row -> file(row[1]) }
+  .set {ch_test_inputs2}
+
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
@@ -44,6 +51,9 @@ workflow {
     // Run cutadapt
     cutadapt( ch_test_inputs )
 
+    // Run cutadapt
+    cutadapt2( ch_test_inputs2 )
+
     // Collect file names and view output
-    cutadapt.out | view 
+    //cutadapt.out | view 
 }
