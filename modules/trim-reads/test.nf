@@ -6,6 +6,11 @@ nextflow.preview.dsl=2
 // Log
 log.info ("Starting Cutadapt trimming test pipeline")
 
+/* Define global params
+--------------------------------------------------------------------------------------*/
+
+//params.cutadapt_process_name = 'wechangedit'
+
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
