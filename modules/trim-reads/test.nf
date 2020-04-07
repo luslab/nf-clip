@@ -6,11 +6,10 @@ nextflow.preview.dsl=2
 // Log
 log.info ("Starting Cutadapt trimming test pipeline")
 
-params.test = 'hello'
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include cutadapt from './trim-reads.nf' \
+include cutadapt from './trim-reads.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
