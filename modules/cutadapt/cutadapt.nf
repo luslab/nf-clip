@@ -45,10 +45,6 @@ BASIC PARAMETERS
 //Trims low-quality ends from reads
 params.internal_min_quality = 10
 
-/*Discard processed reads that are shorter than a certain length
-To avoid issues with zero-length sequences, specify at least "-m 1" */
-params.internal_min_length = 16
-
 //Disallow insertions and deletions entirely
 params.internal_no_indels = true
 
@@ -81,25 +77,25 @@ params.internal_adapter_sequence = 'AGATCGGAAGAGC'
 SINGLE ADAPTER TRIMMING PARAMETERS
 -------------------------------------------------------------------------------------------------------------------------------*/
 
-//Removes 3' adapters --> DEFAULT OPTION
+//Remove 3' adapters --> DEFAULT OPTION
 params.internal_3_trim = true
 
-//Removes 5' adapters
+//Remove 5' adapters
 params.internal_5_trim = false
 
 //Can remove either 3' or 5' adapters
 params.internal_3_or_5_trim = false
 
-//Disallows internal matches for a 3’ adapter
+//Disallow internal matches for a 3’ adapter
 params.internal_non_intern_3_trim = false
 
-//Disallows internal matches for a 5' adapter
+//Disallow internal matches for a 5' adapter
 params.internal_non_intern_5_trim = false
 
-//Anchors a 3' adapter to the end of the read
+//Anchor a 3' adapter to the end of the read
 params.internal_anchor_3_trim = false
 
-//Anchors a 5' adapter to the end of the read
+//Anchor a 5' adapter to the end of the read
 params.internal_anchor_5_trim = false
 
 
@@ -107,11 +103,40 @@ params.internal_anchor_5_trim = false
 FILTERING PARAMETERS
 -------------------------------------------------------------------------------------------------------------------------------*/
 
-//Changes level of compression to 1
-params.internal_comp_level_to_1 = false
+/*Discard processed reads that are shorter than LENGTH
+To avoid issues with zero-length sequences, specify at least "-m 1" */
+params.internal_min_length = 16
+
+//Discard processed reads that are longer than LENGTH
+params.internal_max_length = 0
+
+//Discard reads in which an adapter was found.
+params.internal_discard_trimmed = false
 
 //Discard reads in which no adapter was found. This has the same effect as specifying --untrimmed-output /dev/null.
-//params.internal_discard_untrimmed = true
+params.internal_discard_untrimmed = false
+
+//Instead of discarding the reads that are too short according to -m, write them to FILE (in FASTA/FASTQ format).
+params.internal_too_short_output = ''
+
+//Instead of discarding reads that are too long (according to -M), write them to FILE (in FASTA/FASTQ format).
+params.internal_too_long_output = ''
+
+//Write all reads without adapters to FILE (in FASTA/FASTQ format) instead of writing them to the regular output file.
+params.internal_untrimmed_output = ''
+
+//Discard reads with more than COUNT N bases. If COUNT_or_FRACTION is a number between 0 and 1, it is interpreted as a fraction of the read length
+params.internal_max_n_bases = 0
+
+//Discard reads with more than ERRORS expected errors. The number of expected errors is computed as described in Edgar et al. (2015), (Section 2.2).
+params.internal_max_expected_errors = 0
+
+//Discard reads that did not pass CASAVA filtering. Illumina’s CASAVA pipeline in version 1.8 adds an is_filtered header field to each read. 
+//Specifying this option, the reads that did not pass filtering (these are the reads that have a Y for is_filtered) will be discarded. Reads for which the header cannot be recognized are kept.
+params.internal_discard_casava = false
+
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 // Check if globals need to 
 nfUtils.check_internal_overrides(module_name, params)
@@ -154,9 +179,6 @@ process cutadapt {
     if (params.internal_min_quality > 0){
         cutadapt_args += "-q $params.internal_min_quality "
     }
-    if (params.internal_min_length > 0){
-        cutadapt_args += "-m $params.internal_min_length "
-    }
     if (params.internal_no_indels){
         cutadapt_args += "--no-indels "
     }
@@ -196,6 +218,39 @@ process cutadapt {
     if (params.internal_anchor_5_trim){
         cutadapt_args += "-g ^$params.internal_adapter_sequence "
     }
+
+    //Filtering params
+    if (params.internal_min_length > 0){
+        cutadapt_args += "-m $params.internal_min_length "
+    }
+    if (params.internal_max_length != 0){
+        cutadapt_args += "-M $params.internal_max_length "
+    }
+    if (params.internal_discard_trimmed){
+        cutadapt_args += "--discard-trimmed "
+    }
+    if (params.internal_discard_untrimmed){
+        cutadapt_args += "--discard-untrimmed "
+    }
+    if (params.internal_too_short_output != ''){
+        cutadapt_args += "--too-short-output $params.internal_too_short_output "
+    }
+    if (params.internal_too_long_output != ''){
+        cutadapt_args += "--too-long-output $params.internal_too_long_output "
+    }
+    if (params.internal_untrimmed_output != ''){
+        cutadapt_args += "--untrimmed-output $params.internal_untrimmed_output "
+    }
+    if (params.internal_max_n_bases != 0){
+        cutadapt_args += "--max-n $params.internal_max_n_bases "
+    }
+    if (params.internal_max_expected_errors != 0){
+        cutadapt_args += "--max-expected-errors $params.internal_max_expected_errors "
+    }
+    if (params.internal_discard_casava){
+        cutadapt_args += "--discard-casava $params.internal_discard_casava "
+    }
+
 
     /*if (params.internal_discard_untrimmed){
       cutadapt_args += "--discard-untrimmed $params.internal_discard_untrimmed "
