@@ -177,5 +177,4 @@ process cutadapt {
         -a ${params.internal_adapter_sequence} \
         -o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz $reads 
     """ 
-    echo !{$cutadapt_args}*/
 }
