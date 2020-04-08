@@ -3,10 +3,17 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// fastqc reusable component
+// Local default params
+params.outdir = './results'
+params.crosslinks_processname = 'crosslinks'
+
 process getcrosslinks {
+    label 'mid_memory'
+    publishDir "${params.outdir}/${params.crosslinks_processname}",
+        mode: "copy", overwrite: true
+
     input:
-      each bam
+      each path(bam)
       path fai
 
     output:
@@ -22,11 +29,3 @@ process getcrosslinks {
     cat pos.bed neg.bed | sort -k1,1 -k2,2n | pigz > ${bam.simpleName}.xl.bed.gz
     """
 }
-
-// workflow get_crosslinks {
-//     take: inputBam
-//     main:
-//       getcrosslinks(inputBam)
-//     emit:
-//       crosslinks.out
-// }

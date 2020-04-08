@@ -3,18 +3,22 @@
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-params.outdir = 'results'
+params.outdir = './results'
+params.cutadapt_processname = 'cutadapt'
 
 // Trimming reusable component
 process cutadapt {
-    publishDir "${params.outdir}/cutadapt",
+    label 'mid_memory'
+    publishDir "${params.outdir}/${params.cutadapt_processname}",
         mode: "copy", overwrite: true
 
     input:
-        tuple val(sample_id), path(reads)
+        //tuple val(sample_id), path(reads)
+        path(reads)
 
     output:
-        tuple val(sample_id), path("${reads.simpleName}.trimmed.fq.gz")
+        //tuple val(sample_id), path("${reads.simpleName}.trimmed.fq.gz")
+        path("${reads.simpleName}.trimmed.fq.gz")
 
     shell:
     """
