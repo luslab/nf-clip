@@ -12,6 +12,10 @@ nextflow.preview.dsl = 2
 
 // TODO check version of cutadapt in host process
 
+/*-----------------------------------------------------------------------------------------------------------------------------
+BASIC PARAMETERS
+-------------------------------------------------------------------------------------------------------------------------------*/
+
 // Define default nextflow internals
 params.internal_outdir = './results'
 params.internal_process_name = 'cutadapt'
@@ -23,14 +27,35 @@ params.internal_min_quality = 10
 To avoid issues with zero-length sequences, specify at least "-m 1" */
 params.internal_min_length = 16
 
-//Adapter sequence
-//Automatically removes 3' adapters if not specified otherwise
-//def myAdapters = []
-//myAdapters[0] = 'AGATCGGAAGAGC'
-params.internal_adapter_sequence = 'AGATCGGAAGAGC'
+//Changes the minimum overlap length for all parameters
+params.internal_min_overlap = 0
+
+//Determines the maximum error rate for a specific adaptor
+params.internal_max_error_rate = 0
 
 //Prefix to define the output file 
 params.internal_output_prefix = ''
+
+//Disallow insertions and deletions entirely
+params.internal_no_indels = false
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+ADAPTER SEQUENCES PARAMETERS
+-------------------------------------------------------------------------------------------------------------------------------*/
+//Single adapter sequence
+//Automatically removes 3' adapters if not specified otherwise
+params.internal_adapter_sequence = 'AGATCGGAAGAGC'
+
+//Multiple adapter sequences
+//def myAdapters = []
+//myAdapters[0] = 'AGATCGGAAGAGC'
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+SINGLE ADAPTER TRIMMING PARAMETERS
+-------------------------------------------------------------------------------------------------------------------------------*/
+// DEFAULT OPTION
+//Removes 3' adapters 
+params.internal_3_trim = true
 
 //Removes 5' adapters
 params.internal_5_trim = false
@@ -38,30 +63,38 @@ params.internal_5_trim = false
 //Can remove either 3' or 5' adapters
 params.internal_3_or_5_trim = false
 
-//Changes the minimum overlap length for all parameters
-params.internal_min_overlap = 0
+//Disallows internal matches for a 3’ adapter
+params.internal_non_intern_3_trim = false
 
-//Discards untrimmed reads
-params.internal_discard_untrimmed = false
+//Disallows internal matches for a 5' adapter
+params.internal_non_intern_5_trim = false
 
-/*//Determines the maximum error rate for a specific adaptor
-//params.internal_max_error_rate = 0
+//Anchors a 3' adapter to the end of the read
+params.internal_anchor_3_trim = false
 
-//Changes level of compression to 1
+//Anchors a 5' adapter to the end of the read
+params.internal_anchor_5_trim = false
+
+
+
+/*//Changes level of compression to 1
 params.internal_comp_level_to_1 = false
-
 
 //Provides the GC content (as percentage) of the reads
 params.internal_gc_content = false
-
-//Disallow insertions and deletions entirely
-params.internal_no_delete_no_insert = false
 
 //Unconditional base removal
 params.internal_cut = false 
 
 //Detailed information about where adapters were found in each read are written to the given file
-params.internal_info_file = false */
+//If the --times option is used and greater than 1, each read can appear more than once in the info file.
+params.internal_info_file = false 
+params.internal_info_file_times = 0 */
+
+
+
+//Discard reads in which no adapter was found. This has the same effect as specifying --untrimmed-output /dev/null.
+//params.internal_discard_untrimmed = true
 
 // Check if globals need to 
 nfUtils.check_internal_overrides(module_name, params)
@@ -86,21 +119,41 @@ process cutadapt {
     
     cutadapt_args = ''
 
+    if (params.internal_max_error_rate > 0){
+        cutadapt_args += "-e $params.internal_max_error_rate "
+    }
     if (params.internal_min_quality > 0){
         cutadapt_args += "-q $params.internal_min_quality "
     }
     if (params.internal_min_length > 0){
         cutadapt_args += "--minimum-length $params.internal_min_length "
     }
-    if (params.internal_adapter_sequence != null){
-        cutadapt_args += " -a $params.internal_adapter_sequence "
-        if (params.internal_5_trim){
-            cutadapt_args += "-g $params.internal_adapter_sequence "
-        }
-        if (params.internal_3_or_5_trim){
-            cutadapt_args += "-b $params.internal_adapter_sequence "
-        }
+    if (params.internal_3_trim){
+        cutadapt_args += "-a $params.internal_adapter_sequence "
     }
+    if (params.internal_5_trim){
+        cutadapt_args += "-g $params.internal_adapter_sequence "
+    }
+    if (params.internal_3_or_5_trim){
+        cutadapt_args += "-b $params.internal_adapter_sequence "
+    }
+    if (params.internal_non_intern_3_trim){
+       X = "X"
+        cutadapt_args += "-a $params.internal_adapter_sequence$X "
+    }
+    if (params.internal_non_intern_5_trim){
+        cutadapt_args += "-g X$params.internal_adapter_sequence "
+    }
+    if (params.internal_anchor_3_trim){
+        cutadapt_args += "-a $params.internal_adapter_sequence\$ "
+    }
+    if (params.internal_anchor_5_trim){
+        cutadapt_args += "-g ^$params.internal_adapter_sequence "
+    }
+    
+    /*if (params.internal_discard_untrimmed){
+      cutadapt_args += "--discard-untrimmed $params.internal_discard_untrimmed "
+    } */
     if (params.internal_output_prefix != null){
         cutadapt_args += "-o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "
     }
@@ -108,9 +161,12 @@ process cutadapt {
         cutadapt_args += "-0 ${params.internal_min_overlap} "
     }
     
+    // Displays the cutadapt command line (cutadapt_args) to check for mistakes
+    println cutadapt_args
 
     """
     cutadapt $cutadapt_args $reads
+    
     """
 
     /*"""
@@ -120,5 +176,6 @@ process cutadapt {
         --minimum-length ${params.internal_min_length} \
         -a ${params.internal_adapter_sequence} \
         -o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz $reads 
-    """ */
+    """ 
+    echo !{$cutadapt_args}*/
 }
