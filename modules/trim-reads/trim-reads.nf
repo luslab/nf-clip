@@ -8,6 +8,7 @@ params.cutadapt_processname = 'cutadapt'
 
 // Trimming reusable component
 process cutadapt {
+    label 'mid_memory'
     publishDir "${params.outdir}/${params.cutadapt_processname}",
         mode: "copy", overwrite: true
 

@@ -11,6 +11,7 @@ params.fastqc_processname = 'fastqc'
 process fastqc {
     publishDir "${params.outdir}/${params.fastqc_processname}",
         mode: "copy", overwrite: true
+    label 'mid_memory'
 
     input:
       path reads
