@@ -55,6 +55,6 @@ workflow {
     cutadapt2( ch_test_inputs2 )
 
     // Collect file names and view output
-    cutadapt.out | view 
-    cutadapt2.out | view
+    //cutadapt.out | view 
+    //cutadapt2.out | view
 }
