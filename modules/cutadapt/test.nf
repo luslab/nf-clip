@@ -9,7 +9,6 @@ log.info ("Starting Cutadapt trimming test pipeline")
 /* Define global params
 --------------------------------------------------------------------------------------*/
 
-//params.cutadapt_process_name = 'cutadapt_global'
 params.cutadapt_output_prefix = 'trimmed_'
 
 /* Module inclusions 
