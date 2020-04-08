@@ -1,18 +1,12 @@
 #!/usr/bin/env nextflow
 
-// Include NfUtils
-Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File("groovy/NfUtils.groovy"));
-GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
+// Specify DSL2
+nextflow.preview.dsl = 2
 
 // Define internal params
 module_name = 'cutadapt'
 
-// Specify DSL2
-nextflow.preview.dsl = 2
-
-// TODO check version of cutadapt in host process
-
-// Define default nextflow internals
+// Define default internals
 params.internal_outdir = './results'
 params.internal_process_name = 'cutadapt'
 params.internal_output_prefix = ''
@@ -20,8 +14,13 @@ params.internal_min_quality = 10
 params.internal_min_length = 16
 params.internal_adapter_sequence = 'AGATCGGAAGAGC'
 
+// TODO check version of cutadapt in host process
+
+// Module includes after param resolution
+include check_internal_overrides from "./submod/util.nf"
+
 // Check if globals need to 
-nfUtils.check_internal_overrides(module_name, params)
+check_internal_overrides(module_name, params)
 
 // Trimming reusable component
 process cutadapt {
