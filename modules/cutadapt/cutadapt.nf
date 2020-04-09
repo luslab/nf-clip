@@ -19,7 +19,12 @@ params.internal_process_name = 'cutadapt'
 //Prefix to define the output file 
 params.internal_output_prefix = ''
 
+
+
 /*-------------------------------------------------> CUTADAPT PARAMETERS <-----------------------------------------------------*/
+
+//Add custom arguments
+params.internal_custom_args = ''
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 REPORTING PARAMETERS
@@ -262,12 +267,11 @@ process cutadapt {
     
     
     
-    
     // Displays the cutadapt command line (cutadapt_args) to check for mistakes
     println cutadapt_args
 
     """
-    cutadapt $cutadapt_args $reads
+    cutadapt $internal_custom_args $cutadapt_args $reads
     """
 
     /*"""
