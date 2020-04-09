@@ -48,7 +48,7 @@ workflow {
         .from( params.input )
         .splitCsv(header:true)
         .println()
-    }
+    
         // .map { row -> [ row.sample_id, file(row.fastq) ] }
         // .set { ch_testData }
     // ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
