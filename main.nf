@@ -47,9 +47,8 @@ workflow {
     Channel
         .from( params.input )
         .splitCsv(header:true)
-        .println()
-    
-        // .map { row -> [ row.sample_id, file(row.fastq) ] }
+        .map { row -> [ row.sample_id, file(row.fastq) ] }
+        .view()
         // .set { ch_testData }
     // ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     // ch_starIndex = Channel.fromPath( params.star_index )
