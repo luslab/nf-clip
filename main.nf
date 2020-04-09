@@ -43,15 +43,8 @@ params.input = "$baseDir/test/data/metadata.csv"
 // Run workflow
 log.info luslabHeader()
 workflow {
-    // Create test data channel from all read files
 
-    // ch_testData = Channel.fromPath( params.reads )
-    // Channel
-    //     .fromPath( params.input )
-    //     .splitCsv(header:true)
-    //     .map { row -> file(row.fastq) }
-    //     // .map { row -> [ row.sample_id, [ file(row.fastq, checkIfExists: true) ] ] }
-    //     .set { ch_testData }
+    // Create channels for indices
     ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     ch_starIndex = Channel.fromPath( params.star_index )
     ch_genomeFai = Channel.fromPath( params.genome_fai )
