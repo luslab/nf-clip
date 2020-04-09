@@ -15,14 +15,14 @@ include multiqc from './multiqc.nf'
 /* Params
 --------------------------------------------------------------------------------------*/
 
-params.log_dir = "$baseDir/results/*.log"
+//params.log_dir = "$baseDir/results/*.log"
 
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
     // Create test data channel from log files
-    ch_testData = Channel.fromPath( params.log_dir )
+    ch_testData = Channel.fromPath( "test" )
 
     // Run multiqc
     multiqc ( ch_testData )
