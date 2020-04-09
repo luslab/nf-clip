@@ -26,6 +26,7 @@ process merge_pairId_bam {
 process dedup {
     publishDir "${params.outdir}/${params.dedup_processname}",
         mode: "copy", overwrite: true
+    label 'mid_memory'
 
     input:
       tuple val(pairId), path(bam), path(bai)  

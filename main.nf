@@ -18,7 +18,7 @@ nextflow.preview.dsl=2
 include luslabHeader from './modules/overhead/overhead'
 include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'pre_fastqc') 
 include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
-include cutadapt from './modules/trim-reads/trim-reads.nf'
+include cutadapt from './modules/cutadapt/cutadapt.nf'
 include bowtie_rrna from './modules/pre-map/pre-map.nf'
 include star as genomemap from './modules/genome-map/genome-map.nf'
 include sambamba from './modules/genome-map/genome-map.nf'
@@ -32,11 +32,11 @@ include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslin
 /* Params
 --------------------------------------------------------------------------------------*/
 
-params.reads = "$baseDir/test/data/reads/*.fq.gz"
-params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
-params.star_index = "$baseDir/test/data/reduced_star_index"
-params.genome_fai = "$baseDir/test/data/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
-params.results = "$baseDir/test/data/results"
+//params.reads = "$baseDir/test/data/reads/*.fq.gz"
+//params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
+//params.star_index = "$baseDir/test/data/reduced_star_index"
+//params.genome_fai = "$baseDir/test/data/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
+//params.results = "$baseDir/test/data/results"
 
 /*------------------------------------------------------------------------------------*/
 
