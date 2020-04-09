@@ -23,8 +23,47 @@ params.internal_output_prefix = ''
 
 /*-------------------------------------------------> CUTADAPT PARAMETERS <-----------------------------------------------------*/
 
+/*-----------------------------------------------------------------------------------------------------------------------------
+CUSTOM PARAMETERS
+-------------------------------------------------------------------------------------------------------------------------------*/
+
 //Add custom arguments
-params.internal_custom_args = ''
+//Copy-paste the desired option in the empty brackets, it will automatically be added to the process.
+
+//Action parameters -> Instead of removing an adapter from a read, it is also possible to take other actions when an adapter is found by specifying the --action option.
+//Options -> '--action=trim', '--action=none', '--action=mask', '--action=lowercase'
+params.internal_action_args = ''
+
+//Paired-end reads filtering
+//The --pair-filter option determines how to combine the filters for R1 and R2 into a single decision about the read pair.
+//When dealing with paired-end files, the filtering is set to '--pair-filter=any' by default
+//Options -> '--pair-filter', '--pair-filter=any', '--pair-filter=both', '--pair-filter=first'
+params.internal_paired_end_filter_args = ''
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+ADAPTER SEQUENCES PARAMETERS
+-------------------------------------------------------------------------------------------------------------------------------*/
+//Single adapter sequence
+//Automatically removes 3' adapters if not specified otherwise
+params.internal_adapter_sequence = 'AGATCGGAAGAGC'
+
+//Multiple adapter sequences
+//Type the name of the FASTA file that contains the adapter sequences (file format -> name.fasta)
+params.internal_multiple_adapters = false
+params.internal_multi_adapt_fasta = ''
+
+//Multiple adapter trimming options
+params.internal_3_trim_multiple = false
+params.internal_5_trim_multiple = false
+params.internal_3_or_5_trim_multiple = false
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+PAIRED-END READS PARAMETERS
+-------------------------------------------------------------------------------------------------------------------------------*/
+
+//Activate paired-end mode
+params.internal_paired_end_mode = false 
+
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 REPORTING PARAMETERS
@@ -49,7 +88,7 @@ BASIC PARAMETERS
 params.internal_min_quality = 10
 
 //Disallow insertions and deletions entirely
-params.internal_no_indels = true
+params.internal_no_indels = false
 
 //Determines the maximum error rate for a specific adaptor
 params.internal_max_error_rate = 0
@@ -64,17 +103,6 @@ params.internal_cut = 0
 // ONLY AVAILABLE IN VERSION 2.8 AND ON SINGLE-END DATA
 //Cutadapt searches both the read and its reverse complement for adapters
 //params.internal_rev_comp = true
-
-/*-----------------------------------------------------------------------------------------------------------------------------
-ADAPTER SEQUENCES PARAMETERS
--------------------------------------------------------------------------------------------------------------------------------*/
-//Single adapter sequence
-//Automatically removes 3' adapters if not specified otherwise
-params.internal_adapter_sequence = 'AGATCGGAAGAGC'
-
-//Multiple adapter sequences
-//def myAdapters = []
-//myAdapters[0] = 'AGATCGGAAGAGC'
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 SINGLE ADAPTER TRIMMING PARAMETERS
@@ -168,7 +196,11 @@ process cutadapt {
 
     shell:
     
-    cutadapt_args = ''
+    //Combining the custom arguments and creating cutadapt args
+    internal_default_paired_end_args = ''
+    internal_custom_args = "$params.internal_action_args$params.internal_paired_end_filter_args"
+    cutadapt_args = "$internal_custom_args "
+    
 
     //Report types if-statements
     if (params.internal_quiet){
@@ -203,30 +235,45 @@ process cutadapt {
     /*if (params.internal_rev_comp){
         cutadapt_args += "--rc "
     } */
-    
-    //Adapter trimming if-statements
-    if (params.internal_3_trim){
-        cutadapt_args += "-a $params.internal_adapter_sequence "
-    }
-    if (params.internal_5_trim){
-        cutadapt_args += "-g $params.internal_adapter_sequence "
-    }
-    if (params.internal_3_or_5_trim){
-        cutadapt_args += "-b $params.internal_adapter_sequence "
-    }
-    if (params.internal_non_intern_3_trim){
-       X = "X"
-        cutadapt_args += "-a $params.internal_adapter_sequence$X "
-    }
-    if (params.internal_non_intern_5_trim){
-        cutadapt_args += "-g X$params.internal_adapter_sequence "
-    }
-    if (params.internal_anchor_3_trim){
-        cutadapt_args += "-a $params.internal_adapter_sequence\$ "
-    }
-    if (params.internal_anchor_5_trim){
-        cutadapt_args += "-g ^$params.internal_adapter_sequence "
-    }
+
+    //Determines if there a single or multiple adapters
+    if (params.internal_multiple_adapters == false){
+        //Adapter trimming if-statements
+        if (params.internal_3_trim){
+            cutadapt_args += "-a $params.internal_adapter_sequence "
+        }
+        if (params.internal_5_trim){
+            cutadapt_args += "-g $params.internal_adapter_sequence "
+        }
+        if (params.internal_3_or_5_trim){
+            cutadapt_args += "-b $params.internal_adapter_sequence "
+        }
+        if (params.internal_non_intern_3_trim){
+        X = "X"
+            cutadapt_args += "-a $params.internal_adapter_sequence$X "
+        }
+        if (params.internal_non_intern_5_trim){
+            cutadapt_args += "-g X$params.internal_adapter_sequence "
+        }
+        if (params.internal_anchor_3_trim){
+            cutadapt_args += "-a $params.internal_adapter_sequence\$ "
+        }
+        if (params.internal_anchor_5_trim){
+            cutadapt_args += "-g ^$params.internal_adapter_sequence "
+        }
+    }else {
+        if (params.internal_3_trim_multiple){
+            cutadapt_args += "-a file:$params.internal_multi_adapt_fasta "
+        }
+        if (params.internal_5_trim_multiple){
+            cutadapt_args += "-g file:$params.internal_multi_adapt_fasta "
+        }
+        if (params.internal_3_or_5_trim_multiple){
+            cutadapt_args += "-b file:$params.internal_multi_adapt_fasta "
+        }
+    } 
+    //TODO: include trimming options: non-internal and anchored adapters for -a and -g in multiple adapters
+
 
     //Filtering params
     if (params.internal_min_length > 0){
@@ -260,10 +307,16 @@ process cutadapt {
         cutadapt_args += "--discard-casava $params.internal_discard_casava "
     }
 
-
+    //Outputs and inputs
     if (params.internal_output_prefix != null){
         cutadapt_args += "-o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "   
     }
+
+    //Paired-end mode -> determining paired output + inputs (forward and reverse)
+    if (params.internal_paired_end_mode){
+        internal_default_paired_end_args += "-p ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "
+    }
+    
     
     
     
@@ -271,7 +324,7 @@ process cutadapt {
     println cutadapt_args
 
     """
-    cutadapt $internal_custom_args $cutadapt_args $reads
+    cutadapt $cutadapt_args $reads
     """
 
     /*"""
