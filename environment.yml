@@ -19,4 +19,5 @@ dependencies:
   - ucsc-bedsort=377
   - sambamba=0.7.1
   - samtools=1.9
+  - multiqc=1.8
   #- ucsc-bedgraphtobigwig=377
