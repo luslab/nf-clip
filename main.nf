@@ -63,13 +63,17 @@ workflow {
     sambamba ( genomemap.out.bamFiles )
     // Renaming to .bai files
     rename_files ( sambamba.out.baiFiles, genomemap.out.bamFiles )
-    // Merging bam and bai
-    merge_pairId_bam ( genomemap.out.bamFiles, rename_files.out.renamedBaiFiles,  genomemap.out.pairId )
-    // PCR duplicate removal (optional)
-    dedup( merge_pairId_bam.out.bamPair.join(merge_pairId_bam.out.baiPair) )
-    // get crosslinks from bam
-    getcrosslinks( dedup.out.dedupBam, ch_genomeFai )
-   // getcrosslinks( genomemap.out.bamFiles, ch_genomeFai )
+    if ( params.umidedup ) {
+        // Merging bam and bai
+        merge_pairId_bam ( genomemap.out.bamFiles, rename_files.out.renamedBaiFiles,  genomemap.out.pairId )
+        // PCR duplicate removal (optional)
+        dedup( merge_pairId_bam.out.bamPair.join(merge_pairId_bam.out.baiPair) )
+        // get crosslinks from bam
+        getcrosslinks( dedup.out.dedupBam, ch_genomeFai )
+    } else {
+        // get crosslinks from bam
+        getcrosslinks( genomemap.out.bamFiles, ch_genomeFai )
+    }
     // normalise crosslinks + get bedgraph files
     getcrosslinkcoverage( getcrosslinks.out)
 }
