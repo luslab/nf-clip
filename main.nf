@@ -28,7 +28,7 @@ include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslin
 /* Params
 --------------------------------------------------------------------------------------*/
 
-// params.input = "$baseDir/test/data/metadata.csv"
+params.input = "$baseDir/test/data/metadata.csv"
 
 //params.reads = "$baseDir/test/data/reads/*.fq.gz"
 //params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
@@ -43,12 +43,12 @@ log.info luslabHeader()
 workflow {
     // Create test data channel from all read files
 
-    ch_testData = Channel.fromPath( params.reads )
-    // Channel
-    //     .from( params.input )
-    //     .splitCsv(header:true)
-    //     .map { row -> [ row.sample_id, file(row.fastq) ] }
-    //     .into { ch_testData }
+    // ch_testData = Channel.fromPath( params.reads )
+    Channel
+        .from( params.input )
+        .splitCsv(header:true)
+        .map { row -> [ row.sample_id, file(row.fastq) ] }
+        .into { ch_testData }
     ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     ch_starIndex = Channel.fromPath( params.star_index )
     ch_genomeFai = Channel.fromPath( params.genome_fai )
