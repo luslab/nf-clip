@@ -271,7 +271,7 @@ process cutadapt {
     println cutadapt_args
 
     """
-    cutadapt $internal_custom_args $cutadapt_args $reads
+    cutadapt $cutadapt_args $reads
     """
 
     /*"""
