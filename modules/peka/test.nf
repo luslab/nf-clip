@@ -9,24 +9,26 @@ log.info ("Starting test pipeline for fastqc")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include fastqc from './pre-fastqc.nf'
+include peka from './peka.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
 --------------------------------------------------------------------------------------*/
 
-params.reads = "$baseDir/input/*.fq.gz"
+params.inputDir = "$baseDir/input"
 
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
     // Create test data channel from all read files
-    ch_testData = Channel.fromPath( params.reads )
 
+    ch_testpeak = Channel.fromFilePairs( params.inputDir + "/*.{xl.bed.gz,xl_peaks.bed.gz}", flat: true)
+    //ch_testpeak = Channel.fromPath(params.inputDir +"/*.{xl.bed.gz, xl_peaks.bed.gz}").view()
     // Run fastqc
-    fastqc( ch_testData )
+    peka( ch_testpeak)
 
     // Collect file names and view output
-    fastqc.out.collect() | view
+    peka.out.collect() | view
+    
 }
