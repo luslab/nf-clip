@@ -11,3 +11,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends procps=2:3.3.15
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/luslab-clip-0.1/bin:$PATH
+
+COPY bin /usr/bin
