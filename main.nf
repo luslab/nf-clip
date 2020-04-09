@@ -16,6 +16,7 @@ nextflow.preview.dsl=2
 --------------------------------------------------------------------------------------*/
 
 include luslabHeader from './modules/overhead/overhead'
+include metadata from './modules/metadata/metadata.nf'
 include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'pre_fastqc') 
 include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
@@ -45,20 +46,23 @@ workflow {
     // Create test data channel from all read files
 
     // ch_testData = Channel.fromPath( params.reads )
-    Channel
-        .fromPath( params.input )
-        .splitCsv(header:true)
-        .map { row -> file(row.fastq) }
-        // .map { row -> [ row.sample_id, [ file(row.fastq, checkIfExists: true) ] ] }
-        .set { ch_testData }
+    // Channel
+    //     .fromPath( params.input )
+    //     .splitCsv(header:true)
+    //     .map { row -> file(row.fastq) }
+    //     // .map { row -> [ row.sample_id, [ file(row.fastq, checkIfExists: true) ] ] }
+    //     .set { ch_testData }
     ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     ch_starIndex = Channel.fromPath( params.star_index )
     ch_genomeFai = Channel.fromPath( params.genome_fai )
 
+    // Get fastq paths 
+    metadata( params.input )
+
     // Run fastqc
-    prefastqc( ch_testData )
+    prefastqc( metadata.out )
     //Run read trimming
-    cutadapt( ch_testData )
+    cutadapt( metadata.out )
     // Run post-trim fastqc
     postfastqc( cutadapt.out )
     // pre-map to rRNA and tRNA
