@@ -47,26 +47,29 @@ workflow {
     Channel
         .from( params.input )
         .splitCsv(header:true)
-        .map { row -> [ row.sample_id, file(row.fastq) ] }
-        .into { ch_testData }
-    ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
-    ch_starIndex = Channel.fromPath( params.star_index )
-    ch_genomeFai = Channel.fromPath( params.genome_fai )
+        .subscribe { row ->
+        println "${row.sample_id} - ${row.fastq}"
+    }
+        // .map { row -> [ row.sample_id, file(row.fastq) ] }
+        // .set { ch_testData }
+    // ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
+    // ch_starIndex = Channel.fromPath( params.star_index )
+    // ch_genomeFai = Channel.fromPath( params.genome_fai )
 
-    // Run fastqc
-    prefastqc( ch_testData )
-    //Run read trimming
-    cutadapt( ch_testData )
-    // Run post-trim fastqc
-    postfastqc( cutadapt.out )
-    // pre-map to rRNA and tRNA
-    bowtie_rrna( cutadapt.out, ch_bowtieIndex )
-    // map unmapped reads to the genome
-    genomemap( bowtie_rrna.out.unmappedFq, ch_starIndex )
-    // get crosslinks from bam
-    getcrosslinks( genomemap.out.bamFiles, ch_genomeFai )
-    // normalise crosslinks + get bedgraph files
-    getcrosslinkcoverage( getcrosslinks.out)
+    // // Run fastqc
+    // prefastqc( ch_testData )
+    // //Run read trimming
+    // cutadapt( ch_testData )
+    // // Run post-trim fastqc
+    // postfastqc( cutadapt.out )
+    // // pre-map to rRNA and tRNA
+    // bowtie_rrna( cutadapt.out, ch_bowtieIndex )
+    // // map unmapped reads to the genome
+    // genomemap( bowtie_rrna.out.unmappedFq, ch_starIndex )
+    // // get crosslinks from bam
+    // getcrosslinks( genomemap.out.bamFiles, ch_genomeFai )
+    // // normalise crosslinks + get bedgraph files
+    // getcrosslinkcoverage( getcrosslinks.out)
 }
 
 workflow.onComplete {
