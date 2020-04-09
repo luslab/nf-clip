@@ -51,9 +51,9 @@ workflow {
         .map { row -> file(row.fastq) }
         // .map { row -> [ row.sample_id, [ file(row.fastq, checkIfExists: true) ] ] }
         .set { ch_testData }
-    // ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
-    // ch_starIndex = Channel.fromPath( params.star_index )
-    // ch_genomeFai = Channel.fromPath( params.genome_fai )
+    ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
+    ch_starIndex = Channel.fromPath( params.star_index )
+    ch_genomeFai = Channel.fromPath( params.genome_fai )
 
     // Run fastqc
     prefastqc( ch_testData )
