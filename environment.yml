@@ -20,4 +20,5 @@ dependencies:
   - sambamba=0.7.1
   - samtools=1.9
   - pandas=0.24.2
+  - multiqc=1.8
   #- ucsc-bedgraphtobigwig=377
