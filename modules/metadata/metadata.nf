@@ -1,8 +1,8 @@
 workflow metadata {
-    take: params.input
+    take: csv
     main:
         Channel
-            .fromPath( params.input )
+            .fromPath( csv )
             .splitCsv(header:true)
             .map { row -> file(row.fastq) }
             // .map { row -> [ row.sample_id, [ file(row.fastq, checkIfExists: true) ] ] }
