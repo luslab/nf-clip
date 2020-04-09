@@ -14,27 +14,33 @@ params.paraclu_min_density_increase = 2
 process paraclu {
     publishDir "${params.outdir}/${params.paraclu_processname}",
         mode: "copy", overwrite: true
-    label 'mid_memory'
+    label 'low_memory'
 
     input:
-      path crosslinks
+      each file(crosslinks)
 
     output:
       file "*_peaks.bed.gz"
 
     script:
     """
-    !/usr/bin/env python
+    #!/usr/bin/env python
 
-    import pandas
+    import pandas as pd
     from subprocess import call
+    import sys
+    import os
 
-    file_in = $crosslinks
-    sample_name = file_in.split('/')[-1]
-    if sample_name.endswith('.gz'):
-      file_out = sample_name.replace('.bed', '_peaks.bed')
+    file_in = "${crosslinks}"
+    print(file_in)
+    #file_in_name = file_in.name
+    #print(file_in_name)
+
+    if file_in.endswith('.gz'):
+      file_out = file_in.replace('.bed', '_peaks.bed')
     else:
-      file_out = sample_name.replace('.bed', '_peaks.bed.gz')
+      file_out = file_in.replace('.bed', '_peaks.bed.gz')
+    
     df_in = pd.read_csv(file_in,
                         names = ["chrom", "start", "end", "name", "score", "strand"],
                         header=None, sep='\t')
@@ -43,8 +49,8 @@ process paraclu {
 
     df_out.sort_values(['chrom', 'strand', 'start'], ascending=[True, True, True], inplace=True)
 
-    paraclu_input = sample_name + '.paraclu_input'
-    paraclu_output = sample_name + '.paraclu_output'
+    paraclu_input = file_in + '.paraclu_input'
+    paraclu_output = file_in + '.paraclu_output'
 
     df_out.to_csv(paraclu_input, sep='\t', header=None, index=None)
 
