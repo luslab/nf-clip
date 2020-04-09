@@ -29,6 +29,7 @@ include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslin
 --------------------------------------------------------------------------------------*/
 
 params.input = "$baseDir/test/data/metadata.csv"
+// params.input = "metadata.csv"
 
 //params.reads = "$baseDir/test/data/reads/*.fq.gz"
 //params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
@@ -45,17 +46,17 @@ workflow {
 
     // ch_testData = Channel.fromPath( params.reads )
     Channel
-        .from( params.input )
+        .fromPath( params.input )
         .splitCsv(header:true)
-        .map { row -> [ row.sample_id, file(row.fastq) ] }
+        .map { row -> file(row.fastq) }
+        .set(ch_testData)
         .view()
-        // .set { ch_testData }
     // ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     // ch_starIndex = Channel.fromPath( params.star_index )
     // ch_genomeFai = Channel.fromPath( params.genome_fai )
 
-    // // Run fastqc
-    // prefastqc( ch_testData )
+    // Run fastqc
+    prefastqc( ch_testData )
     // //Run read trimming
     // cutadapt( ch_testData )
     // // Run post-trim fastqc
