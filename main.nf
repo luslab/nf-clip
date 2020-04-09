@@ -18,7 +18,7 @@ nextflow.preview.dsl=2
 include luslabHeader from './modules/overhead/overhead'
 include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'pre_fastqc') 
 include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
-include cutadapt from './modules/trim-reads/trim-reads.nf'
+include cutadapt from './modules/trim-reads/cutadapt.nf'
 include bowtie_rrna from './modules/pre-map/pre-map.nf'
 include star as genomemap from './modules/genome-map/genome-map.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
