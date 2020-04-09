@@ -48,9 +48,9 @@ workflow {
     Channel
         .fromPath( params.input )
         .splitCsv(header:true)
-        .map { row -> [ file(row.fastq) ] }
+        .map { row -> file(row.fastq) }
         // .map { row -> [ row.sample_id, [ file(row.fastq_1, checkIfExists: true) ] ] }
-        .into( ch_testData )
+        .set { ch_testData }
     // ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     // ch_starIndex = Channel.fromPath( params.star_index )
     // ch_genomeFai = Channel.fromPath( params.genome_fai )
