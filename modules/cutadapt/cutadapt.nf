@@ -54,7 +54,7 @@ params.internal_min_overlap = 0
 
 /*Unconditionally removes bases from the beginning or end of each read. If the given length is positive,
 the bases are removed from the beginning of each read. If it is negative, the bases are removed from the end.*/
-params.internal_cut = 7
+params.internal_cut = 0
 
 // ONLY AVAILABLE IN VERSION 2.8 AND ON SINGLE-END DATA
 //Cutadapt searches both the read and its reverse complement for adapters
@@ -133,6 +133,12 @@ params.internal_max_expected_errors = 0
 //Specifying this option, the reads that did not pass filtering (these are the reads that have a Y for is_filtered) will be discarded. Reads for which the header cannot be recognized are kept.
 params.internal_discard_casava = false
 
+/*-----------------------------------------------------------------------------------------------------------------------------
+PAIRED-END READS TRIMMING PARAMETERS
+-------------------------------------------------------------------------------------------------------------------------------*/
+
+//Enables trimming of paired-end readings 
+params.internal_paired_end_readings = false
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -250,12 +256,11 @@ process cutadapt {
     }
 
 
-    /*if (params.internal_discard_untrimmed){
-      cutadapt_args += "--discard-untrimmed $params.internal_discard_untrimmed "
-    } */
     if (params.internal_output_prefix != null){
-        cutadapt_args += "-o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "
+        cutadapt_args += "-o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "   
     }
+    
+    
     
     
     // Displays the cutadapt command line (cutadapt_args) to check for mistakes
@@ -263,7 +268,6 @@ process cutadapt {
 
     """
     cutadapt $cutadapt_args $reads
-    
     """
 
     /*"""
