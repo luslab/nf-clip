@@ -47,8 +47,7 @@ workflow {
     Channel
         .from( params.input )
         .splitCsv(header:true)
-        .subscribe { row ->
-        println "${row.sample_id} - ${row.fastq}"
+        .println()
     }
         // .map { row -> [ row.sample_id, file(row.fastq) ] }
         // .set { ch_testData }
