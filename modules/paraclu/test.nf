@@ -4,29 +4,29 @@
 nextflow.preview.dsl=2
 
 // Log
-log.info ("Starting test pipeline for fastqc")
+log.info ("Starting test pipeline for paraclu")
 
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include fastqc from './pre-fastqc.nf'
+include paraclu from './paraclu.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
 --------------------------------------------------------------------------------------*/
 
-params.reads = "$baseDir/input/*.fq.gz"
+params.crosslinks = "$baseDir/input/*.bed.gz"
 
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
     // Create test data channel from all read files
-    ch_testData = Channel.fromPath( params.reads )
+    ch_testData = Channel.fromPath( params.crosslinks )
 
-    // Run fastqc
-    fastqc( ch_testData )
+    // Run paraclu
+    paraclu( ch_testData )
 
     // Collect file names and view output
-    fastqc.out.collect() | view
+    paraclu.out.collect() | view
 }
