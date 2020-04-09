@@ -23,6 +23,7 @@ include bowtie_rrna from './modules/pre-map/pre-map.nf'
 include star as genomemap from './modules/genome-map/genome-map.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
 include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslink-coverage.nf'
+include multiqc from './modules/multiqc/multiqc.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
@@ -55,11 +56,24 @@ workflow {
     bowtie_rrna( cutadapt.out, ch_bowtieIndex )
     // map unmapped reads to the genome
     genomemap( bowtie_rrna.out.unmappedFq, ch_starIndex )
-    // get crosslinks from bam
+    // get crosslinks from bams
     getcrosslinks( genomemap.out.bamFiles, ch_genomeFai )
     // normalise crosslinks + get bedgraph files
     getcrosslinkcoverage( getcrosslinks.out)
+    
+    ch_multiqc_input = prefastqc.out.report.mix(
+    //    cutadapt.out.report,
+        postfastqc.out.report
+      //  bowtie_rrna.out.report
+       // genomemap.out.report,
+        //getcrosslinks.out.report,
+        //getcrosslinkcoverage.out.report
+    ).collect()
+
+
+    multiqc(ch_multiqc_input)
 }
+
 
 workflow.onComplete {
     log.info "\nPipeline complete!\n"
