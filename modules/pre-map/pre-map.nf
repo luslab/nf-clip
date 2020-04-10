@@ -8,6 +8,7 @@ params.outdir = './results'
 params.bowtie_rrna_processname = 'bowtie_rrna'
 
 process bowtie_rrna {
+    label 'mid_memory'
     publishDir "${params.outdir}/${params.bowtie_rrna_processname}",
         mode: "copy", overwrite: true
 
