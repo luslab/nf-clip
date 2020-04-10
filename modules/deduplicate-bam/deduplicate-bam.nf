@@ -7,16 +7,33 @@ nextflow.preview.dsl = 2
 params.outdir = './results'
 params.dedup_processname = 'dedup'
 
+//merging channels
+process merge_pairId_bam {
+  input:
+    path(bam)
+    path(bai)
+    val pairId
+
+  output:
+    tuple val(pairId), path(bam), emit: bamPair
+    tuple val(pairId), path(bai), emit: baiPair
+
+  script:
+  """
+  """
+}
 // dedup reusable component
 process dedup {
     publishDir "${params.outdir}/${params.dedup_processname}",
         mode: "copy", overwrite: true
+    label 'mid_memory'
 
     input:
-      tuple val(pairId), path(bai), path(bam)
-
+      tuple val(pairId), path(bam), path(bai)  
+       
     output:
-      tuple path("*.dedup.bam"), path("*_edit_distance.tsv")
+      path "*.dedup.bam", emit: dedupBam
+      path "*_edit_distance.tsv", emit: editDist
 
     script:
     """

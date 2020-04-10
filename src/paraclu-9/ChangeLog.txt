@@ -1,0 +1,56 @@
+2012-12-14  Martin C. Frith  <Martin C. Frith>
+
+	* README.txt, paraclu-cut.sh:
+	! New version of paraclu-cut: use its -s option to get the old
+	behaviour
+	[c1086ad752b4] [tip]
+
+2012-09-03  Martin C. Frith  <Martin C. Frith>
+
+	* README.txt:
+	Clarified the minValue parameter in the README
+	[77214c740db7]
+
+2012-08-09  Martin C. Frith  <Martin C. Frith>
+
+	* README.txt:
+	Made the README convertible to a manpage by pandoc (thanks: Charles
+	Plessy)
+	[27f84a76abc0]
+
+2012-08-08  Martin C. Frith  <Martin C. Frith>
+
+	* Makefile:
+	Generalized the Makefile a bit
+	[77cfa417a78a]
+
+2011-11-02  Martin C. Frith  <Martin C. Frith>
+
+	* Makefile:
+	Made the Makefile more flexible (thanks: Charles Plessy)
+	[4e9b8fb9d6b0]
+
+2011-08-16  Martin C. Frith  <Martin C. Frith>
+
+	* README.txt, paraclu.cc:
+	Try to make the C++ strictly correct and portable
+	[cf2ffcee14a7]
+
+	* ctss-merge.sh:
+	Removed a too-specialized script
+	[efcdfe3977b0]
+
+	* COPYING.txt, Makefile, README.txt, paraclu-cut.sh:
+	Modified the package for public distribution
+	[1d012dc9bd10]
+
+2011-02-08  Martin C. Frith  <Martin C. Frith>
+
+	* README.txt:
+	Simplified the README
+	[4f75340f8a78]
+
+	* Makefile, README.txt, ctss-merge.sh, paraclu-cut.sh, paraclu.cc:
+	Start using version control
+	[55b4fd7f6316]
+
