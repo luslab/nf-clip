@@ -25,6 +25,6 @@ jobs:
         run: |
           docker pull luslab/nextflow-clip:dev
 
-      - name: Run module tests
+      - name: Run test pipeline
         run: |
           nextflow run ${GITHUB_WORKSPACE}/main.nf -profile github,test
