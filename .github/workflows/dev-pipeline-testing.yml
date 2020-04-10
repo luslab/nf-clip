@@ -5,7 +5,7 @@ on:
     branches: [ dev ]
 
 jobs:
-  test-modules:
+  test-pipeline-small-data:
     runs-on: ubuntu-latest
     strategy:
       matrix:
