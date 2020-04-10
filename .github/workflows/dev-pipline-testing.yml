@@ -27,4 +27,4 @@ jobs:
 
       - name: Run module tests
         run: |
-          nextflow run ${GITHUB_WORKSPACE}main.nf -profile docker,test
+          nextflow run ${GITHUB_WORKSPACE}/main.nf -profile docker,test
