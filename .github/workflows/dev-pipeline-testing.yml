@@ -5,6 +5,14 @@ on:
     branches: [ dev ]
 
 jobs:
+  test-build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build dev image
+        run: |
+          docker build ${GITHUB_WORKSPACE}
+
   test-pipeline-small-data:
     runs-on: ubuntu-latest
     strategy:
