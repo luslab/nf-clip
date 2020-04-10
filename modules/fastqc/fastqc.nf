@@ -9,15 +9,14 @@ params.fastqc_processname = 'fastqc'
 
 // fastqc reusable component
 process fastqc {
-    publishDir "${params.outdir}/${params.fastqc_processname}",
-        mode: "copy", overwrite: true
-    label 'mid_memory'
+  publishDir "${params.outdir}/${params.fastqc_processname}",
+    mode: "copy", overwrite: true
 
     input:
       path reads
 
     output:
-      file "*_fastqc.{zip,html}"
+      path "*_fastqc.{zip,html}", emit: report
 
     script:
     """
