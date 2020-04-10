@@ -1,4 +1,4 @@
-name: dev-pr
+name: dev-pr-module-test
 
 on:
 #  pull_request:
