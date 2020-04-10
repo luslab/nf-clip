@@ -1,8 +1,8 @@
 name: module-testing
 
 on:
-#  pull_request:
-#    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
   push:
     branches: [ workflow-testing ]
 
@@ -29,8 +29,8 @@ jobs:
 
       - name: Run module tests
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/trim-reads/test.nf -c conf/module-test.config
+          nextflow run ${GITHUB_WORKSPACE}/modules/cutadapt/test.nf -profile moduletest,github
       
       - name: Verify trim-read output
         run: |
-          ./test/scripts/verify-checksum.sh "modules/trim-reads/output/*.gz" "results/cutadapt/*.gz"
+          ./test/scripts/verify-checksum.sh "modules/cutadapt/output/*.gz" "results/cutadapt/*.gz"
