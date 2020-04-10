@@ -1,8 +1,10 @@
-name: master-pr
+name: dev-pr
 
 on:
   pull_request:
-    branches: [ master ]
+    branches:
+      - dev
+      - master
 
 jobs:
   lint-docker:
