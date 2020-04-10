@@ -1,15 +1,17 @@
-name: dev-pr
+name: module-testing
 
 on:
-  pull_request:
-    branches: [ dev ]
+#  pull_request:
+#    branches: [ dev ]
+  push:
+    branches: [ workflow-testing ]
 
 jobs:
   test-modules:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        nxf_ver: ['19.10.0', '']
+        nxf_ver: ['20.01.0', '']
         #aligner: ["--aligner 'hisat2'", "--aligner 'star'", "--pseudo_aligner 'salmon'"]
         #options: ['--skipQC', '--remove_rRNA', '--saveUnaligned', '--skipTrimming', '--star_index false']
     steps:

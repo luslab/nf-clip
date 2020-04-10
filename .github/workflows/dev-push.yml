@@ -6,7 +6,7 @@ on:
     branches: [ dev ]
 
 jobs:
-  build-docker:
+  build-push-docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
