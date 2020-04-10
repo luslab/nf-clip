@@ -1,4 +1,4 @@
-name: dev-pr
+name: dev-pipeline-testing
 
 on:
 #  pull_request:
@@ -12,8 +12,6 @@ jobs:
     strategy:
       matrix:
         nxf_ver: ['20.01.0', '']
-        #aligner: ["--aligner 'hisat2'", "--aligner 'star'", "--pseudo_aligner 'salmon'"]
-        #options: ['--skipQC', '--remove_rRNA', '--saveUnaligned', '--skipTrimming', '--star_index false']
     steps:
       - uses: actions/checkout@v2
 
@@ -29,8 +27,4 @@ jobs:
 
       - name: Run module tests
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/trim-reads/test.nf -c conf/module-test.config
-      
-      - name: Verify trim-read output
-        run: |
-          ./test/scripts/verify-checksum.sh "modules/trim-reads/output/*.gz" "results/cutadapt/*.gz"
+          nextflow run ${GITHUB_WORKSPACE}main.nf -profile docker,test

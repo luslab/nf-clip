@@ -1,4 +1,4 @@
-name: dev-pr
+name: linting
 
 on:
   pull_request:
