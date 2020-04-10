@@ -29,7 +29,7 @@ jobs:
 
       - name: Run module tests
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/cutadapt/test.nf -profile moduletest
+          nextflow run ${GITHUB_WORKSPACE}/modules/cutadapt/test.nf -profile moduletest,github
       
       - name: Verify trim-read output
         run: |
