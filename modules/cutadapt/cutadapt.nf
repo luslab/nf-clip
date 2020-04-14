@@ -27,18 +27,8 @@ params.internal_output_prefix = ''
 CUSTOM PARAMETERS
 -------------------------------------------------------------------------------------------------------------------------------*/
 
-//Add custom arguments
-//Copy-paste the desired option in the empty brackets, it will automatically be added to the process.
-
-//Action parameters -> Instead of removing an adapter from a read, it is also possible to take other actions when an adapter is found by specifying the --action option.
-//Options -> '--action=trim', '--action=none', '--action=mask', '--action=lowercase'
-params.internal_action_args = ''
-
-//Paired-end reads filtering
-//The --pair-filter option determines how to combine the filters for R1 and R2 into a single decision about the read pair.
-//When dealing with paired-end files, the filtering is set to '--pair-filter=any' by default
-//Options -> '--pair-filter', '--pair-filter=any', '--pair-filter=both', '--pair-filter=first'
-params.internal_paired_end_filter_args = ''
+//Insert custom arguments
+params.internal_custom_args = ''
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 ADAPTER SEQUENCES PARAMETERS
@@ -197,9 +187,12 @@ process cutadapt {
     shell:
     
     //Combining the custom arguments and creating cutadapt args
-    internal_default_paired_end_args = ''
-    internal_custom_args = "$params.internal_action_args$params.internal_paired_end_filter_args"
-    cutadapt_args = "$internal_custom_args "
+    if (params.internal_custom_args == null){
+        cutadapt_args = ''
+    }else {
+        cutadapt_args = "$params.internal_custom_args "
+    }
+    
     
 
     //Report types if-statements
