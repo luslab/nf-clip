@@ -13,11 +13,13 @@ process star {
     output:
       path "*.Aligned.sortedByCoord.out.bam", emit: bamFiles
       path "*.Log.final.out", emit: logFiles
+      env bamBaseName, emit: pairId
 
     script:
     """
     fileName=`basename $reads`
     prefix="\${fileName%.fq}."
+    bamBaseName="\${prefix}.Aligned.sortedByCoord.out"
     STAR --runThreadN 2 \
       --genomeDir $star_index \
       --genomeLoad NoSharedMemory \
@@ -62,7 +64,7 @@ process rename_files {
     output:
       path "*.bai", emit: renamedBaiFiles
       path "*.genome.log", emit: renamedLogFiles
-    
+      env baiBaseName, emit: pairId
     script:
     """
     logFileName=`basename $logFile`

@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 // Include NfUtils
-Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File("groovy/NfUtils.groovy"));
+Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File(params.classpath));
 GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
 
 // Define internal params
@@ -18,8 +18,6 @@ params.internal_process_name = 'cutadapt'
 
 //Prefix to define the output file 
 params.internal_output_prefix = ''
-
-
 
 /*-------------------------------------------------> CUTADAPT PARAMETERS <-----------------------------------------------------*/
 
