@@ -7,6 +7,21 @@ nextflow.preview.dsl = 2
 params.outdir = './results'
 params.fastqc_processname = 'fastqc'
 
+/*-------------------------------------------------> FASTQC PARAMETERS <-----------------------------------------------------*/
+
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+ADDITIONAL OPTIONS PARAMETERS
+-------------------------------------------------------------------------------------------------------------------------------*/
+
+//Create all output files in the specified output directory. Please note that this directory must exist as the program will not create it.
+//params.internal_outdir = ''
+
+//Files come from raw casava output.
+//params.internal_casava = false
+
+//
+
 // fastqc reusable component
 process fastqc {
     publishDir "${params.outdir}/${params.fastqc_processname}",
@@ -20,6 +35,12 @@ process fastqc {
       file "*_fastqc.{zip,html}"
 
     script:
+
+    //fastqc_args = ''
+
+    //Parameter switches
+
+    
     """
     fastqc --quiet --threads $task.cpus $reads
     """

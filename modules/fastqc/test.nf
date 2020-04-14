@@ -9,7 +9,7 @@ log.info ("Starting test pipeline for fastqc")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include fastqc from './pre-fastqc.nf'
+include fastqc from './fastqc.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
