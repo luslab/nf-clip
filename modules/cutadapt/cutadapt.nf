@@ -19,6 +19,9 @@ params.internal_process_name = 'cutadapt'
 //Prefix to define the output file 
 params.internal_output_prefix = ''
 
+//Sample IDs
+params.internal_sample_id_enabled = false
+
 /*-------------------------------------------------> CUTADAPT PARAMETERS <-----------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------------------------------------------------------
@@ -179,18 +182,17 @@ process cutadapt {
         path(reads)
 
     output:
-        //tuple val(sample_id), path("${reads.simpleName}.trimmed.fq.gz")
+        //tuple val(sample_id), path("${params.internal_output_prefix}${sample_id}.trimmed.fq.gz")
         path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz")
 
     shell:
     
-    //Combining the custom arguments and creating cutadapt args
+    //Building cutadapt arguments
     if (params.internal_custom_args == null){
         cutadapt_args = ''
     }else {
         cutadapt_args = "$params.internal_custom_args "
     }
-    
     
 
     //Report types if-statements
