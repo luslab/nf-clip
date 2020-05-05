@@ -35,6 +35,7 @@ include multiqc from './modules/multiqc/multiqc.nf'
 --------------------------------------------------------------------------------------*/
 
 params.input = "$baseDir/test/data/metadata.csv"
+params.umidedup = false
 // params.input = "metadata.csv"
 
 //params.reads = "$baseDir/test/data/reads/*.fq.gz"
