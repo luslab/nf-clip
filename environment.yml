@@ -22,3 +22,6 @@ dependencies:
   - pandas=0.24.2
   - multiqc=1.8
   #- ucsc-bedgraphtobigwig=377
+
+  #- pip
+  #- pip:
