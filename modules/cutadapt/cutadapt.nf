@@ -172,18 +172,18 @@ nfUtils.check_internal_overrides(module_name, params)
 // Trimming reusable component
 process cutadapt {
     // Tag
-    tag "${sample_id}"
+    //tag "${sample_id}"
 
     publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
 
     input:
-        //tuple val(sample_id), path(reads)
-        path(reads)
+        tuple val(ch_sample_id), path(reads)
+        //path(reads)
 
     output:
-        //tuple val(sample_id), path("${params.internal_output_prefix}${sample_id}.trimmed.fq.gz")
-        path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz")
+        tuple val(ch_sample_id), path("${params.internal_output_prefix}${ch_sample_id}.trimmed.fq.gz")
+        //path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz")
 
     shell:
     

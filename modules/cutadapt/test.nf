@@ -35,8 +35,13 @@ testPaths = [
 
  Channel
   .from(testPaths)
-  //.map { row -> file(row[1]) }
+  .map { row -> file(row[1]) }
   .set {ch_test_inputs}
+
+  Channel
+  .from(testPaths)
+  .map { row -> row[0]}
+  .set {ch_sample_id}
 
 /*------------------------------------------------------------------------------------*/
 
