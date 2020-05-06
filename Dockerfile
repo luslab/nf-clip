@@ -9,6 +9,7 @@ RUN apt-get update \
  unzip=6.0-23+deb10u1 \
  procps=2:3.3.15-2 \
  build-essential=12.6 \
+ zlib1g-dev=1:1.2.11.dfsg-1 \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -17,8 +18,17 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/luslab-clip-0.1/bin:$PATH
 
+# Install iCount
+WORKDIR /home
+RUN mkdir bin && wget https://github.com/tomazc/iCount/archive/master.zip && mv master.zip icount.zip && unzip icount.zip
+WORKDIR /home/iCount-master
+RUN pip install -e .[test]
+
 # Install Paraclu
 WORKDIR /home
-RUN mkdir bin && wget http://cbrc3.cbrc.jp/~martin/paraclu/paraclu-9.zip && unzip paraclu-9.zip
+RUN wget http://cbrc3.cbrc.jp/~martin/paraclu/paraclu-9.zip && unzip paraclu-9.zip
 WORKDIR /home/paraclu-9
 RUN make && cp paraclu /home/bin/paraclu && cp paraclu-cut.sh /home/bin/paraclu-cut.sh
+
+# Reset work dir
+WORKDIR /home
