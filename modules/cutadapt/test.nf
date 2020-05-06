@@ -22,7 +22,7 @@ include cutadapt from './cutadapt.nf' //addParams(cutadapt_process_name: 'cutada
 --------------------------------------------------------------------------------------*/
 
 
-testPaths = [
+testMetaData = [
   ['Sample 1', "$baseDir/input/readfile1.fq.gz"],
   ['Sample 2', "$baseDir/input/readfile2.fq.gz"],
   ['Sample 3', "$baseDir/input/readfile3.fq.gz"],
@@ -31,24 +31,21 @@ testPaths = [
   ['Sample 6', "$baseDir/input/readfile6.fq.gz"]
 ]
 
-// Create channel of test data (excluding the sample ID)
 
- Channel
-  .from(testPaths)
-  .map { row -> file(row[1]) }
-  .set {ch_test_inputs}
+// Create channels of test data 
 
   Channel
-  .from(testPaths)
-  .map { row -> row[0]}
-  .set {ch_sample_id}
+  .from(testMetaData)
+  .map { row -> [ row[0], file(row[1], checkIfExists: true) ] }
+  .set {ch_test_meta}
 
+  
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
     // Run cutadapt
-    cutadapt(ch_test_inputs)
+    cutadapt(ch_test_meta)
 
     // Collect file names and view output
     cutadapt.out | view
