@@ -28,18 +28,12 @@ process fastqc {
     mode: "copy", overwrite: true
 
     input:
-      path reads
+      tuple val(sample_id), path(reads)
 
     output:
-      path "*_fastqc.{zip,html}", emit: report
+      tuple val(sample_id), path ("*_fastqc.{zip,html}"), emit: report
 
     script:
-
-    //fastqc_args = ''
-
-    //Parameter switches
-
-    
     """
     fastqc --quiet --threads $task.cpus $reads
     """
