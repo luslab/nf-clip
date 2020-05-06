@@ -13,9 +13,11 @@ process getcrosslinkcoverage {
         mode: "copy", overwrite: true
 
     input:
+      //tuple val(sample_id)
       each path(bed)
 
     output:
+      //tuple val(sample_id)
       tuple path("${bed.simpleName}.bedgraph.gz"), path("${bed.simpleName}.norm.bedgraph.gz")
     //   path "${bed.baseName}.norm.bedgraph.gz"
 
