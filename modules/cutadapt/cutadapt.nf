@@ -225,9 +225,6 @@ process cutadapt {
     if (params.internal_cut != 0){
         cutadapt_args += "-u $params.internal_cut "
     }
-    /*if (params.internal_rev_comp){
-        cutadapt_args += "--rc "
-    } */
 
     //Determines if there a single or multiple adapters
     if (params.internal_multiple_adapters == false){
@@ -265,8 +262,6 @@ process cutadapt {
             cutadapt_args += "-b file:$params.internal_multi_adapt_fasta "
         }
     } 
-    //TODO: include trimming options: non-internal and anchored adapters for -a and -g in multiple adapters
-
 
     //Filtering params
     if (params.internal_min_length > 0){
@@ -310,22 +305,10 @@ process cutadapt {
         internal_default_paired_end_args += "-p ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "
     }
     
-    
-    
-    
     // Displays the cutadapt command line (cutadapt_args) to check for mistakes
     println cutadapt_args
 
     """
     cutadapt $cutadapt_args $reads
     """
-
-    /*"""
-    cutadapt \
-        -j ${task.cpus} \
-        -q ${params.internal_min_quality} \
-        --minimum-length ${params.internal_min_length} \
-        -a ${params.internal_adapter_sequence} \
-        -o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz $reads 
-    """ */
 }
