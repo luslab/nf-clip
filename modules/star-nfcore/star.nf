@@ -41,7 +41,10 @@ process star {
 
     output:
       path "*Aligned.*.out.*", emit: bamFiles
-      path "*Log.final.out", emit: logFiles
+      path "*fqSJ.out.tab", emit: sjFiles
+      path "*Log.final.out", emit: finalLogFiles
+      path "*Log.out", emit: outLogFiles
+      path "*Log.progress.out", emit: progressLogFiles
 
     shell:
     

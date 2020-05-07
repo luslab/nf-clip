@@ -9,13 +9,14 @@ log.info ("Starting STAR module")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include star from './star.nf' addParams(star_custom_args: "--outSAMtype BAM SortedByCoordinate")
+include star from './star.nf' addParams(star_custom_args: "--outSAMtype BAM SortedByCoordinate --readFilesCommand zcat")
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
 --------------------------------------------------------------------------------------*/
 
-params.reads = "$baseDir/input/*.fq"
+params.reads = "$baseDir/input/zipped_reads/*.fq.gz"
+//params.reads = "$baseDir/input/*.fq"
 params.genome_index = "$baseDir/input/reduced_star_index"
 
 ch_testData = Channel.fromPath( params.reads )
