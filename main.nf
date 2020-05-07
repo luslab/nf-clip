@@ -29,6 +29,8 @@ include dedup from './modules/deduplicate-bam/deduplicate-bam.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
 include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslink-coverage.nf'
 include multiqc from './modules/multiqc/multiqc.nf'
+include paraclu from './modules/paraclu/paraclu.nf'
+include peka from './modules/peka/peka.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Params
