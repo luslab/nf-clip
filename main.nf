@@ -28,6 +28,7 @@ include merge_pairId_bam from './modules/deduplicate-bam/deduplicate-bam.nf'
 include dedup from './modules/deduplicate-bam/deduplicate-bam.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
 include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslink-coverage.nf'
+include icount from './modules/icount/icount.nf'
 include multiqc from './modules/multiqc/multiqc.nf'
 
 /*------------------------------------------------------------------------------------*/
@@ -36,6 +37,7 @@ include multiqc from './modules/multiqc/multiqc.nf'
 
 params.input = "$baseDir/test/data/metadata.csv"
 params.umidedup = false
+
 // params.input = "metadata.csv"
 
 //params.reads = "$baseDir/test/data/reads/*.fq.gz"
@@ -54,6 +56,7 @@ workflow {
     ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     ch_starIndex = Channel.fromPath( params.star_index )
     ch_genomeFai = Channel.fromPath( params.genome_fai )
+    ch_segmentation = Channel.fromPath (params.segmentation)
 
     // Get fastq paths 
     metadata( params.input )
@@ -96,6 +99,9 @@ workflow {
     // normalise crosslinks + get bedgraph files
     getcrosslinkcoverage( getcrosslinks.out)
     
+    // iCount peak call
+    icount ( getcrosslinks.out, ch_segmentation )
+
     ch_multiqc_input = prefastqc.out.report.mix(
     //    cutadapt.out.report,
         postfastqc.out.report

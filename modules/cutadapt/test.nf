@@ -22,7 +22,7 @@ include cutadapt from './cutadapt.nf' //addParams(cutadapt_process_name: 'cutada
 --------------------------------------------------------------------------------------*/
 
 
-testPaths = [
+testMetaData = [
   ['Sample 1', "$baseDir/input/readfile1.fq.gz"],
   ['Sample 2', "$baseDir/input/readfile2.fq.gz"],
   ['Sample 3', "$baseDir/input/readfile3.fq.gz"],
@@ -31,40 +31,23 @@ testPaths = [
   ['Sample 6', "$baseDir/input/readfile6.fq.gz"]
 ]
 
-// Create channel of test data (excluding the sample ID)
 
- Channel
-  .from(testPaths)
-  .map { row -> file(row[1]) }
-  .set {ch_test_inputs}
+// Create channels of test data 
 
-  /*Channel
-  .from(testPaths)
-  .map { row -> file(row[1]) }
-  .set {ch_test_inputs2}*/
+  Channel
+  .from(testMetaData)
+  .map { row -> [ row[0], file(row[1], checkIfExists: true) ] }
+  .set {ch_test_meta}
 
-//Create channel of test data IF IT IS PAIRED END DATA
-/*Channel
-  .fromFilePairs('./modules/cutadapt/input/*_{1,2}.fastq' )
-  .set { ch_read_files }
-*/
-
+  
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
     // Run cutadapt
-    cutadapt( ch_test_inputs )
-    // Run cutadapt with paired-end inputs
-    //cutadapt( ch_read_files )
-
-    // Run cutadapt
-    //cutadapt2( ch_test_inputs2 )
-
-    
+    cutadapt(ch_test_meta)
 
     // Collect file names and view output
-    cutadapt.out | view 
-    //cutadapt2.out | view
+    cutadapt.out.trimmedreads.collect() | view
 
 }
