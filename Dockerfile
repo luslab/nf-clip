@@ -25,5 +25,6 @@ WORKDIR /home/paraclu-9
 RUN make && cp paraclu /home/bin/paraclu && cp paraclu-cut.sh /home/bin/paraclu-cut.sh
 
 # Install PEKA
+WORKDIR /home
 RUN wget https://raw.githubusercontent.com/ulelab/imaps/master/src/imaps/sandbox/kmers.py 
 RUN mkdir src && mv kmers.py src/kmers.py
