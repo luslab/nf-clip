@@ -42,7 +42,7 @@ process icount {
 
     input:
       // tuple val(sample_id), path(bed), path(seg)
-      path(bed)
+      each path(bed)
       path(seg)
 
     output:
