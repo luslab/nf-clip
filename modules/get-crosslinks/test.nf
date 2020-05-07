@@ -54,6 +54,6 @@ workflow {
     getcrosslinks( ch_test_meta_bam)
 
     // Collect file names and view output
-    getcrosslinks.out | view
+    getcrosslinks.out.crosslinkBam.collect() | view
 
 }

@@ -16,7 +16,7 @@ process getcrosslinks {
       tuple val(sample_id), path(bam), path (fai)
 
     output:
-      tuple val(sample_id), path ("${bam.simpleName}.xl.bed.gz")
+      tuple val(sample_id), path ("${bam.simpleName}.xl.bed.gz"), emit: crosslinkBam
 
     script:
     """
