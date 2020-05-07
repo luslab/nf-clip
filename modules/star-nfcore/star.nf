@@ -14,14 +14,7 @@ nextflow.preview.dsl = 2
 params.internal_outdir = './results'
 params.internal_process_name = 'star'
 
-//Prefix to define the output file 
-//params.internal_output_prefix = ''
-
-/*-------------------------------------------------> STAR PARAMETERS <-----------------------------------------------------*/
-
-//Add custom arguments
-//Copy-paste the desired option in the empty brackets, it will automatically be added to the process.
-
+// STAR parameters
 params.internal_custom_args = ''
 
 // Check if globals need to 
@@ -29,22 +22,21 @@ nfUtils.check_internal_overrides(module_name, params)
 
 // Trimming reusable component
 process star {
-    // Tag
-    //tag "${sample_id}"
+
+    tag "${sample_id}"
 
     publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
 
     input:
-      each path(reads)
-      path star_index
+      tuple val(sample_id), path(reads), path(star_index)
 
     output:
-      path "*Aligned.*.out.*", emit: bamFiles
-      path "*fqSJ.out.tab", emit: sjFiles
-      path "*Log.final.out", emit: finalLogFiles
-      path "*Log.out", emit: outLogFiles
-      path "*Log.progress.out", emit: progressLogFiles
+      tuple val(sample_id), path("*Aligned.*.out.*"), emit: bamFiles
+      tuple val(sample_id), path("*SJ.out.tab"), emit: sjFiles
+      tuple val(sample_id), path("*Log.final.out"), emit: finalLogFiles
+      tuple val(sample_id), path("*Log.out"), emit: outLogFiles
+      tuple val(sample_id), path("*Log.progress.out"), emit: progressLogFiles
 
     shell:
     
@@ -55,9 +47,6 @@ process star {
 
     // Combining the custom arguments and creating star args
     star_args += "$params.internal_custom_args "
-    
-    // Displays the STAR command line (star_args) to check for mistakes
-    println star_args
 
     output_prefix = reads.baseName
 

@@ -15,19 +15,25 @@ include star from './star.nf' addParams(star_custom_args: "--outSAMtype BAM Sort
 /* Define input channels
 --------------------------------------------------------------------------------------*/
 
-params.reads = "$baseDir/input/zipped_reads/*.fq.gz"
-//params.reads = "$baseDir/input/*.fq"
 params.genome_index = "$baseDir/input/reduced_star_index"
 
-ch_testData = Channel.fromPath( params.reads )
-ch_testIndex = Channel.fromPath( params.genome_index )
+testMetaData = [
+  ['Sample1', "$baseDir/input/zipped_reads/prpf8_eif4a3_rep1.Unmapped.fq.gz"],
+  ['Sample2', "$baseDir/input/zipped_reads/prpf8_eif4a3_rep2.Unmapped.fq.gz"]
+]
+
+ Channel
+    .from( testMetaData )
+    .map { row -> [ row[0], file(row[1], checkIfExists: true) ] }
+    .combine( Channel.fromPath( params.genome_index ) )
+    .set { ch_testData }
 
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
     // Run star
-    star( ch_testData, ch_testIndex  )
+    star( ch_testData )
 
     // Collect file names and view output
     //star.out | view
