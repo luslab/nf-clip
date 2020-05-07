@@ -16,7 +16,8 @@ process getcrosslinkcoverage {
       tuple val(sample_id), path(bed)
 
     output:
-      tuple val(sample_id), path("${bed.simpleName}.bedgraph.gz"), path("${bed.simpleName}.norm.bedgraph.gz")
+      tuple val(sample_id), path("${bed.simpleName}.bedgraph.gz"), emit: bedGraph
+      tuple val(sample_id), path("${bed.simpleName}.norm.bedgraph.gz"), emit: normBedGraph
 
     script:
     """

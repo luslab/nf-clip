@@ -42,5 +42,6 @@ workflow {
     getcrosslinkcoverage( ch_test_meta )
 
     // Collect file names and view output
-    getcrosslinkcoverage.out | view
+    getcrosslinkcoverage.out.bedGraph | view
+    getcrosslinkcoverage.out.normBedGraph | view
 }
