@@ -1,4 +1,5 @@
 #!/usr/bin/env nextflow
+
 /*
 ========================================================================================
                          luslab/group-nextflow-clip
@@ -12,44 +13,50 @@ Luscombe lab CLIP analysis pipeline.
 // Define DSL2
 nextflow.preview.dsl=2
 
-/* Module inclusions 
---------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------------------------------
+Module global params
+-------------------------------------------------------------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+Module inclusions
+-------------------------------------------------------------------------------------------------------------------------------*/
 
 include luslabHeader from './modules/overhead/overhead'
 include metadata from './modules/metadata/metadata.nf'
 include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'pre_fastqc') 
 include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
-include bowtie_rrna from './modules/pre-map/pre-map.nf'
-include star as genomemap from './modules/genome-map/genome-map.nf'
-include sambamba from './modules/genome-map/genome-map.nf'
-include rename_files from './modules/genome-map/genome-map.nf'
-include merge_pairId_bam from './modules/deduplicate-bam/deduplicate-bam.nf'
+include bowtie_rrna from './modules/bowtie_rrna/bowtie_rrna.nf'
+
+
 include dedup from './modules/deduplicate-bam/deduplicate-bam.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
 include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslink-coverage.nf'
 include icount from './modules/icount/icount.nf'
 include multiqc from './modules/multiqc/multiqc.nf'
 
-/*------------------------------------------------------------------------------------*/
-/* Params
---------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------------------------------
+Params
+-------------------------------------------------------------------------------------------------------------------------------*/
 
+params.results = "$baseDir/test/data/results" // output directory
+params.umidedup = false // Switch for uni dedup
+
+// Main data parameters
 params.input = "$baseDir/test/data/metadata.csv"
-params.umidedup = false
+params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
+params.star_index = "$baseDir/test/data/reduced_star_index"
+params.genome_fai = "$baseDir/test/data/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
+params.segmentation = "?????"
 
-// params.input = "metadata.csv"
+/*-----------------------------------------------------------------------------------------------------------------------------
+Main pipeline
+-------------------------------------------------------------------------------------------------------------------------------*/
 
-//params.reads = "$baseDir/test/data/reads/*.fq.gz"
-//params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
-//params.star_index = "$baseDir/test/data/reduced_star_index"
-//params.genome_fai = "$baseDir/test/data/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
-//params.results = "$baseDir/test/data/results"
-
-/*------------------------------------------------------------------------------------*/
+// Show banner
+log.info luslabHeader()
 
 // Run workflow
-log.info luslabHeader()
 workflow {
 
     // Create channels for indices
@@ -62,16 +69,18 @@ workflow {
     metadata( params.input )
 
     // Run fastqc
-    prefastqc( metadata.out )
+    prefastqc( metadata.out.data )
     
     //Run read trimming
-    cutadapt( metadata.out )
+    cutadapt( metadata.out.data )
 
     // Run post-trim fastqc
-    postfastqc( cutadapt.out )
+    postfastqc( cutadapt.out.trimmedReads )
     
     // pre-map to rRNA and tRNA
-    bowtie_rrna( cutadapt.out, ch_bowtieIndex )
+    bowtie_rrna( cutadapt.out.trimmedReads, ch_bowtieIndex )
+
+
     
     // map unmapped reads to the genome
     genomemap( bowtie_rrna.out.unmappedFq, ch_starIndex )
@@ -102,15 +111,10 @@ workflow {
     // iCount peak call
     icount ( getcrosslinks.out, ch_segmentation )
 
+    // Collect all data for multiqc
     ch_multiqc_input = prefastqc.out.report.mix(
-    //    cutadapt.out.report,
         postfastqc.out.report
-      //  bowtie_rrna.out.report
-       // genomemap.out.report,
-        //getcrosslinks.out.report,
-        //getcrosslinkcoverage.out.report
     ).collect()
-
 
     multiqc(ch_multiqc_input)
 }
