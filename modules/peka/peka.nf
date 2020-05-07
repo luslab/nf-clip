@@ -8,8 +8,8 @@ params.outdir = './results'
 params.peka_processname = 'peka'
 
 // Peka specific params
-params.peka_genome = "$baseDir/input/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa"
-params.peka_genome_fai = "$baseDir/input/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
+params.peka_genome = "$baseDir/input/chr20.fa"
+params.peka_genome_fai = "$baseDir/input/chr20.fa.fai"
 params.peka_regions_file = "$baseDir/input/regions_GENCODE_v30.gtf.gz"
 params.peka_window = 40
 params.peka_window_distal = 150
@@ -26,14 +26,16 @@ params.peka_subsample = "True"
 
 // fastqc reusable component
 process peka {
-    publishDir "${params.outdir}/${params.kmers_processname}",
+    publishDir "${params.outdir}/${params.peka_processname}",
         mode: "copy", overwrite: true
     label 'mid_memory'
 
     input:
       tuple val(sampleid), file(peaks), file(xls)
 
-    //output:
+    output:
+      // file "${params.outdir}/${params.peka_processname}/results"
+      path("results/*.{pdf, tsv}")
 
     script:
     """
