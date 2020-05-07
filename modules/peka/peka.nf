@@ -41,7 +41,7 @@ process peka {
     """
     #!/usr/bin/env python
     import importlib.util
-    spec = importlib.util.spec_from_file_location("peka", "$baseDir/bin/peka.py")
+    spec = importlib.util.spec_from_file_location("peka", "/home/src/kmers.py")
     pe = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(pe)
 
