@@ -35,7 +35,7 @@ process peka {
 
     output:
       // file "${params.outdir}/${params.peka_processname}/results"
-      path("results/*.{pdf, tsv}")
+      path("results/*.{pdf,tsv}")
 
     script:
     """
