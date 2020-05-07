@@ -19,24 +19,17 @@ params.internal_process_name = 'cutadapt'
 //Prefix to define the output file 
 params.internal_output_prefix = ''
 
+//Sample IDs
+params.internal_sample_id_enabled = false
+
 /*-------------------------------------------------> CUTADAPT PARAMETERS <-----------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 CUSTOM PARAMETERS
 -------------------------------------------------------------------------------------------------------------------------------*/
 
-//Add custom arguments
-//Copy-paste the desired option in the empty brackets, it will automatically be added to the process.
-
-//Action parameters -> Instead of removing an adapter from a read, it is also possible to take other actions when an adapter is found by specifying the --action option.
-//Options -> '--action=trim', '--action=none', '--action=mask', '--action=lowercase'
-params.internal_action_args = ''
-
-//Paired-end reads filtering
-//The --pair-filter option determines how to combine the filters for R1 and R2 into a single decision about the read pair.
-//When dealing with paired-end files, the filtering is set to '--pair-filter=any' by default
-//Options -> '--pair-filter', '--pair-filter=any', '--pair-filter=both', '--pair-filter=first'
-params.internal_paired_end_filter_args = ''
+//Insert custom arguments
+params.internal_custom_args = ''
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 ADAPTER SEQUENCES PARAMETERS
@@ -178,26 +171,28 @@ nfUtils.check_internal_overrides(module_name, params)
 
 // Trimming reusable component
 process cutadapt {
-    // Tag
+    // Set tag to sample id
     tag "${sample_id}"
 
     publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
 
     input:
-        //tuple val(sample_id), path(reads)
-        path(reads)
+        tuple val(sample_id), path(reads)
+        //path(reads)
 
     output:
-        //tuple val(sample_id), path("${reads.simpleName}.trimmed.fq.gz")
-        path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz")
+        tuple val(sample_id), path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz"), emit: trimmedreads
+        //path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz")
 
     shell:
     
-    //Combining the custom arguments and creating cutadapt args
-    internal_default_paired_end_args = ''
-    internal_custom_args = "$params.internal_action_args$params.internal_paired_end_filter_args"
-    cutadapt_args = "$internal_custom_args "
+    //Building cutadapt arguments
+    if (params.internal_custom_args == null){
+        cutadapt_args = ''
+    }else {
+        cutadapt_args = "$params.internal_custom_args "
+    }
     
 
     //Report types if-statements
@@ -230,9 +225,6 @@ process cutadapt {
     if (params.internal_cut != 0){
         cutadapt_args += "-u $params.internal_cut "
     }
-    /*if (params.internal_rev_comp){
-        cutadapt_args += "--rc "
-    } */
 
     //Determines if there a single or multiple adapters
     if (params.internal_multiple_adapters == false){
@@ -270,8 +262,6 @@ process cutadapt {
             cutadapt_args += "-b file:$params.internal_multi_adapt_fasta "
         }
     } 
-    //TODO: include trimming options: non-internal and anchored adapters for -a and -g in multiple adapters
-
 
     //Filtering params
     if (params.internal_min_length > 0){
@@ -315,22 +305,10 @@ process cutadapt {
         internal_default_paired_end_args += "-p ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "
     }
     
-    
-    
-    
     // Displays the cutadapt command line (cutadapt_args) to check for mistakes
     println cutadapt_args
 
     """
     cutadapt $cutadapt_args $reads
     """
-
-    /*"""
-    cutadapt \
-        -j ${task.cpus} \
-        -q ${params.internal_min_quality} \
-        --minimum-length ${params.internal_min_length} \
-        -a ${params.internal_adapter_sequence} \
-        -o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz $reads 
-    """ */
 }
