@@ -53,6 +53,7 @@ workflow {
     bowtie_rrna(ch_test_meta_fq)
 
     // Collect file names and view output
-    bowtie_rrna.out | view
+    bowtie_rrna.out.rrnaBam.collect() | view
+    bowtie_rrna.out.unmappedFq.collect() | view
 }
 
