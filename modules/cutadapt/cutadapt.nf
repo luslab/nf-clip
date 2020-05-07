@@ -303,7 +303,7 @@ process cutadapt {
     }
     
     // Displays the cutadapt command line (cutadapt_args) to check for mistakes
-    println cutadapt_args
+    //println cutadapt_args
 
     """
     cutadapt $cutadapt_args $reads

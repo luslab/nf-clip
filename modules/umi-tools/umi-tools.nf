@@ -18,7 +18,7 @@ nfUtils.check_internal_overrides(module_name, params)
 
 // dedup reusable component
 process umi_tools {
-    publishDir "${params.outdir}/${params.dedup_processname}",
+    publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
     label 'mid_memory'
 

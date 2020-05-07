@@ -30,7 +30,6 @@ include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_proc
 include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
 include bowtie_rrna from './modules/bowtie_rrna/bowtie_rrna.nf'
-include star from './modules/star/star.nf'
 include rename_file from './modules/rename-file/rename-file.nf'
 include samtools from './modules/samtools/samtools.nf'
 include umi_tools from './modules/umi-tools/umi-tools.nf'
@@ -40,12 +39,29 @@ include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslin
 include icount from './modules/icount/icount.nf'
 include multiqc from './modules/multiqc/multiqc.nf'
 
+include star from './modules/star/star.nf' addParams(star_custom_args: 
+      "--runThreadN 2 \
+      --genomeLoad NoSharedMemory \
+      --outFilterMultimapNmax 1 \
+      --outFilterMultimapScoreRange 1 \
+      --outSAMattributes All \
+      --alignSJoverhangMin 8 \
+      --alignSJDBoverhangMin 1 \
+      --outFilterType BySJout \
+      --alignIntronMin 20 \
+      --alignIntronMax 1000000 \
+      --outFilterScoreMin 10  \
+      --alignEndsType Extend5pOfRead1 \
+      --twopassMode Basic \
+      --outSAMtype BAM SortedByCoordinate \
+      --limitBAMsortRAM 6000000000")
+
 /*-----------------------------------------------------------------------------------------------------------------------------
 Params
 -------------------------------------------------------------------------------------------------------------------------------*/
 
 params.results = "$baseDir/test/data/results" // output directory
-params.umidedup = false // Switch for uni dedup
+params.umidedup = true // Switch for uni dedup
 
 // Main data parameters
 params.input = "$baseDir/test/data/metadata.csv"
@@ -86,17 +102,17 @@ workflow {
     bowtie_rrna( cutadapt.out.trimmedReads.combine(ch_bowtieIndex) )
     
     // Align
-    star( bowtie_rrna.out.rrnaBam.combine(ch_starIndex) )
+    star( bowtie_rrna.out.unmappedFq.combine(ch_starIndex) )
    
     // Index the bam files
     samtools( star.out.bamFiles )
     
     // Rename the bai files
-    rename_files( samtools.out.baiFiles )
+    //rename_file( samtools.out.baiFiles )
     
     if ( params.umidedup ) {
         // PCR duplicate removal (optional)
-        umi_tools( rename_files.out.renamedFiles.join( star.out.bamFiles ) )
+        umi_tools( samtools.out.baiFiles.join( star.out.bamFiles ) )
 
         // get crosslinks from bam
         getcrosslinks( umi_tools.out.dedupBam.combine(ch_genomeFai) )
@@ -105,22 +121,21 @@ workflow {
         getcrosslinks( star.out.bamFiles.combine(ch_genomeFai) )
     }
 
-
-    
     // normalise crosslinks + get bedgraph files
-    getcrosslinkcoverage( getcrosslinks.out )
+    getcrosslinkcoverage( getcrosslinks.out.crosslinkBed )
     
+    paraclu(getcrosslinks.out.crosslinkBed)
+
     // iCount peak call
-    icount ( getcrosslinks.out, ch_segmentation )
+    icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )
 
     // Collect all data for multiqc
-    ch_multiqc_input = prefastqc.out.report.mix(
-        postfastqc.out.report
-    ).collect()
+    //ch_multiqc_input = prefastqc.out.report.mix(
+    //    postfastqc.out.report
+    //).collect()
 
-    multiqc(ch_multiqc_input)
+    //multiqc(ch_multiqc_input)
 }
-
 
 workflow.onComplete {
     log.info "\nPipeline complete!\n"
