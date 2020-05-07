@@ -297,7 +297,7 @@ process cutadapt {
 
     //Outputs and inputs
     if (params.internal_output_prefix != null){
-        cutadapt_args += "-o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "   
+        cutadapt_args += "-o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "
     }
 
     //Paired-end mode -> determining paired output + inputs (forward and reverse)
