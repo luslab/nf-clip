@@ -13,13 +13,12 @@ process bowtie_rrna {
         mode: "copy", overwrite: true
 
     input:
-        each path(reads)
-        path bowtie_index
+        tuple val(sample_id), path(reads), path(bowtie_index)
 
     output:
-        //tuple path("${reads.simpleName}.bam"), path("${reads.simpleName}.fq")
-        path "${reads.simpleName}.bam", emit: rrnaBam
-        path "${reads.simpleName}.fq", emit: unmappedFq
+        //tuple val(sample_id), path("${reads.simpleName}.bam"), path("${reads.simpleName}.fq")
+        tuple val(sample_id), path("${reads.simpleName}.bam"), emit: rrnaBam
+        tuple val(sample_id), path("${reads.simpleName}.fq"), emit: unmappedFq
 
     script:
         """

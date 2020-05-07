@@ -13,12 +13,10 @@ process getcrosslinks {
         mode: "copy", overwrite: true
 
     input:
-      each path(bam)
-      path fai
+      tuple val(sample_id), path(bam), path (fai)
 
     output:
-      // file "*.bed.gz"
-      path "${bam.simpleName}.xl.bed.gz"
+      tuple val(sample_id), path ("${bam.simpleName}.xl.bed.gz"), emit: crosslinkBam
 
     script:
     """
