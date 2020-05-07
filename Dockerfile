@@ -9,6 +9,7 @@ RUN apt-get update \
  unzip=6.0-23+deb10u1 \
  procps=2:3.3.15-2 \
  build-essential=12.6 \
+ git \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -22,3 +23,7 @@ WORKDIR /home
 RUN mkdir bin && wget http://cbrc3.cbrc.jp/~martin/paraclu/paraclu-9.zip && unzip paraclu-9.zip
 WORKDIR /home/paraclu-9
 RUN make && cp paraclu /home/bin/paraclu && cp paraclu-cut.sh /home/bin/paraclu-cut.sh
+
+# Install PEKA
+RUN wget https://raw.githubusercontent.com/ulelab/imaps/master/src/imaps/sandbox/kmers.py 
+RUN mkdir src && mv kmers.py src/kmers.py
