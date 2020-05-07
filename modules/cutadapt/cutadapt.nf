@@ -182,7 +182,7 @@ process cutadapt {
         //path(reads)
 
     output:
-        tuple val(sample_id), path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz")
+        tuple val(sample_id), path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz"), emit: trimmedreads
         //path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz")
 
     shell:
