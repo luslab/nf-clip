@@ -44,7 +44,9 @@ process icount {
       tuple val(sample_id), path(bed), path(seg)
 
     output:
-      tuple val(sample_id), path("${bed.simpleName}.xl.peaks.bed.gz"), path("${bed.simpleName}.scores.tsv"), path("${bed.simpleName}.xl.clusters.bed.gz")
+      tuple val(sample_id), path("${bed.simpleName}.xl.peaks.bed.gz"), emit: peaks
+      tuple val(sample_id), path("${bed.simpleName}.scores.tsv"), emit: peak_scores
+      tuple val(sample_id), path("${bed.simpleName}.xl.clusters.bed.gz"), emit: clusters
 
     shell:
     """
