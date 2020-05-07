@@ -14,7 +14,7 @@ nextflow pull luslab/group-nextflow-clip
 
 ## RUN PIPELINE
 nextflow run luslab/group-nextflow-clip \
-  -r 'dev' \
+  -r dev \
   -profile crick \
   --input 'metadata-example.csv' \
   --bowtie_index '/camp/lab/luscomben/working/charlotte/tRNA_rRNA_for_iMaps/Homo_sapiens/small_rna_bowtie' \
