@@ -23,14 +23,14 @@ PARAMETERS
 -------------------------------------------------------------------------------------------------------------------------------*/
 
 params.internal_prefix = '' // Define prefix for output files
-params.internal_ext = '' // Define new extension for the output files
+params.internal_ext = '.notspecified' // Define new extension for the output files
+
+// Check for globals
+nfUtils.check_internal_overrides(module_name, params)
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 MODULE
 -------------------------------------------------------------------------------------------------------------------------------*/
-
-// Check if globals need to 
-nfUtils.check_internal_overrides(module_name, params)
 
 process rename_file {
     tag "${sample_id}"
@@ -39,10 +39,10 @@ process rename_file {
       tuple val(sample_id), path(input_file)
 
     output:
-      tuple val(sample_id), path("${params.internal_output_prefix}${input_file.simpleName}${params.internal_ext}")
+      tuple val(sample_id), path("${params.internal_prefix}${input_file.simpleName}${params.internal_ext}"), emit: renamedFiles
 
     shell:
     """
-    mv $input_file ${params.internal_output_prefix}${input_file.simpleName}${params.internal_ext}
+    mv $input_file ${params.internal_prefix}${input_file.simpleName}${params.internal_ext}
     """
 }
