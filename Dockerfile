@@ -18,11 +18,12 @@ COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/luslab-clip-0.1/bin:$PATH
 
-# Install PEKA
-RUN wget https://raw.githubusercontent.com/ulelab/imaps/master/src/imaps/sandbox/kmers.py 
-RUN mkdir src && mv kmers.py src/kmers.py
-
+# Install Paraclu
 WORKDIR /home
 RUN mkdir bin && wget http://cbrc3.cbrc.jp/~martin/paraclu/paraclu-9.zip && unzip paraclu-9.zip
 WORKDIR /home/paraclu-9
 RUN make && cp paraclu /home/bin/paraclu && cp paraclu-cut.sh /home/bin/paraclu-cut.sh
+
+# Install PEKA
+RUN wget https://raw.githubusercontent.com/ulelab/imaps/master/src/imaps/sandbox/kmers.py 
+RUN mkdir src && mv kmers.py src/kmers.py
