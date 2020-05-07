@@ -134,12 +134,12 @@ include icount from '/camp/home/chakraa2/working/nobby/projects/nextflow/icount.
 --------------------------------------------------------------------------------------*/
 
 testMetaData = [
-  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.xl.bed.gz"],
-  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.xl.bed.gz"],
-  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.xl.bed.gz"],
-  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.xl.bed.gz"],
-  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.xl.bed.gz"],
-  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.xl.bed.gz"]
+  ['Sample 1', "/camp/home/chakraa2/working/nobby/projects/nextflow/input/prpf8_ctrl_rep1.xl.bed.gz"],
+  ['Sample 2', "/camp/home/chakraa2/working/nobby/projects/nextflow/input/prpf8_ctrl_rep2.xl.bed.gz"],
+  ['Sample 3', "/camp/home/chakraa2/working/nobby/projects/nextflow/input/prpf8_ctrl_rep4.xl.bed.gz"],
+  ['Sample 4', "/camp/home/chakraa2/working/nobby/projects/nextflow/input/prpf8_eif4a3_rep1.xl.bed.gz"],
+  ['Sample 5', "/camp/home/chakraa2/working/nobby/projects/nextflow/input/prpf8_eif4a3_rep2.xl.bed.gz"],
+  ['Sample 6', "/camp/home/chakraa2/working/nobby/projects/nextflow/input/prpf8_eif4a3_rep4.xl.bed.gz"]
 ]
 
 testSegPath = [
