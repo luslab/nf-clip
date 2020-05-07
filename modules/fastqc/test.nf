@@ -41,13 +41,10 @@ Channel
 
 // Run workflow
 workflow {
-    // Create test data channel from all read files
-    //ch_testData = Channel.fromPath( params.reads )
 
     // Run fastqc
-    //fastqc( ch_testData )
     fastqc( ch_test_meta )
 
     // Collect file names and view output
-    fastqc.out | view
+    fastqc.out.collect() | view
 }
