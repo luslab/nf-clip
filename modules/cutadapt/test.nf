@@ -48,6 +48,6 @@ workflow {
     cutadapt(ch_test_meta)
 
     // Collect file names and view output
-    cutadapt.out.collect() | view
+    cutadapt.out.trimmedreads.collect() | view
 
 }

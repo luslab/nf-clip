@@ -46,5 +46,5 @@ workflow {
     fastqc( ch_test_meta )
 
     // Collect file names and view output
-    fastqc.out.collect() | view
+    fastqc.out.report.collect() | view
 }
