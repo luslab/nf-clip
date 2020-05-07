@@ -43,15 +43,25 @@ testPaths = [
   .map { row -> file(row[1]) }
   .set {ch_test_inputs2}*/
 
+//Create channel of test data IF IT IS PAIRED END DATA
+/*Channel
+  .fromFilePairs('./modules/cutadapt/input/*_{1,2}.fastq' )
+  .set { ch_read_files }
+*/
+
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
     // Run cutadapt
     cutadapt( ch_test_inputs )
+    // Run cutadapt with paired-end inputs
+    //cutadapt( ch_read_files )
 
     // Run cutadapt
     //cutadapt2( ch_test_inputs2 )
+
+    
 
     // Collect file names and view output
     cutadapt.out | view 
