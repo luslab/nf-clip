@@ -12,16 +12,15 @@ params.multiqc_processname = 'multiqc'
 process multiqc {
     publishDir "${params.outdir}/${params.multiqc_processname}",
         mode: "copy", overwrite: true
-    label 'mid_memory'
-
+    
     input:
-      path log_dir
+        path (file)
 
     output:
-      path out_dir
-
+        file "*.html"
+        
     script:
     """
-    multiqc $log_dir -o $out_dir
+    multiqc -x work .
     """
 }
