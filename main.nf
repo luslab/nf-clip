@@ -17,6 +17,9 @@ nextflow.preview.dsl=2
 Module global params
 -------------------------------------------------------------------------------------------------------------------------------*/
 
+params.cutadapt_max_error_rate = 0.1
+params.rename_file_ext = '.bai'
+
 /*-----------------------------------------------------------------------------------------------------------------------------
 Module inclusions
 -------------------------------------------------------------------------------------------------------------------------------*/
@@ -27,9 +30,11 @@ include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_proc
 include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
 include bowtie_rrna from './modules/bowtie_rrna/bowtie_rrna.nf'
-
-
-include dedup from './modules/deduplicate-bam/deduplicate-bam.nf'
+include star from './modules/star/star.nf'
+include rename_file from './modules/rename-file/rename-file.nf'
+include samtools from './modules/samtools/samtools.nf'
+include umi_tools from './modules/umi-tools/umi-tools.nf'
+include paraclu from './modules/paraclu/paraclu.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
 include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslink-coverage.nf'
 include icount from './modules/icount/icount.nf'
@@ -63,7 +68,7 @@ workflow {
     ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     ch_starIndex = Channel.fromPath( params.star_index )
     ch_genomeFai = Channel.fromPath( params.genome_fai )
-    ch_segmentation = Channel.fromPath (params.segmentation)
+    ch_segmentation = Channel.fromPath ( params.segmentation )
 
     // Get fastq paths 
     metadata( params.input )
@@ -78,35 +83,32 @@ workflow {
     postfastqc( cutadapt.out.trimmedReads )
     
     // pre-map to rRNA and tRNA
-    bowtie_rrna( cutadapt.out.trimmedReads, ch_bowtieIndex )
-
-
+    bowtie_rrna( cutadapt.out.trimmedReads.combine(ch_bowtieIndex) )
     
-    // map unmapped reads to the genome
-    genomemap( bowtie_rrna.out.unmappedFq, ch_starIndex )
+    // Align
+    star( bowtie_rrna.out.rrnaBam.combine(ch_starIndex) )
+   
+    // Index the bam files
+    samtools( star.out.bamFiles )
     
-    // Indexing the genome
-    sambamba ( genomemap.out.bamFiles )
-    
-    // Renaming to .bai files
-    rename_files ( sambamba.out.baiFiles, genomemap.out.bamFiles )
+    // Rename the bai files
+    rename_files( samtools.out.baiFiles )
     
     if ( params.umidedup ) {
-        // Merging bam and bai
-        merge_pairId_bam ( genomemap.out.bamFiles, rename_files.out.renamedBaiFiles,  genomemap.out.pairId )
-        
         // PCR duplicate removal (optional)
-        dedup( merge_pairId_bam.out.bamPair.join(merge_pairId_bam.out.baiPair) )
-        
+        umi_tools( rename_files.out.renamedFiles.join( star.out.bamFiles ) )
+
         // get crosslinks from bam
-        getcrosslinks( dedup.out.dedupBam, ch_genomeFai )
+        getcrosslinks( umi_tools.out.dedupBam.combine(ch_genomeFai) )
     } else {
         // get crosslinks from bam
-        getcrosslinks( genomemap.out.bamFiles, ch_genomeFai )
+        getcrosslinks( star.out.bamFiles.combine(ch_genomeFai) )
     }
+
+
     
     // normalise crosslinks + get bedgraph files
-    getcrosslinkcoverage( getcrosslinks.out)
+    getcrosslinkcoverage( getcrosslinks.out )
     
     // iCount peak call
     icount ( getcrosslinks.out, ch_segmentation )

@@ -1,14 +1,23 @@
 #!/usr/bin/env nextflow
 
+// Include NfUtils
+Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File(params.classpath));
+GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
+
+// Define internal params
+module_name = 'umi_tools'
+
 // Specify DSL2
 nextflow.preview.dsl = 2
 
 // Local default params
-params.outdir = './results'
-params.dedup_processname = 'dedup'
+params.internal_outdir = './results'
+params.internal_process_name = 'umi_tools'
+
+nfUtils.check_internal_overrides(module_name, params)
 
 // dedup reusable component
-process dedup {
+process umi_tools {
     publishDir "${params.outdir}/${params.dedup_processname}",
         mode: "copy", overwrite: true
     label 'mid_memory'

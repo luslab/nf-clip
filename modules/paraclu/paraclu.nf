@@ -17,10 +17,10 @@ process paraclu {
     label 'low_memory'
 
     input:
-      each file(crosslinks)
+      tuple val(sample_id), path(crosslinks)
 
     output:
-      file "*_peaks.bed.gz"
+      tuple val(sample_id), path("*_peaks.bed.gz"), emit: peaks
 
     script:
     """
