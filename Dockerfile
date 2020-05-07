@@ -3,7 +3,7 @@ LABEL authors="chris.cheshire@crick.ac.uk" \
       description="Docker image containing all requirements for the luslab/group-nextflow-clip pipeline"
 
 # Install procps so that Nextflow can poll CPU usage
-RUN apt-get update && apt-get install -y --no-install-recommends apt-utils unzip procps=2:3.3.15-2 build-essential \
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils unzip procps=2:3.3.15-2 build-essential git \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -16,3 +16,8 @@ ENV PATH /opt/conda/envs/luslab-clip-0.1/bin:$PATH
 RUN wget http://cbrc3.cbrc.jp/~martin/paraclu/paraclu-9.zip && \
 unzip paraclu-9.zip && cd paraclu-9 && make \
 && cp paraclu ../bin/paraclu && cp paraclu-cut.sh ../bin/paraclu-cut.sh
+
+# Install PEKA
+RUN wget https://raw.githubusercontent.com/ulelab/imaps/master/src/imaps/sandbox/kmers.py 
+RUN mkdir src && mv kmers.py src/kmers.py
+
