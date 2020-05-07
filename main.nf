@@ -143,7 +143,7 @@ testMetaData = [
 ]
 
 testSegPath = [
-  ["$baseDir/input/segmentation.gtf.gz"]
+  ["/camp/home/chakraa2/working/nobby/projects/nextflow/input/segmentation.gtf.gz"]
 ]
 
 // Create channels of test data 
