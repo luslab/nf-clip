@@ -99,7 +99,7 @@ workflow {
     paraclu( getcrosslinks.out )
 
     //kmers
-    peka( paraclu.out.combine(getcrosslinks.out., by: 0) )
+    peka( paraclu.out.combine(getcrosslinks.out, by: 0) )
 
     // normalise crosslinks + get bedgraph files
     getcrosslinkcoverage( getcrosslinks.out)
