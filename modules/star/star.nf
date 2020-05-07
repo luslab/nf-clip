@@ -48,9 +48,9 @@ process star {
     // Combining the custom arguments and creating star args
     star_args += "$params.internal_custom_args "
 
-    output_prefix = reads.baseName
+    output_prefix = reads.simpleName
 
     """
-    STAR $star_args --outFileNamePrefix $output_prefix
+    STAR $star_args --outFileNamePrefix ${output_prefix}.
     """
 }
