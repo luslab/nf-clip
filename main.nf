@@ -1,16 +1,16 @@
-// #!/usr/bin/env nextflow
-// /*
-// ========================================================================================
-//                          luslab/group-nextflow-clip
-// ========================================================================================
-// Luscombe lab CLIP analysis pipeline.
-//  #### Homepage / Documentation
-//  https://github.com/luslab/group-nextflow-clip
-// ----------------------------------------------------------------------------------------
-// */
+#!/usr/bin/env nextflow
+/*
+========================================================================================
+                         luslab/group-nextflow-clip
+========================================================================================
+Luscombe lab CLIP analysis pipeline.
+ #### Homepage / Documentation
+ https://github.com/luslab/group-nextflow-clip
+----------------------------------------------------------------------------------------
+*/
 
-// // Define DSL2
-// nextflow.preview.dsl=2
+// Define DSL2
+nextflow.preview.dsl=2
 
 // /* Module inclusions 
 // --------------------------------------------------------------------------------------*/
@@ -116,13 +116,6 @@
 
 // /*------------------------------------------------------------------------------------*/
 // Fudge to get this working on CAMP
-
-
-
-#!/usr/bin/env nextflow
-
-// Define DSL2
-nextflow.preview.dsl=2
 
 // Log
 log.info ("Starting icount trimming test pipeline")
