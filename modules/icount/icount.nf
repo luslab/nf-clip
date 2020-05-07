@@ -41,7 +41,8 @@ process icount {
         mode: "copy", overwrite: true
 
     input:
-      tuple val(sample_id), path(bed), path(seg)
+      // tuple val(sample_id), path(bed), path(seg)
+      path(bed), path(seg)
 
     output:
       tuple val(sample_id), path("${bed.simpleName}.xl.peaks.bed.gz"), emit: peaks
