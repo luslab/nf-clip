@@ -9,7 +9,7 @@ RUN apt-get update \
  unzip=6.0-23+deb10u1 \
  procps=2:3.3.15-2 \
  build-essential=12.6 \
- git
+ git \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
