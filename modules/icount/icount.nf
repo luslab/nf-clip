@@ -44,13 +44,17 @@ process icount {
       tuple val(sample_id), path(bed), path(seg)
 
     output:
-      tuple val(sample_id), path("${bed.simpleName}.xlpeaks.bed.gz"), path("${bed.simpleName}.scores.tsv")
+      tuple val(sample_id), path("${bed.simpleName}.xl.peaks.bed.gz"), path("${bed.simpleName}.scores.tsv"), path("${bed.simpleName}.xl.clusters.bed.gz")
 
     shell:
     """
-    iCount peaks $seg $bed ${bed.simpleName}.xlpeaks.bed.gz \
+    iCount peaks $seg $bed ${bed.simpleName}.xl.peaks.bed.gz \
         --scores ${bed.simpleName}.scores.tsv \
         --half_window ${params.internal_half_window} \
         --fdr ${params.internal_fdr}
+
+    zcat ${bed.simpleName}.xl.peaks.bed.gz | \
+    bedtools merge -i stdin -s -d ${params.internal_half_window} -c 4,5,6 -o distinct,sum,distinct | \
+    gzip > ${bed.simpleName}.xl.clusters.bed.gz
     """
 }
