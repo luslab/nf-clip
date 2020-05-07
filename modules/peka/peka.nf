@@ -31,7 +31,9 @@ process peka {
     label 'mid_memory'
 
     input:
-      tuple val(sampleid), file(peaks), file(xls)
+      //tuple val(sampleid), file(peaks), file(xls)
+      path(peaks)
+      path(xls)
 
     output:
       // file "${params.outdir}/${params.peka_processname}/results"
