@@ -127,7 +127,7 @@ log.info ("Starting icount trimming test pipeline")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include icount from './icount.nf'
+include icount from '/camp/home/chakraa2/working/nobby/projects/nextflow/icount.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
