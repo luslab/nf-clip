@@ -95,6 +95,12 @@ workflow {
         getcrosslinks( genomemap.out.bamFiles, ch_genomeFai )
     }
     
+    // paraclu
+    paraclu( getcrosslinks.out )
+
+    //kmers
+    peka( getcrosslinks.out, paraclu.out)
+
     // normalise crosslinks + get bedgraph files
     getcrosslinkcoverage( getcrosslinks.out)
     
