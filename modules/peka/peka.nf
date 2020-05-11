@@ -31,13 +31,14 @@ process peka {
     label 'mid_memory'
 
     input:
-      //tuple val(sampleid), file(peaks), file(xls)
+      //tuple val(sampleid), path(peaks), path(xls)
       path(peaks)
       path(xls)
 
     output:
-      // file "${params.outdir}/${params.peka_processname}/results"
+      //tuple val(sample_id), path("results/*.{pdf,tsv}"), emit: kmer_results
       path("results/*.{pdf,tsv}")
+
 
     script:
     """
