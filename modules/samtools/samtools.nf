@@ -40,6 +40,6 @@ process samtools {
     samtools_args += "$params.internal_custom_args "
     
     """
-    samtools index $samtools_args --threads ${task.cpus} $bam
+    samtools index $samtools_args -@ ${task.cpus} $bam
     """
 }
