@@ -22,6 +22,6 @@ process bowtie_rrna {
         """
         gunzip -c $reads | bowtie -v 2 -m 1 --best --strata --threads ${task.cpus} -q --sam --norc --un ${reads.simpleName}.fq ${bowtie_index}/small_rna_bowtie - | \
         samtools view -hu -F 4 - | \
-        sambamba sort -t 8 -o ${reads.simpleName}.bam /dev/stdin
+        sambamba sort -t ${task.cpus} -o ${reads.simpleName}.bam /dev/stdin
         """
 }
