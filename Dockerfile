@@ -34,6 +34,7 @@ RUN mkdir src && mv kmers.py src/kmers.py
 WORKDIR /home
 RUN wget https://github.com/tomazc/iCount/archive/master.zip && mv master.zip icount.zip && unzip icount.zip
 WORKDIR /home/iCount-master
+# hadolint ignore=SC2102,DL3013
 RUN pip install -e .[test]
 
 # Reset work dir
