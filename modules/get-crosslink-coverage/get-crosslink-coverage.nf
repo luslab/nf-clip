@@ -5,7 +5,7 @@ Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClas
 GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
 
 // Define internal params
-module_name = 'crosslinkcoverage'
+module_name = 'getcrosslinkcoverage'
 
 // Specify DSL2
 nextflow.preview.dsl = 2
@@ -14,7 +14,7 @@ nextflow.preview.dsl = 2
 
 // Define default nextflow internals
 params.internal_outdir = './results'
-params.internal_process_name = 'crosslinkcoverage'
+params.internal_process_name = 'getcrosslinkcoverage'
 
 //Prefix to define the output file 
 params.internal_output_prefix = ''

@@ -10,14 +10,9 @@ module_name = 'bowtie_rrna'
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// TODO check version of cutadapt in host process --> CUTADAPT 2.6 (latest is 2.9)
-
 // Define default nextflow internals
 params.internal_outdir = './results'
 params.internal_process_name = 'bowtie_rrna'
-
-//Prefix to define the output file 
-params.internal_output_prefix = ''
 
 // Check if globals need to 
 nfUtils.check_internal_overrides(module_name, params)
