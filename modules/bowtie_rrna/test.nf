@@ -12,10 +12,11 @@ log.info ("Starting test pipeline for Bowtie Pre-mapping to rRNA and tRNA")
 
 params.bowtie_index = [["$baseDir/input/small_rna_bowtie"]]
 
+/*-------------------------------------------------------------------------------------*/
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include bowtie_rrna from './pre-map.nf'
+include bowtie_rrna from './bowtie_rrna.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
@@ -30,8 +31,6 @@ testMetaDataFq = [
   ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.fq.gz"]
 ]
 
-// Create channels of test data 
-
 // bowtie index channel
   Channel
   .from(params.bowtie_index)
@@ -45,15 +44,17 @@ testMetaDataFq = [
   .combine( ch_test_bowtie_index )
   .set {ch_test_meta_fq}
 
+/*------------------------------------------------------------------------------------*/
+/* Run the workflow
+/*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
-
     // Run pre-map
     bowtie_rrna(ch_test_meta_fq)
 
     // Collect file names and view output
-    bowtie_rrna.out.rrnaBam.collect() | view
-    bowtie_rrna.out.unmappedFq.collect() | view
+    bowtie_rrna.out.rrnaBam | view
+    bowtie_rrna.out.unmappedFq | view
 }
 
