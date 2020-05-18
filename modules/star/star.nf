@@ -52,6 +52,7 @@ process star {
 
     // Set memory constraints
     avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
+    avail_mem += task.memory ? " --limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
     
     """
     STAR $star_args --runThreadN ${task.cpus} --outFileNamePrefix ${output_prefix}. ${avail_mem}

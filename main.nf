@@ -40,8 +40,7 @@ include icount from './modules/icount/icount.nf'
 include multiqc from './modules/multiqc/multiqc.nf'
 
 include star from './modules/star/star.nf' addParams(star_custom_args: 
-      "--runThreadN 2 \
-      --genomeLoad NoSharedMemory \
+      "--genomeLoad NoSharedMemory \
       --outFilterMultimapNmax 1 \
       --outFilterMultimapScoreRange 1 \
       --outSAMattributes All \
@@ -53,8 +52,7 @@ include star from './modules/star/star.nf' addParams(star_custom_args:
       --outFilterScoreMin 10  \
       --alignEndsType Extend5pOfRead1 \
       --twopassMode Basic \
-      --outSAMtype BAM SortedByCoordinate \
-      --limitBAMsortRAM 6000000000")
+      --outSAMtype BAM SortedByCoordinate")
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 Params
