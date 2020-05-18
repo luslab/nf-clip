@@ -60,15 +60,16 @@ include star from './modules/star/star.nf' addParams(star_custom_args:
 Params
 -------------------------------------------------------------------------------------------------------------------------------*/
 
-params.results = "$baseDir/test/data/results" // output directory
-params.umidedup = true // Switch for uni dedup
+params.umidedup = true // Switch for umi dedup
 
 // Main data parameters
-params.input = "$baseDir/test/data/metadata.csv"
-params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
-params.star_index = "$baseDir/test/data/reduced_star_index"
-params.genome_fai = "$baseDir/test/data/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
-params.segmentation = "$baseDir/test/data/segmentation.gtf.gz"
+params.input = ''
+params.bowtie_index = ''
+params.star_index = ''
+params.genome = ''
+params.genome_fai = ''
+params.segmentation = ''
+params.peka_regions = ''
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 Main pipeline
@@ -83,8 +84,10 @@ workflow {
     // Create channels for indices
     ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     ch_starIndex = Channel.fromPath( params.star_index )
+    ch_genome = Channel.fromPath( params.genome )
     ch_genomeFai = Channel.fromPath( params.genome_fai )
     ch_segmentation = Channel.fromPath ( params.segmentation )
+    ch_regions = Channel.fromPath ( params.peka_regions )
 
     // Get fastq paths 
     metadata( params.input )
@@ -127,7 +130,12 @@ workflow {
     paraclu(getcrosslinks.out.crosslinkBed)
 
     //kmers analysis
-    peka( paraclu.out, getcrosslinks.out )
+    ch_peka_input = paraclu.out.peaks.join(getcrosslinks.out.crosslinkBed)
+                        .combine(ch_genome)
+                        .combine(ch_genomeFai)
+                        .combine(ch_regions)
+
+    peka( ch_peka_input )
 
     // iCount peak call
     icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )

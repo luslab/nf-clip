@@ -16,9 +16,6 @@ params.internal_process_name = 'peka'
 
 /*-------------------------------------------------> PEKA PARAMETERS <-----------------------------------------------------*/
 
-params.internal_genome = "$baseDir/input/chr20.fa"
-params.internal_genome_fai = "$baseDir/input/chr20.fa.fai"
-params.internal_regions_file = "$baseDir/input/regions_GENCODE_v30.gtf.gz"
 params.internal_window = 40
 params.internal_window_distal = 150
 params.internal_kmer_length = 4
@@ -31,23 +28,17 @@ params.internal_all_outputs = "False"
 params.internal_regions = "None"
 params.internal_subsample = "True"
 
-/*-------------------------------------------------------------------------------------------------------------------------------*/
-
-
-
-// Peka specific params
-
-
 // Check if globals need to 
 nfUtils.check_internal_overrides(module_name, params)
 
-// fastqc reusable component
+/*-------------------------------------------------------------------------------------------------------------------------------*/
+
 process peka {
     publishDir "${params.internal_outdir}/${params.internal_processname}",
         mode: "copy", overwrite: true
 
     input:
-      tuple val(sampleid), path(peaks), path(xls)
+      tuple val(sampleid), path(peaks), path(xls), path(genome), path(genome_index), path(regions)
 
     output:
       tuple val(sample_id), path("*.{pdf,tsv}"), emit: results
@@ -62,9 +53,9 @@ process peka {
 
     pe.run($peaks,
      $xls,
-     "${params.internal_genome}",
-     "${params.internal_genome_fai}", 
-     "${params.internal_regions_file}",
+     $genome,
+     $genome_index, 
+     $regions,
      "${params.internal_window}",
      "${params.internal_window_distal}",
      "${params.internal_kmer_length}",
