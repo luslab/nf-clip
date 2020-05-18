@@ -118,3 +118,9 @@ ln -s /camp/lab/luscomben/PATH/.nextflow ~/.nextflow
 ```
 
 Running nextflow on CAMP requires the loading of several modules and needs different syntax depending on what branch or profile of the pipeline you are running. There are some helper scripts in the repo which can be used directly or as a template for creating your own run scripts. These are located in `run_scripts/crick`. To use a run script, copy the file to your run folder on CAMP storage and type `./SCRIPT-NAME.sh`.
+
+For instance, `run-example.sh` runs the whole pipeline on 4 samples which are described in `metadata-example.csv`. So you can copy `run-example.sh` and `metadata-example.csv` into your run folder and run this example analysis with the following command: `./run-example.sh`. It should take 15-20 minutes plus some time to pull the Singularity image if you are executing the pipeline in your run folder for the first time.
+
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTE2OTU4NTY1NzhdfQ==
+-->

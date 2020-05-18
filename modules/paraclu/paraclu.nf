@@ -14,13 +14,12 @@ params.paraclu_min_density_increase = 2
 process paraclu {
     publishDir "${params.outdir}/${params.paraclu_processname}",
         mode: "copy", overwrite: true
-    label 'low_memory'
 
     input:
-      each file(crosslinks)
+      tuple val(sample_id), path(crosslinks)
 
     output:
-      file "*_peaks.bed.gz"
+      tuple val(sample_id), path("*_peaks.bed.gz"), emit: peaks
 
     script:
     """
