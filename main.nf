@@ -120,11 +120,14 @@ workflow {
         // get crosslinks from bam
         getcrosslinks( star.out.bamFiles.combine(ch_genomeFai) )
     }
-    peka( paraclu.out, getcrosslinks.out )
+
     // normalise crosslinks + get bedgraph files
     getcrosslinkcoverage( getcrosslinks.out.crosslinkBed )
     
     paraclu(getcrosslinks.out.crosslinkBed)
+
+    //kmers analysis
+    peka( paraclu.out, getcrosslinks.out )
 
     // iCount peak call
     icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )

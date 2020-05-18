@@ -23,21 +23,16 @@ params.peka_all_outputs = "False"
 params.peka_regions = "None"
 params.peka_subsample = "True"
 
-
 // fastqc reusable component
 process peka {
     publishDir "${params.outdir}/${params.peka_processname}",
         mode: "copy", overwrite: true
 
     input:
-      //tuple val(sampleid), path(peaks), path(xls)
-      path(peaks)
-      path(xls)
+      tuple val(sampleid), path(peaks), path(xls)
 
     output:
-      //tuple val(sample_id), path("results/*.{pdf,tsv}"), emit: kmer_results
-      path("results/*.{pdf,tsv}")
-
+      tuple val(sample_id), path("results/*.{pdf,tsv}"), emit: results
 
     script:
     """
