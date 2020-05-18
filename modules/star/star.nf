@@ -47,9 +47,13 @@ process star {
     // Combining the custom arguments and creating star args
     star_args += "$params.internal_custom_args "
 
+    // Ouput prefix the files with the file name
     output_prefix = reads.simpleName
 
+    // Set memory constraints
+    avail_mem = task.memory ? "--limitGenomeGenerateRAM ${task.memory.toBytes() - 100000000}" : ''
+    
     """
-    STAR $star_args --outFileNamePrefix ${output_prefix}.
+    STAR $star_args --runThreadN ${task.cpus} --outFileNamePrefix ${output_prefix}. ${avail_mem}
     """
 }
