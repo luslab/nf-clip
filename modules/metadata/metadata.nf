@@ -5,7 +5,7 @@ workflow metadata {
             .fromPath( csv )
             .splitCsv(header:true)
             .map { row -> [ row.sample_id, file(row.fastq, checkIfExists: true) ]  }
-            .set { ch_testData }
+            .set { data }
     emit:
-        ch_testData
+        data
 }

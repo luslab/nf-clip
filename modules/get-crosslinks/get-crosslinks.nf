@@ -8,7 +8,6 @@ params.outdir = './results'
 params.crosslinks_processname = 'crosslinks'
 
 process getcrosslinks {
-    label 'mid_memory'
     publishDir "${params.outdir}/${params.crosslinks_processname}",
         mode: "copy", overwrite: true
 
@@ -16,7 +15,7 @@ process getcrosslinks {
       tuple val(sample_id), path(bam), path (fai)
 
     output:
-      tuple val(sample_id), path ("${bam.simpleName}.xl.bed.gz"), emit: crosslinkBam
+      tuple val(sample_id), path ("${bam.simpleName}.xl.bed.gz"), emit: crosslinkBed
 
     script:
     """

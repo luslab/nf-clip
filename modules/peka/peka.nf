@@ -28,7 +28,6 @@ params.peka_subsample = "True"
 process peka {
     publishDir "${params.outdir}/${params.peka_processname}",
         mode: "copy", overwrite: true
-    label 'mid_memory'
 
     input:
       tuple val(sampleid), file(peaks), file(xls)
