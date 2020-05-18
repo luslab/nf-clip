@@ -55,5 +55,4 @@ workflow {
 
     // Collect file names and view output
     getcrosslinks.out.crosslinkBed | view
-
 }

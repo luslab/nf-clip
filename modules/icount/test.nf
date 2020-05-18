@@ -20,12 +20,12 @@ include icount from './icount.nf'
 --------------------------------------------------------------------------------------*/
 
 testMetaData = [
-  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.xl.bed.gz"],
-  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.xl.bed.gz"],
-  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.xl.bed.gz"],
-  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.xl.bed.gz"],
-  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.xl.bed.gz"],
-  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.xl.bed.gz"]
+  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.xl.bed.gz"]//,
+//  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.xl.bed.gz"],
+//  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.xl.bed.gz"],
+//  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.xl.bed.gz"],
+//  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.xl.bed.gz"],
+//  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.xl.bed.gz"]
 ]
 
 testSegPath = [
@@ -48,5 +48,9 @@ Channel
 
 // Run workflow
 workflow {
-    icount( ch_test_meta ).view()
+    icount( ch_test_meta ) 
+
+    icount.out.peaks | view
+    icount.out.peak_scores | view
+    icount.out.clusters | view
 }

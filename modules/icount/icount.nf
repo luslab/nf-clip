@@ -14,7 +14,6 @@ nextflow.preview.dsl = 2
 params.internal_outdir = './results'
 params.internal_process_name = 'icount'
 
-
 params.internal_output_prefix = '' //Prefix to define the output file 
 params.internal_container = 'tomazc/icount:latest' // Set default container for running icount - override to specific custom container
 
