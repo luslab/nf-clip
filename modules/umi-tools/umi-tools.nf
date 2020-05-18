@@ -20,7 +20,6 @@ nfUtils.check_internal_overrides(module_name, params)
 process umi_tools {
     publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
-    label 'mid_memory'
 
     input:
       tuple val(sample_id), path(bai), path(bam)

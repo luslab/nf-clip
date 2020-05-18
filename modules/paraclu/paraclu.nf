@@ -14,7 +14,6 @@ params.paraclu_min_density_increase = 2
 process paraclu {
     publishDir "${params.outdir}/${params.paraclu_processname}",
         mode: "copy", overwrite: true
-    label 'low_memory'
 
     input:
       tuple val(sample_id), path(crosslinks)

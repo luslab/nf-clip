@@ -22,7 +22,6 @@ nfUtils.check_internal_overrides(module_name, params)
 
 // Trimming reusable component
 process samtools {
-
     tag "${sample_id}"
 
     publishDir "${params.internal_outdir}/${params.internal_process_name}",

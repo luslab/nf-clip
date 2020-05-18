@@ -8,7 +8,6 @@ params.outdir = './results'
 params.getcrosslinkcoverage_processname = 'crosslinkcoverage'
 
 process getcrosslinkcoverage {
-    label 'mid_memory'
     publishDir "${params.outdir}/${params.getcrosslinkcoverage_processname}",
         mode: "copy", overwrite: true
 
