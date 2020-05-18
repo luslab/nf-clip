@@ -1,30 +1,28 @@
 #!/usr/bin/env nextflow
 
+// Include NfUtils
+Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File(params.classpath));
+GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
+
+// Define internal params
+module_name = 'fastqc'
+
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// Local default params
-params.outdir = './results'
-params.fastqc_processname = 'fastqc'
+// Define default nextflow internals
+params.internal_outdir = './results'
+params.internal_process_name = 'fastqc'
+
+// Check if globals need to 
+nfUtils.check_internal_overrides(module_name, params)
 
 /*-------------------------------------------------> FASTQC PARAMETERS <-----------------------------------------------------*/
 
+/*---------------------------------------------------------------------------------------------------------------------------*/
 
-/*-----------------------------------------------------------------------------------------------------------------------------
-ADDITIONAL OPTIONS PARAMETERS
--------------------------------------------------------------------------------------------------------------------------------*/
-
-//Create all output files in the specified output directory. Please note that this directory must exist as the program will not create it.
-//params.internal_outdir = ''
-
-//Files come from raw casava output.
-//params.internal_casava = false
-
-//
-
-// fastqc reusable component
 process fastqc {
-  publishDir "${params.outdir}/${params.fastqc_processname}",
+  publishDir "${params.internal_outdir}/${params.internal_process_name}",
     mode: "copy", overwrite: true
 
     input:
@@ -35,6 +33,6 @@ process fastqc {
 
     script:
     """
-    fastqc --quiet --threads $task.cpus $reads
+    fastqc --threads ${task.cpus} $reads
     """
 }
