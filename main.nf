@@ -81,6 +81,24 @@ Main workflow
 // Show banner
 log.info luslabHeader()
 
+// Show work summary
+def summary = [:]
+summary['Classpath'] = params.classpath
+summary['Output directory'] = params.outdir
+summary['Trace directory'] = params.tracedir
+summary['Max CPUs'] = params.max_cpus
+summary['Max memory'] = params.max_memory
+summary['Max time'] = params.max_time
+summary['Bowtie index path'] = params.bowtie_index
+summary['Star index path'] = params.star_index
+summary['Genome path'] = params.genome
+summary['Genome index path'] = params.genome_fai
+summary['Segmentation path'] = params.segmentation
+summary['Regions path'] = params.peka_regions
+summary['Metadata path'] = params.input
+log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
+log.info "-\033[2m---------------------------------------------------------------\033[0m-"
+
 // Run workflow
 workflow {
 
