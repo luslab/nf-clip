@@ -41,7 +41,7 @@ process peka {
       tuple val(sample_id), path(peaks), path(xls), path(genome), path(genome_index), path(regions)
 
     output:
-      tuple val(sample_id), path("*.{pdf,tsv}"), emit: results
+      tuple val(sample_id), path("results/*.{pdf,tsv}"), emit: results
 
     script:
     """
