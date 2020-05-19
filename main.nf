@@ -24,19 +24,20 @@ params.rename_file_ext = '.bai'
 Module inclusions
 -------------------------------------------------------------------------------------------------------------------------------*/
 
-include luslabHeader from './modules/overhead/overhead'
+include luslabHeader from './modules/util/util.nf'
 include metadata from './modules/metadata/metadata.nf'
-include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'pre_fastqc') 
-include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
+include fastqc as prefastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'pre_fastqc') 
+include fastqc as postfastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'post_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
 include bowtie_rrna from './modules/bowtie_rrna/bowtie_rrna.nf'
 include rename_file from './modules/rename-file/rename-file.nf'
 include samtools from './modules/samtools/samtools.nf'
 include umi_tools from './modules/umi-tools/umi-tools.nf'
-include paraclu from './modules/paraclu/paraclu.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
 include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslink-coverage.nf'
 include icount from './modules/icount/icount.nf'
+include paraclu from './modules/paraclu/paraclu.nf'
+include peka from './modules/peka/peka.nf'
 include multiqc from './modules/multiqc/multiqc.nf'
 
 include star from './modules/star/star.nf' addParams(star_custom_args: 
@@ -55,34 +56,82 @@ include star from './modules/star/star.nf' addParams(star_custom_args:
       --outSAMtype BAM SortedByCoordinate")
 
 /*-----------------------------------------------------------------------------------------------------------------------------
-Params
+Pipeline params
 -------------------------------------------------------------------------------------------------------------------------------*/
 
-params.results = "$baseDir/test/data/results" // output directory
-params.umidedup = true // Switch for uni dedup
+params.umidedup = true // Switch for umi dedup
 
 // Main data parameters
-params.input = "$baseDir/test/data/metadata.csv"
-params.bowtie_index = "$baseDir/test/data/small_rna_bowtie"
-params.star_index = "$baseDir/test/data/reduced_star_index"
-params.genome_fai = "$baseDir/test/data/GRCh38.primary_assembly.genome_chr6_34000000_35000000.fa.fai"
-params.segmentation = "?????"
+params.input = ''
+params.bowtie_index = ''
+params.star_index = ''
+params.genome = ''
+params.genome_fai = ''
+params.segmentation = ''
+params.peka_regions = ''
 
 /*-----------------------------------------------------------------------------------------------------------------------------
-Main pipeline
+Init
 -------------------------------------------------------------------------------------------------------------------------------*/
 
 // Show banner
 log.info luslabHeader()
 
+// Show work summary
+def summary = [:]
+summary['Classpath'] = params.classpath
+summary['Output directory'] = params.outdir
+summary['Trace directory'] = params.tracedir
+summary['Max CPUs'] = params.max_cpus
+summary['Max memory'] = params.max_memory
+summary['Max time'] = params.max_time
+summary['Bowtie index path'] = params.bowtie_index
+summary['Star index path'] = params.star_index
+summary['Genome path'] = params.genome
+summary['Genome index path'] = params.genome_fai
+summary['Segmentation path'] = params.segmentation
+summary['Regions path'] = params.peka_regions
+summary['Metadata path'] = params.input
+log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
+log.info "-\033[2m---------------------------------------------------------------\033[0m-"
+
+// Check params
+if (!params.input) {
+    exit 1, "No metadata input provided"
+}
+if (!params.bowtie_index) {
+    exit 1, "No bowtie index provided"
+}
+if (!params.star_index) {
+    exit 1, "No star index provided"
+}
+if (!params.genome) {
+    exit 1, "No genome provided"
+}
+if (!params.genome_fai) {
+    exit 1, "No genome index provided"
+}
+if (!params.segmentation) {
+    exit 1, "No segmentation provided"
+}
+if (!params.peka_regions) {
+    exit 1, "No regions provided"
+}
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+Main workflow
+-------------------------------------------------------------------------------------------------------------------------------*/
+
 // Run workflow
 workflow {
 
-    // Create channels for indices
-    ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
-    ch_starIndex = Channel.fromPath( params.star_index )
-    ch_genomeFai = Channel.fromPath( params.genome_fai )
-    ch_segmentation = Channel.fromPath ( params.segmentation )
+    // Create channels for static files
+    ch_bowtieIndex = Channel.fromPath( params.bowtie_index, checkIfExists: true )
+    ch_starIndex = Channel.fromPath( params.star_index, checkIfExists: true )
+    ch_genome = Channel.fromPath( params.genome, checkIfExists: true )
+    ch_genomeFai = Channel.fromPath( params.genome_fai, checkIfExists: true )
+    ch_segmentation = Channel.fromPath ( params.segmentation, checkIfExists: true )
+    ch_regions = Channel.fromPath ( params.peka_regions, checkIfExists: true )
 
     // Get fastq paths 
     metadata( params.input )
@@ -123,6 +172,14 @@ workflow {
     getcrosslinkcoverage( getcrosslinks.out.crosslinkBed )
     
     paraclu(getcrosslinks.out.crosslinkBed)
+
+    //kmers analysis
+    ch_peka_input = paraclu.out.peaks.join(getcrosslinks.out.crosslinkBed)
+                        .combine(ch_genome)
+                        .combine(ch_genomeFai)
+                        .combine(ch_regions)
+
+    peka( ch_peka_input )
 
     // iCount peak call
     icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )

@@ -11,7 +11,7 @@ module_name = 'star'
 nextflow.preview.dsl = 2
 
 // Define default nextflow internals
-params.internal_outdir = './results'
+params.internal_outdir = params.outdir
 params.internal_process_name = 'star'
 
 // STAR parameters
@@ -55,6 +55,6 @@ process star {
     avail_mem += task.memory ? " --limitBAMsortRAM ${task.memory.toBytes() - 100000000}" : ''
     
     """
-    STAR $star_args --runThreadN ${task.cpus} --outFileNamePrefix ${output_prefix}. ${avail_mem}
+    STAR $star_args --runThreadN ${task.cpus} --outFileNamePrefix ${output_prefix}. $avail_mem
     """
 }

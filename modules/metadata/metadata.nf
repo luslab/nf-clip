@@ -1,3 +1,9 @@
+#!/usr/bin/env nextflow
+
+// Specify DSL2
+nextflow.preview.dsl = 2
+
+// Define workflow to load up a csv file as a channel
 workflow metadata {
     take: csv
     main:
