@@ -29,9 +29,9 @@ process bowtie_rrna {
         tuple val(sample_id), path("${reads.simpleName}.fq"), emit: unmappedFq
 
     script:
-    """
-    gunzip -c $reads | bowtie -v 2 -m 1 --best --strata --threads ${task.cpus} -q --sam --norc --un ${reads.simpleName}.fq ${bowtie_index}/small_rna_bowtie - | \
-    samtools view -hu -F 4 - | \
-    sambamba sort -t 8 -o ${reads.simpleName}.bam /dev/stdin
-    """
+        """
+        gunzip -c $reads | bowtie -v 2 -m 1 --best --strata --threads ${task.cpus} -q --sam --norc --un ${reads.simpleName}.fq ${bowtie_index}/small_rna_bowtie - | \
+        samtools view -hu -F 4 - | \
+        sambamba sort -t ${task.cpus} -o ${reads.simpleName}.bam /dev/stdin
+        """
 }

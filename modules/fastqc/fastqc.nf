@@ -31,7 +31,7 @@ process fastqc {
     output:
       tuple val(sample_id), path ("*_fastqc.{zip,html}"), emit: report
 
-    script:
+    shell:
     """
     fastqc --threads ${task.cpus} $reads
     """

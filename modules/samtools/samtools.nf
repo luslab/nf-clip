@@ -38,7 +38,8 @@ process samtools {
     // Set the main arguments
     samtools_args = ''
     samtools_args += "$params.internal_custom_args "
+    
     """
-    samtools index $samtools_args $bam
+    samtools index $samtools_args -@ ${task.cpus} $bam
     """
 }
