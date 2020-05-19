@@ -25,7 +25,7 @@ params.internal_min_relativ_occurence = 2
 params.internal_clusters = 5
 params.internal_smoothing = 6
 params.internal_all_outputs = "False"
-params.internal_regions = "None"
+params.internal_regions_selection = "None"
 params.internal_subsample = "True"
 
 // Check if globals need to 
@@ -65,7 +65,7 @@ process peka {
      $params.internal_clusters,
      $params.internal_smoothing,
      $params.internal_all_outputs,
-     $params.internal_regions,
+     $params.internal_regions_selection,
      $params.internal_subsample)
     """
 }
