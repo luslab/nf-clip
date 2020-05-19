@@ -2,3 +2,4 @@
 work/
 results/
 .DS_Store
+modules/peka/bin/__pycache__/
