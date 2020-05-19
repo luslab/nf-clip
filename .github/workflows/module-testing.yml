@@ -29,7 +29,7 @@ jobs:
 
       - name: Test bowtie_rrna
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/bowtie_rrna/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/bowtie_rrna/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
         
       - name: Test cutadapt
         run: |
