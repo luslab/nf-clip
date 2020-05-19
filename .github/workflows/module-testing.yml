@@ -27,10 +27,50 @@ jobs:
         run: |
           docker pull luslab/nextflow-clip:dev
 
-      - name: Run module tests
+      - name: Test bowtie_rrna
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/modules/bowtie_rrna/test.nf -profile moduletest,github
+        
+      - name: Test cutadapt
         run: |
           nextflow run ${GITHUB_WORKSPACE}/modules/cutadapt/test.nf -profile moduletest,github
-      
-      - name: Verify trim-read output
+
+      - name: Test fastqc
         run: |
-          ./test/scripts/verify-checksum.sh "modules/cutadapt/output/*.gz" "results/cutadapt/*.gz"
+          nextflow run ${GITHUB_WORKSPACE}/modules/fastqc/test.nf -profile moduletest,github
+      
+      - name: Test getcrosslink-coverage
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/modules/get-crosslink-coverage/test.nf -profile moduletest,github
+
+      - name: Test get-crosslinks
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/modules/get-crosslinks/test.nf -profile moduletest,github
+
+      - name: Test icount
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/modules/icount/test.nf -profile moduletest,github
+
+      - name: Test paraclu
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/modules/paraclu/test.nf -profile moduletest,github
+
+      - name: Test peka
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/modules/peka/test.nf -profile moduletest,github
+
+      - name: Test samtools
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/modules/samtools/test.nf -profile moduletest,github
+
+      - name: Test star
+        run: |
+           nextflow run ${GITHUB_WORKSPACE}/modules/star/test.nf -profile moduletest,github
+
+      - name: Test umi-tools
+        run: |
+          nextflow run ${GITHUB_WORKSPACE}/modules/umi-tools/test.nf -profile moduletest,github
+
+#      - name: Verify trim-read output
+#        run: |
+#          ./test/scripts/verify-checksum.sh "modules/cutadapt/output/*.gz" "results/cutadapt/*.gz"
