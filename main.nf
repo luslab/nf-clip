@@ -30,20 +30,19 @@ Module inclusions
 
 include luslabHeader from './modules/util/util.nf'
 include metadata from './modules/metadata/metadata.nf'
-include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'pre_fastqc') 
-include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
+include fastqc as prefastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'pre_fastqc') 
+include fastqc as postfastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'post_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
 include bowtie_rrna from './modules/bowtie_rrna/bowtie_rrna.nf'
 include rename_file from './modules/rename-file/rename-file.nf'
 include samtools from './modules/samtools/samtools.nf'
 include umi_tools from './modules/umi-tools/umi-tools.nf'
-include paraclu from './modules/paraclu/paraclu.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
 include getcrosslinkcoverage from './modules/get-crosslink-coverage/get-crosslink-coverage.nf'
 include icount from './modules/icount/icount.nf'
-include multiqc from './modules/multiqc/multiqc.nf'
 include paraclu from './modules/paraclu/paraclu.nf'
 include peka from './modules/peka/peka.nf'
+include multiqc from './modules/multiqc/multiqc.nf'
 
 include star from './modules/star/star.nf' addParams(star_custom_args: 
       "--genomeLoad NoSharedMemory \
@@ -76,7 +75,7 @@ params.segmentation = ''
 params.peka_regions = ''
 
 /*-----------------------------------------------------------------------------------------------------------------------------
-Main pipeline
+Main workflow
 -------------------------------------------------------------------------------------------------------------------------------*/
 
 // Show banner
@@ -85,7 +84,7 @@ log.info luslabHeader()
 // Run workflow
 workflow {
 
-    // Create channels for indices
+    // Create channels for static files
     ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
     ch_starIndex = Channel.fromPath( params.star_index )
     ch_genome = Channel.fromPath( params.genome )
