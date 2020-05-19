@@ -14,10 +14,6 @@ Luscombe lab CLIP analysis pipeline.
 nextflow.preview.dsl=2
 
 /*-----------------------------------------------------------------------------------------------------------------------------
-Global init
--------------------------------------------------------------------------------------------------------------------------------*/
-
-/*-----------------------------------------------------------------------------------------------------------------------------
 Module global params
 -------------------------------------------------------------------------------------------------------------------------------*/
 
@@ -75,7 +71,7 @@ params.segmentation = ''
 params.peka_regions = ''
 
 /*-----------------------------------------------------------------------------------------------------------------------------
-Main workflow
+Init
 -------------------------------------------------------------------------------------------------------------------------------*/
 
 // Show banner
@@ -98,6 +94,33 @@ summary['Regions path'] = params.peka_regions
 summary['Metadata path'] = params.input
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "-\033[2m---------------------------------------------------------------\033[0m-"
+
+// Check params
+if (!params.input) {
+    exit 1, "No metadata input provided"
+}
+if (!params.bowtie_index) {
+    exit 1, "No bowtie index provided"
+}
+if (!params.star_index) {
+    exit 1, "No star index provided"
+}
+if (!params.genome) {
+    exit 1, "No genome provided"
+}
+if (!params.genome_fai) {
+    exit 1, "No genome index provided"
+}
+if (!params.segmentation) {
+    exit 1, "No segmentation provided"
+}
+if (!params.peka_regions) {
+    exit 1, "No regions provided"
+}
+
+/*-----------------------------------------------------------------------------------------------------------------------------
+Main workflow
+-------------------------------------------------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
