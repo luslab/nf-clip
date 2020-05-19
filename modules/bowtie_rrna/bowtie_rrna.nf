@@ -11,7 +11,7 @@ module_name = 'bowtie_rrna'
 nextflow.preview.dsl = 2
 
 // Define default nextflow internals
-params.internal_outdir = './results'
+params.internal_outdir = params.outdir
 params.internal_process_name = 'bowtie_rrna'
 
 // Check if globals need to 

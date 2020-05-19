@@ -5,7 +5,7 @@ nextflow.preview.dsl = 2
 
 // Local default params
 //what is this?
-params.outdir = './results'
+params.outdir = params.outdir
 params.multiqc_processname = 'multiqc'
 
 // multiqc reusable component

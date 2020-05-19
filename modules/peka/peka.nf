@@ -11,7 +11,7 @@ module_name = 'peka'
 nextflow.preview.dsl = 2
 
 // Define default nextflow internals
-params.internal_outdir = './results'
+params.internal_outdir = params.outdir
 params.internal_process_name = 'peka'
 
 /*-------------------------------------------------> PEKA PARAMETERS <-----------------------------------------------------*/
