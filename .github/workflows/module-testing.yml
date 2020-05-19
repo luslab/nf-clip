@@ -55,9 +55,9 @@ jobs:
         run: |
           nextflow run ${GITHUB_WORKSPACE}/modules/paraclu/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
-      - name: Test peka
-        run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/peka/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
+      #- name: Test peka
+      #  run: |
+      #    nextflow run ${GITHUB_WORKSPACE}/modules/peka/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test samtools
         run: |
