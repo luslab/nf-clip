@@ -1,66 +1,71 @@
 #!/usr/bin/env nextflow
 
+// Include NfUtils
+Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File(params.classpath));
+GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
+
+// Define internal params
+module_name = 'peka'
+
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// Local default params
-params.outdir = './results'
-params.peka_processname = 'peka'
+// Define default nextflow internals
+params.internal_outdir = params.outdir
+params.internal_process_name = 'peka'
 
-// Peka specific params
-params.peka_genome = "$baseDir/input/chr20.fa"
-params.peka_genome_fai = "$baseDir/input/chr20.fa.fai"
-params.peka_regions_file = "$baseDir/input/regions_GENCODE_v30.gtf.gz"
-params.peka_window = 40
-params.peka_window_distal = 150
-params.peka_kmer_length = 4
-params.peka_top_n = 20
-params.peka_percentile = 0.7
-params.peka_min_relativ_occurence = 2
-params.peka_clusters = 5
-params.peka_smoothing = 6
-params.peka_all_outputs = "False"
-params.peka_regions = "None"
-params.peka_subsample = "True"
+/*-------------------------------------------------> PEKA PARAMETERS <-----------------------------------------------------*/
 
+params.internal_window = 40
+params.internal_window_distal = 150
+params.internal_kmer_length = 4
+params.internal_top_n = 20
+params.internal_percentile = 0.7
+params.internal_min_relativ_occurence = 2
+params.internal_clusters = 5
+params.internal_smoothing = 6
+params.internal_all_outputs = "False"
+params.internal_regions_selection = "None"
+params.internal_subsample = "True"
 
-// fastqc reusable component
+// Check if globals need to 
+nfUtils.check_internal_overrides(module_name, params)
+
+/*-------------------------------------------------------------------------------------------------------------------------------*/
+
 process peka {
-    publishDir "${params.outdir}/${params.peka_processname}",
+    publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
-    label 'mid_memory'
 
     input:
-      tuple val(sampleid), file(peaks), file(xls)
+      tuple val(sample_id), path(peaks), path(xls), path(genome), path(genome_index), path(regions)
 
     output:
-      // file "${params.outdir}/${params.peka_processname}/results"
-      path("results/*.{pdf,tsv}")
+      tuple val(sample_id), path("results/*.{pdf,tsv}"), emit: results
 
     script:
     """
     #!/usr/bin/env python
     import importlib.util
-    spec = importlib.util.spec_from_file_location("peka", "$baseDir/bin/peka.py")
+    spec = importlib.util.spec_from_file_location("peka", "/home/src/kmers.py")
     pe = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(pe)
 
-    pe.run("${peaks}",
-     "${xls}",
-     "${params.peka_genome}",
-     "${params.peka_genome_fai}", 
-     "${params.peka_regions_file}",
-     $params.peka_window, 
-     $params.peka_window_distal, 
-     $params.peka_kmer_length, 
-     $params.peka_top_n, 
-     $params.peka_percentile, 
-     $params.peka_min_relativ_occurence,
-     $params.peka_clusters, 
-     $params.peka_smoothing, 
-     $params.peka_all_outputs, 
-     $params.peka_regions, 
-     $params.peka_subsample)
-    
+    pe.run("$peaks",
+     "$xls",
+     "$genome",
+     "$genome_index", 
+     "$regions",
+     $params.internal_window,
+     $params.internal_window_distal,
+     $params.internal_kmer_length,
+     $params.internal_top_n,
+     $params.internal_percentile,
+     $params.internal_min_relativ_occurence,
+     $params.internal_clusters,
+     $params.internal_smoothing,
+     $params.internal_all_outputs,
+     $params.internal_regions_selection,
+     $params.internal_subsample)
     """
 }

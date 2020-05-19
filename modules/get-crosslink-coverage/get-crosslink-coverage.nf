@@ -1,23 +1,37 @@
 #!/usr/bin/env nextflow
 
+// Include NfUtils
+Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File(params.classpath));
+GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
+
+// Define internal params
+module_name = 'getcrosslinkcoverage'
+
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// Local default params
-params.outdir = './results'
-params.getcrosslinkcoverage_processname = 'crosslinkcoverage'
+// TODO check version of cutadapt in host process --> CUTADAPT 2.6 (latest is 2.9)
+
+// Define default nextflow internals
+params.internal_outdir = params.outdir
+params.internal_process_name = 'getcrosslinkcoverage'
+
+//Prefix to define the output file 
+params.internal_output_prefix = ''
+
+// Check if globals need to 
+nfUtils.check_internal_overrides(module_name, params)
 
 process getcrosslinkcoverage {
-    label 'mid_memory'
-    publishDir "${params.outdir}/${params.getcrosslinkcoverage_processname}",
+    publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
 
     input:
-      each path(bed)
+      tuple val(sample_id), path(bed)
 
     output:
-      tuple path("${bed.simpleName}.bedgraph.gz"), path("${bed.simpleName}.norm.bedgraph.gz")
-    //   path "${bed.baseName}.norm.bedgraph.gz"
+      tuple val(sample_id), path("${bed.simpleName}.bedgraph.gz"), emit: bedGraph
+      tuple val(sample_id), path("${bed.simpleName}.norm.bedgraph.gz"), emit: normBedGraph
 
     script:
     """

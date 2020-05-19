@@ -1,24 +1,31 @@
 #!/usr/bin/env nextflow
 
+// Include NfUtils
+Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File(params.classpath));
+GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
+
+// Define internal params
+module_name = 'getcrosslinks'
+
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// Local default params
-params.outdir = './results'
-params.crosslinks_processname = 'crosslinks'
+// Define default nextflow internals
+params.internal_outdir = params.outdir
+params.internal_process_name = 'getcrosslinks'
+
+// Check if globals need to 
+nfUtils.check_internal_overrides(module_name, params)
 
 process getcrosslinks {
-    label 'mid_memory'
-    publishDir "${params.outdir}/${params.crosslinks_processname}",
+    publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
 
     input:
-      each path(bam)
-      path fai
+      tuple val(sample_id), path(bam), path (fai)
 
     output:
-      // file "*.bed.gz"
-      path "${bam.simpleName}.xl.bed.gz"
+      tuple val(sample_id), path ("${bam.simpleName}.xl.bed.gz"), emit: crosslinkBed
 
     script:
     """
