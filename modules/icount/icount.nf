@@ -11,9 +11,8 @@ module_name = 'icount'
 nextflow.preview.dsl = 2
 
 // Define default nextflow internals
-params.internal_outdir = './results'
+params.internal_outdir = params.outdir
 params.internal_process_name = 'icount'
-
 
 params.internal_output_prefix = '' //Prefix to define the output file 
 params.internal_container = 'tomazc/icount:latest' // Set default container for running icount - override to specific custom container
@@ -27,7 +26,7 @@ PEAK PARAMETERS
 params.internal_half_window = '3'
 params.internal_fdr = '0.05'
 
-/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------------------*/
 
 // Check if globals need to 
 nfUtils.check_internal_overrides(module_name, params)

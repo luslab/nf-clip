@@ -15,18 +15,27 @@ include paraclu from './paraclu.nf'
 /* Params
 --------------------------------------------------------------------------------------*/
 
-params.crosslinks = "$baseDir/input/*.bed.gz"
+testCrosslinks = [
+  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.xl.bed.gz"],
+  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.xl.bed.gz"],
+  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.xl.bed.gz"],
+  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.xl.bed.gz"],
+  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.xl.bed.gz"],
+  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.xl.bed.gz"]
+]
+
+  Channel
+  .from(testCrosslinks)
+  .map { row -> [ row[0], file(row[1], checkIfExists: true) ] }
+  .set {ch_test_crosslinks}
 
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
-    // Create test data channel from all read files
-    ch_testData = Channel.fromPath( params.crosslinks )
-
     // Run paraclu
-    paraclu( ch_testData )
+    paraclu( ch_test_crosslinks )
 
     // Collect file names and view output
-    paraclu.out.collect() | view
+    paraclu.out.peaks | view
 }

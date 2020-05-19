@@ -11,7 +11,7 @@ module_name = 'samtools'
 nextflow.preview.dsl = 2
 
 // Define default nextflow internals
-params.internal_outdir = './results'
+params.internal_outdir = params.outdir
 params.internal_process_name = 'samtools'
 
 // samtools parameters
@@ -38,7 +38,8 @@ process samtools {
     // Set the main arguments
     samtools_args = ''
     samtools_args += "$params.internal_custom_args "
+    
     """
-    samtools index $samtools_args $bam
+    samtools index $samtools_args -@ ${task.cpus} $bam
     """
 }

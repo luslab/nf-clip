@@ -15,8 +15,6 @@ include fastqc from './fastqc.nf'
 /* Params
 --------------------------------------------------------------------------------------*/
 
-//params.reads = "$baseDir/input/*.fq.gz"
-
 /*------------------------------------------------------------------------------------*/
 /* Input files
 --------------------------------------------------------------------------------------*/
@@ -46,5 +44,5 @@ workflow {
     fastqc( ch_test_meta )
 
     // Collect file names and view output
-    fastqc.out.report.collect() | view
+    fastqc.out.report | view
 }

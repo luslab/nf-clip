@@ -5,15 +5,16 @@ Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClas
 GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
 
 // Define internal params
-module_name = 'umi_tools'
+module_name = 'umitools'
 
 // Specify DSL2
 nextflow.preview.dsl = 2
 
 // Local default params
-params.internal_outdir = './results'
-params.internal_process_name = 'umi_tools'
+params.internal_outdir = params.outdir
+params.internal_process_name = 'umitools'
 
+// Check for internal parameter overrides
 nfUtils.check_internal_overrides(module_name, params)
 
 // dedup reusable component
