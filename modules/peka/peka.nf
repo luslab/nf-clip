@@ -38,7 +38,7 @@ process peka {
         mode: "copy", overwrite: true
 
     input:
-      tuple val(sampleid), path(peaks), path(xls), path(genome), path(genome_index), path(regions)
+      tuple val(sample_id), path(peaks), path(xls), path(genome), path(genome_index), path(regions)
 
     output:
       tuple val(sample_id), path("*.{pdf,tsv}"), emit: results
@@ -51,21 +51,21 @@ process peka {
     pe = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(pe)
 
-    pe.run($peaks,
-     $xls,
-     $genome,
-     $genome_index, 
-     $regions,
-     "${params.internal_window}",
-     "${params.internal_window_distal}",
-     "${params.internal_kmer_length}",
-     "${params.internal_top_n}",
-     "${params.internal_percentile}",
-     "${params.internal_min_relativ_occurence}",
-     "${params.internal_clusters}",
-     "${params.internal_smoothing}",
-     "${params.internal_all_outputs}",
-     "${params.internal_regions}",
-     "${params.internal_subsample}")
+    pe.run("$peaks",
+     "$xls",
+     "$genome",
+     "$genome_index", 
+     "$regions",
+     $params.internal_window,
+     $params.internal_window_distal,
+     $params.internal_kmer_length,
+     $params.internal_top_n,
+     $params.internal_percentile,
+     $params.internal_min_relativ_occurence,
+     $params.internal_clusters,
+     $params.internal_smoothing,
+     $params.internal_all_outputs,
+     $params.internal_regions,
+     $params.internal_subsample)
     """
 }

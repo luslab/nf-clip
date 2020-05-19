@@ -10,8 +10,7 @@ log.info ("Starting STAR module")
 --------------------------------------------------------------------------------------*/
 
 include star from './star.nf' addParams(star_custom_args: 
-      "--runThreadN 2 \
-      --genomeLoad NoSharedMemory \
+      "--genomeLoad NoSharedMemory \
       --outFilterMultimapNmax 1 \
       --outFilterMultimapScoreRange 1 \
       --outSAMattributes All \
@@ -23,8 +22,7 @@ include star from './star.nf' addParams(star_custom_args:
       --outFilterScoreMin 10  \
       --alignEndsType Extend5pOfRead1 \
       --twopassMode Basic \
-      --outSAMtype BAM SortedByCoordinate \
-      --limitBAMsortRAM 6000000000")
+      --outSAMtype BAM SortedByCoordinate")
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
@@ -51,5 +49,9 @@ workflow {
     star( ch_testData )
 
     // Collect file names and view output
-    //star.out | view
+    star.out.bamFiles.collect() | view
+    star.out.sjFiles.collect() | view
+    star.out.finalLogFiles.collect() | view
+    star.out.outLogFiles.collect() | view
+    star.out.progressLogFiles.collect() | view
 }

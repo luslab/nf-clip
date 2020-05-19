@@ -15,20 +15,54 @@ include peka from './peka.nf'
 /* Params
 --------------------------------------------------------------------------------------*/
 
-params.inputDir = "$baseDir/input"
+testPeaks = [
+  ['Sample 1', "$baseDir/input/K562-TIA1-chr20.xl_peaks.bed.gz"]
+]
 
+testXls = [
+  ['Sample 1', "$baseDir/input/K562-TIA1-chr20.xl.bed.gz"]
+]
+
+testGenome = [["$baseDir/input/chr20.fa"]]
+testGenomeIndex = [["$baseDir/input/chr20.fa.fai"]]
+testRegions = [["$baseDir/input/regions_GENCODE_v30.gtf.gz"]]
+
+Channel
+  .from(testRegions)
+  .map { row -> file(row[0], checkIfExists: true)}
+  .set {ch_regions}
+
+Channel
+  .from(testGenomeIndex)
+  .map { row -> file(row[0], checkIfExists: true)}
+  .set {ch_genome_index}
+
+Channel
+  .from(testGenome)
+  .map { row -> file(row[0], checkIfExists: true)}
+  .set {ch_genome}
+
+Channel
+  .from(testXls)
+  .map { row -> [ row[0], file(row[1], checkIfExists: true) ] }
+  .set {ch_bed}
+
+Channel
+  .from(testPeaks)
+  .map { row -> [ row[0], file(row[1], checkIfExists: true) ] }
+  .join(ch_bed)
+  .combine(ch_genome)
+  .combine(ch_genome_index)
+  .combine(ch_regions)
+  .set {ch_combined}
+  
 /*------------------------------------------------------------------------------------*/
 
 // Run workflow
 workflow {
-    // Create test data channel from all read files
-
-    ch_testpeak = Channel.fromFilePairs( params.inputDir + "/*.{xl.bed.gz,xl_peaks.bed.gz}", flat: true)
-    //ch_testpeak = Channel.fromPath(params.inputDir +"/*.{xl.bed.gz, xl_peaks.bed.gz}").view()
-    // Run fastqc
-    peka( ch_testpeak)
+    peka( ch_combined )
 
     // Collect file names and view output
-    peka.out.collect() | view
+    peka.out.results | view
     
 }

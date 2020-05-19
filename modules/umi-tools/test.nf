@@ -9,7 +9,7 @@ log.info ("Starting test pipeline for BAM deduplication")
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include dedup from './deduplicate-bam.nf'
+include umi_tools from './umi-tools.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
@@ -52,8 +52,8 @@ Channel
 workflow {
 
     // Run dedup
-    dedup( ch_test_meta_bambai )
+    umi_tools( ch_test_meta_bambai )
 
     // Collect file names and view output
-    dedup.out.dedupBam | view
+    umi_tools.out.dedupBam | view
 }
