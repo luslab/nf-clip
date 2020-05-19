@@ -174,12 +174,12 @@ workflow {
     paraclu(getcrosslinks.out.crosslinkBed)
 
     //kmers analysis
-    /*ch_peka_input = paraclu.out.peaks.join(getcrosslinks.out.crosslinkBed)
+    ch_peka_input = paraclu.out.peaks.join(getcrosslinks.out.crosslinkBed)
                         .combine(ch_genome)
                         .combine(ch_genomeFai)
                         .combine(ch_regions)
 
-    peka( ch_peka_input )*/
+    peka( ch_peka_input )
 
     // iCount peak call
     icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )
