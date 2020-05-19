@@ -103,12 +103,12 @@ log.info "-\033[2m--------------------------------------------------------------
 workflow {
 
     // Create channels for static files
-    ch_bowtieIndex = Channel.fromPath( params.bowtie_index )
-    ch_starIndex = Channel.fromPath( params.star_index )
-    ch_genome = Channel.fromPath( params.genome )
-    ch_genomeFai = Channel.fromPath( params.genome_fai )
-    ch_segmentation = Channel.fromPath ( params.segmentation )
-    ch_regions = Channel.fromPath ( params.peka_regions )
+    ch_bowtieIndex = Channel.fromPath( params.bowtie_index, checkIfExists: true )
+    ch_starIndex = Channel.fromPath( params.star_index, checkIfExists: true )
+    ch_genome = Channel.fromPath( params.genome, checkIfExists: true )
+    ch_genomeFai = Channel.fromPath( params.genome_fai, checkIfExists: true )
+    ch_segmentation = Channel.fromPath ( params.segmentation, checkIfExists: true )
+    ch_regions = Channel.fromPath ( params.peka_regions, checkIfExists: true )
 
     // Get fastq paths 
     metadata( params.input )
