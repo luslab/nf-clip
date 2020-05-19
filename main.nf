@@ -24,7 +24,7 @@ params.rename_file_ext = '.bai'
 Module inclusions
 -------------------------------------------------------------------------------------------------------------------------------*/
 
-include luslabHeader from './modules/overhead/overhead'
+include luslabHeader from './modules/util/util.nf'
 include metadata from './modules/metadata/metadata.nf'
 include fastqc as prefastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'pre_fastqc') 
 include fastqc as postfastqc from './modules/fastqc/fastqc.nf' params(fastqc_processname: 'post_fastqc') 
