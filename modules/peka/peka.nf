@@ -34,7 +34,7 @@ nfUtils.check_internal_overrides(module_name, params)
 /*-------------------------------------------------------------------------------------------------------------------------------*/
 
 process peka {
-    publishDir "${params.internal_outdir}/${params.internal_processname}",
+    publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
 
     input:
