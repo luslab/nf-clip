@@ -33,43 +33,43 @@ jobs:
         
       - name: Test cutadapt
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/cutadapt/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/cutadapt/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test fastqc
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/fastqc/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/fastqc/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
       
       - name: Test getcrosslink-coverage
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/get-crosslink-coverage/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/get-crosslink-coverage/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test get-crosslinks
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/get-crosslinks/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/get-crosslinks/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test icount
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/icount/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/icount/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test paraclu
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/paraclu/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/paraclu/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test peka
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/peka/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/peka/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test samtools
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/samtools/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/samtools/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test star
         run: |
-           nextflow run ${GITHUB_WORKSPACE}/modules/star/test.nf -profile moduletest,github
+           nextflow run ${GITHUB_WORKSPACE}/modules/star/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
       - name: Test umi-tools
         run: |
-          nextflow run ${GITHUB_WORKSPACE}/modules/umi-tools/test.nf -profile moduletest,github
+          nextflow run ${GITHUB_WORKSPACE}/modules/umi-tools/test.nf -profile moduletest,github --classpath '/home/runner/work/group-nextflow-clip/group-nextflow-clip/groovy/NfUtils.groovy'
 
 #      - name: Verify trim-read output
 #        run: |
