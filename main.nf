@@ -81,6 +81,8 @@ Main workflow
 // Show banner
 log.info luslabHeader()
 
+log.info (params.classpath)
+
 // Run workflow
 workflow {
 
