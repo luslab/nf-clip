@@ -27,7 +27,7 @@ Module inclusions
 include luslabHeader from './modules/util/util.nf'
 include metadata from './modules/metadata/metadata.nf'
 include fastqc as prefastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'pre_fastqc') 
-include fastqc as postfastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'post_fastqc') 
+include fastqc as postfastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'trimmed_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
 include bowtie_rrna from './modules/bowtie_rrna/bowtie_rrna.nf'
 include rename_file from './modules/rename-file/rename-file.nf'
@@ -69,6 +69,9 @@ params.genome = ''
 params.genome_fai = ''
 params.segmentation = ''
 params.peka_regions = ''
+
+// Config params
+params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 Init
@@ -132,6 +135,7 @@ workflow {
     ch_genomeFai = Channel.fromPath( params.genome_fai, checkIfExists: true )
     ch_segmentation = Channel.fromPath ( params.segmentation, checkIfExists: true )
     ch_regions = Channel.fromPath ( params.peka_regions, checkIfExists: true )
+    ch_multiqc_config = Channel.fromPath ( params.multiqc_config, checkIfExists: true )
 
     // Get fastq paths 
     metadata( params.input )
@@ -146,50 +150,53 @@ workflow {
     postfastqc( cutadapt.out.trimmedReads )
     
     // pre-map to rRNA and tRNA
-    bowtie_rrna( cutadapt.out.trimmedReads.combine(ch_bowtieIndex) )
+    //bowtie_rrna( cutadapt.out.trimmedReads.combine(ch_bowtieIndex) )
     
     // Align
-    star( bowtie_rrna.out.unmappedFq.combine(ch_starIndex) )
+    //star( bowtie_rrna.out.unmappedFq.combine(ch_starIndex) )
    
     // Index the bam files
-    samtools( star.out.bamFiles )
+    //samtools( star.out.bamFiles )
     
     // Rename the bai files
     //rename_file( samtools.out.baiFiles )
     
     if ( params.umidedup ) {
         // PCR duplicate removal (optional)
-        umi_tools( samtools.out.baiFiles.join( star.out.bamFiles ) )
+        //umi_tools( samtools.out.baiFiles.join( star.out.bamFiles ) )
 
         // get crosslinks from bam
-        getcrosslinks( umi_tools.out.dedupBam.combine(ch_genomeFai) )
+        //getcrosslinks( umi_tools.out.dedupBam.combine(ch_genomeFai) )
     } else {
         // get crosslinks from bam
-        getcrosslinks( star.out.bamFiles.combine(ch_genomeFai) )
+        //getcrosslinks( star.out.bamFiles.combine(ch_genomeFai) )
     }
 
     // normalise crosslinks + get bedgraph files
-    getcrosslinkcoverage( getcrosslinks.out.crosslinkBed )
+    //getcrosslinkcoverage( getcrosslinks.out.crosslinkBed )
     
-    paraclu(getcrosslinks.out.crosslinkBed)
+    //paraclu(getcrosslinks.out.crosslinkBed)
 
     //kmers analysis
-    ch_peka_input = paraclu.out.peaks.join(getcrosslinks.out.crosslinkBed)
-                        .combine(ch_genome)
-                        .combine(ch_genomeFai)
-                        .combine(ch_regions)
+    //ch_peka_input = paraclu.out.peaks.join(getcrosslinks.out.crosslinkBed)
+    //                    .combine(ch_genome)
+    //                    .combine(ch_genomeFai)
+    //                    .combine(ch_regions)
 
-    peka( ch_peka_input )
+    //peka( ch_peka_input )
 
     // iCount peak call
-    icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )
+    //icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )
 
     // Collect all data for multiqc
-    //ch_multiqc_input = prefastqc.out.report.mix(
-    //    postfastqc.out.report
-    //).collect()
+    ch_multiqc_input = prefastqc.out.report.flatten().mix(
+        postfastqc.out.report.flatten(),
+        cutadapt.out.report
+    ).collect()
+     .toList()
+     .combine(ch_multiqc_config)// | view
 
-    //multiqc(ch_multiqc_input)
+    multiqc(ch_multiqc_input)
 }
 
 workflow.onComplete {

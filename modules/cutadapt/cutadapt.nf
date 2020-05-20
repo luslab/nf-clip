@@ -16,9 +16,6 @@ nextflow.preview.dsl = 2
 params.internal_outdir = params.outdir
 params.internal_process_name = 'cutadapt'
 
-//Prefix to define the output file 
-params.internal_output_prefix = ''
-
 //Sample IDs
 params.internal_sample_id_enabled = false
 
@@ -180,7 +177,8 @@ process cutadapt {
         tuple val(sample_id), path(reads)
 
     output:
-        tuple val(sample_id), path("${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz"), emit: trimmedReads
+        tuple val(sample_id), path("${sample_id}.trimmed.fq.gz"), emit: trimmedReads
+        path "*.txt", emit: report
 
     shell:
     
@@ -293,19 +291,15 @@ process cutadapt {
     }
 
     //Outputs and inputs
-    if (params.internal_output_prefix != null){
-        cutadapt_args += "-o ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "
-    }
+    cutadapt_args += "-o ${sample_id}.trimmed.fq.gz "
 
     //Paired-end mode -> determining paired output + inputs (forward and reverse)
     if (params.internal_paired_end_mode){
-        internal_default_paired_end_args += "-p ${params.internal_output_prefix}${reads.simpleName}.trimmed.fq.gz "
+        internal_default_paired_end_args += "-p ${sample_id}.trimmed.fq.gz "
     }
-    
-    // Displays the cutadapt command line (cutadapt_args) to check for mistakes
-    //println cutadapt_args
 
     """
-    cutadapt $cutadapt_args $reads
+    mv $reads ${sample_id}.fq.gz
+    cutadapt $cutadapt_args ${sample_id}.fq.gz > ${sample_id}_${params.internal_process_name}_report.txt
     """
 }

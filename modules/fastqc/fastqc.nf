@@ -29,10 +29,13 @@ process fastqc {
       tuple val(sample_id), path(reads)
 
     output:
-      tuple val(sample_id), path ("*_fastqc.{zip,html}"), emit: report
+      tuple val(sample_id), path ("*.{zip,html}"), emit: fastqcOutput
+      path "*.{zip,html}", emit: report
 
     shell:
     """
     fastqc --threads ${task.cpus} $reads
+    mv ${reads.simpleName}*.html ${sample_id}_${params.internal_process_name}_report.html
+    mv ${reads.simpleName}*.zip ${sample_id}_${params.internal_process_name}_report.zip
     """
 }

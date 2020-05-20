@@ -1,0 +1,21 @@
+report_header_info:
+    - Contact E-mail: 'test@crick.ac.uk'
+    - Application Type: 'iCLIP'
+    - Project Type: 'Experiment'
+    - Sequencing Platform: ''
+    - Sequencing Setup: ''
+
+module_order:
+    - fastqc:
+        name: 'FastQC (trimmed)'
+        anchor: 'fastqc_trimmed'
+        info: 'This section of the report shows FastQC results after adapter trimming.'
+        target: ''
+        path_filters:
+            - '*_trimmed_fastqc_report.zip'
+    - cutadapt
+    - fastqc:
+        name: 'FastQC (raw)'
+        anchor: 'fastqc_raw'
+        path_filters:
+            - '*_pre_fastqc_report.zip'
