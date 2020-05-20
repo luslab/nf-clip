@@ -7,15 +7,16 @@ report_header_info:
 
 module_order:
     - fastqc:
+        name: 'FastQC (raw)'
+        anchor: 'fastqc_raw'
+        info: 'This section of the report shows FastQC results for the raw data.'
+        path_filters:
+            - '*_raw_fastqc_fastqc.zip'
+    - cutadapt
+    - fastqc:
         name: 'FastQC (trimmed)'
         anchor: 'fastqc_trimmed'
         info: 'This section of the report shows FastQC results after adapter trimming.'
         target: ''
         path_filters:
-            - '*_trimmed_fastqc_report.zip'
-    - cutadapt
-    - fastqc:
-        name: 'FastQC (raw)'
-        anchor: 'fastqc_raw'
-        path_filters:
-            - '*_pre_fastqc_report.zip'
+            - '*_trimmed_fastqc_fastqc.zip'

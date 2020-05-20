@@ -299,7 +299,6 @@ process cutadapt {
     }
 
     """
-    mv $reads ${sample_id}.fq.gz
-    cutadapt $cutadapt_args ${sample_id}.fq.gz > ${sample_id}_${params.internal_process_name}_report.txt
+    cutadapt $cutadapt_args $reads > ${sample_id}_${params.internal_process_name}.txt
     """
 }

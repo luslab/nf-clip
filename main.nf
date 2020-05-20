@@ -18,7 +18,7 @@ Module global params
 -------------------------------------------------------------------------------------------------------------------------------*/
 
 params.cutadapt_max_error_rate = 0.1
-params.rename_file_ext = '.bai'
+params.rename_file_ext = '.fq.gz'
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 Module inclusions
@@ -26,11 +26,11 @@ Module inclusions
 
 include luslabHeader from './modules/util/util.nf'
 include metadata from './modules/metadata/metadata.nf'
-include fastqc as prefastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'pre_fastqc') 
+include fastqc as prefastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'raw_fastqc') 
 include fastqc as postfastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'trimmed_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
 include bowtie_rrna from './modules/bowtie_rrna/bowtie_rrna.nf'
-include rename_file from './modules/rename-file/rename-file.nf'
+include rename_files from './modules/rename-file/rename-file.nf'
 include samtools from './modules/samtools/samtools.nf'
 include umi_tools from './modules/umi-tools/umi-tools.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
@@ -140,11 +140,14 @@ workflow {
     // Get fastq paths 
     metadata( params.input )
 
+    // Rename the input
+    rename_files( metadata.out.data )
+
     // Run fastqc
-    prefastqc( metadata.out.data )
+    prefastqc( rename_files.out.renamedFiles )
     
     //Run read trimming
-    cutadapt( metadata.out.data )
+    cutadapt( rename_files.out.renamedFiles )
 
     // Run post-trim fastqc
     postfastqc( cutadapt.out.trimmedReads )
@@ -157,9 +160,6 @@ workflow {
    
     // Index the bam files
     //samtools( star.out.bamFiles )
-    
-    // Rename the bai files
-    //rename_file( samtools.out.baiFiles )
     
     if ( params.umidedup ) {
         // PCR duplicate removal (optional)

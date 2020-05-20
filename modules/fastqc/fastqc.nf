@@ -33,9 +33,14 @@ process fastqc {
       path "*.{zip,html}", emit: report
 
     shell:
+    reportname = "${params.internal_process_name}"
+    if(params.internal_process_name != "fastqc") {
+      reportname = "${params.internal_process_name}_fastqc"
+    }
+
     """
     fastqc --threads ${task.cpus} $reads
-    mv ${reads.simpleName}*.html ${sample_id}_${params.internal_process_name}_report.html
-    mv ${reads.simpleName}*.zip ${sample_id}_${params.internal_process_name}_report.zip
+    mv ${reads.simpleName}*.html ${sample_id}_${reportname}.html
+    mv ${reads.simpleName}*.zip ${sample_id}_${reportname}.zip
     """
 }
