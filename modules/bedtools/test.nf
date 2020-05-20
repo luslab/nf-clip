@@ -3,6 +3,9 @@
 // Define DSL2
 nextflow.preview.dsl=2
 
+// Log
+log.info ("Starting Bedtools test pipeline")
+
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
@@ -34,6 +37,6 @@ workflow {
     bedtools_intersect( ch_test_crosslinks )
 
     // Collect file names and view output
-    bedtools.out | view
+    bedtools_intersect.out.annotatedBed | view
 }
 
