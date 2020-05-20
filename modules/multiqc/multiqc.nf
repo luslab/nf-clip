@@ -4,23 +4,35 @@
 nextflow.preview.dsl = 2
 
 // Local default params
-//what is this?
-params.outdir = params.outdir
-params.multiqc_processname = 'multiqc'
+params.internal_outdir = params.outdir
+params.internal_process_name = 'multiqc'
+params.internal_config_path = ''
+
+/*-------------------------------------------------> FASTQC PARAMETERS <-----------------------------------------------------*/
+
+/*---------------------------------------------------------------------------------------------------------------------------*/
 
 // multiqc reusable component
 process multiqc {
-    publishDir "${params.outdir}/${params.multiqc_processname}",
+    publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
     
     input:
-        path (file)
+      path (file)
 
     output:
-        file "*.html"
+      path "multiqc_report.html", emit: report
+      path "multiqc_data/multiqc.log", emit: log
         
-    script:
+    shell:
+
+    args = '-v -x work'
+
+    if(params.internal_config_path != '') {
+        args += " -c ${params.internal_config_path}"
+    }
+
     """
-    multiqc -x work .
+    multiqc $args .
     """
 }
