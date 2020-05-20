@@ -153,7 +153,7 @@ workflow {
     postfastqc( cutadapt.out.trimmedReads )
     
     // pre-map to rRNA and tRNA
-    //bowtie_rrna( cutadapt.out.trimmedReads.combine(ch_bowtieIndex) )
+    bowtie_rrna( cutadapt.out.trimmedReads.combine(ch_bowtieIndex) )
     
     // Align
     //star( bowtie_rrna.out.unmappedFq.combine(ch_starIndex) )
@@ -191,7 +191,8 @@ workflow {
     // Collect all data for multiqc
     ch_multiqc_input = prefastqc.out.report.flatten().mix(
         postfastqc.out.report.flatten(),
-        cutadapt.out.report
+        cutadapt.out.report,
+        bowtie_rrna.out.report
     ).collect()
      .toList()
      .combine(ch_multiqc_config)// | view

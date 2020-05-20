@@ -20,3 +20,11 @@ module_order:
         target: ''
         path_filters:
             - '*_trimmed_fastqc_fastqc.zip'
+    - bowtie1:
+        path_filters:
+            - '*_bowtie.log'
+
+remove_sections:
+    - fastqc_sequence_duplication_levels
+    - fastqc_overrepresented_sequences
+    - fastqc_status_checks
