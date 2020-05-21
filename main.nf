@@ -159,34 +159,34 @@ workflow {
     star( bowtie_rrna.out.unmappedFq.combine(ch_starIndex) )
    
     // Index the bam files
-    //samtools( star.out.bamFiles )
+    samtools( star.out.bamFiles )
     
     if ( params.umidedup ) {
         // PCR duplicate removal (optional)
-        //umi_tools( samtools.out.baiFiles.join( star.out.bamFiles ) )
+        umi_tools( samtools.out.baiFiles.join( star.out.bamFiles ) )
 
         // get crosslinks from bam
-        //getcrosslinks( umi_tools.out.dedupBam.combine(ch_genomeFai) )
+        getcrosslinks( umi_tools.out.dedupBam.combine(ch_genomeFai) )
     } else {
         // get crosslinks from bam
-        //getcrosslinks( star.out.bamFiles.combine(ch_genomeFai) )
+        getcrosslinks( star.out.bamFiles.combine(ch_genomeFai) )
     }
 
     // normalise crosslinks + get bedgraph files
-    //getcrosslinkcoverage( getcrosslinks.out.crosslinkBed )
+    getcrosslinkcoverage( getcrosslinks.out.crosslinkBed )
     
-    //paraclu(getcrosslinks.out.crosslinkBed)
+    paraclu(getcrosslinks.out.crosslinkBed)
 
     //kmers analysis
-    //ch_peka_input = paraclu.out.peaks.join(getcrosslinks.out.crosslinkBed)
-    //                    .combine(ch_genome)
-    //                    .combine(ch_genomeFai)
-    //                    .combine(ch_regions)
+    ch_peka_input = paraclu.out.peaks.join(getcrosslinks.out.crosslinkBed)
+                        .combine(ch_genome)
+                        .combine(ch_genomeFai)
+                        .combine(ch_regions)
 
-    //peka( ch_peka_input )
+    peka( ch_peka_input )
 
     // iCount peak call
-    //icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )
+    icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )
 
     // Collect all data for multiqc
     ch_multiqc_input = prefastqc.out.report.flatten().mix(
