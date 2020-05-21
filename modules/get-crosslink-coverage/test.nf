@@ -20,12 +20,12 @@ include getcrosslinkcoverage from './get-crosslink-coverage.nf'
 --------------------------------------------------------------------------------------*/
 
 testMetaData = [
-  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.xl.bed.gz"],
-  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.xl.bed.gz"],
-  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.xl.bed.gz"],
-  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.xl.bed.gz"],
-  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.xl.bed.gz"],
-  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.xl.bed.gz"]
+  ['Sample1', "$baseDir/input/prpf8_ctrl_rep1.xl.bed.gz"],
+  ['Sample2', "$baseDir/input/prpf8_ctrl_rep2.xl.bed.gz"],
+  ['Sample3', "$baseDir/input/prpf8_ctrl_rep4.xl.bed.gz"],
+  ['Sample4', "$baseDir/input/prpf8_eif4a3_rep1.xl.bed.gz"],
+  ['Sample5', "$baseDir/input/prpf8_eif4a3_rep2.xl.bed.gz"],
+  ['Sample6', "$baseDir/input/prpf8_eif4a3_rep4.xl.bed.gz"]
 ]
 
 // Create channels of test data 

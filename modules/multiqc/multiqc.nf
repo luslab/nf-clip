@@ -1,26 +1,47 @@
 #!/usr/bin/env nextflow
 
+// Include NfUtils
+Class groovyClass = new GroovyClassLoader(getClass().getClassLoader()).parseClass(new File(params.classpath));
+GroovyObject nfUtils = (GroovyObject) groovyClass.newInstance();
+
 // Specify DSL2
 nextflow.preview.dsl = 2
 
-// Local default params
-//what is this?
-params.outdir = params.outdir
-params.multiqc_processname = 'multiqc'
+// Define internal params
+module_name = 'multiqc'
 
-// multiqc reusable component
+// Local default params
+params.internal_outdir = params.outdir
+params.internal_process_name = 'multiqc'
+
+/*-------------------------------------------------> FASTQC PARAMETERS <-----------------------------------------------------*/
+
+/*---------------------------------------------------------------------------------------------------------------------------*/
+
+// Check global overrides
+nfUtils.check_internal_overrides(module_name, params)
+
+// Main process
 process multiqc {
-    publishDir "${params.outdir}/${params.multiqc_processname}",
+    publishDir "${params.internal_outdir}/${params.internal_process_name}",
         mode: "copy", overwrite: true
     
     input:
-        path (file)
+      tuple path(reports), path(config_path)
 
     output:
-        file "*.html"
+      path "multiqc_report.html", emit: report
+      path "multiqc_data/multiqc.log", emit: log
         
-    script:
+    shell:
+
+    args = '-v -x work'
+
+    if("$config_path" != '') {
+        args += " -c $config_path"
+    }
+
     """
-    multiqc -x work .
+    multiqc $args .
     """
 }

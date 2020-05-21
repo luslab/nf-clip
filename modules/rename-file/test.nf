@@ -14,7 +14,7 @@ params.rename_file_ext = '.testext'
 /* Module inclusions 
 --------------------------------------------------------------------------------------*/
 
-include rename_file from './rename-file.nf'
+include rename_files from './rename-file.nf'
 
 /*------------------------------------------------------------------------------------*/
 /* Define input channels
@@ -35,7 +35,7 @@ testPaths = [
 
 // Run workflow
 workflow {
-    rename_file(ch_test_inputs)
+    rename_files(ch_test_inputs)
 
-    rename_file.out.renamedFiles | view
+    rename_files.out.renamedFiles | view
 }

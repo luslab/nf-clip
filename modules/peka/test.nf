@@ -16,11 +16,11 @@ include peka from './peka.nf'
 --------------------------------------------------------------------------------------*/
 
 testPeaks = [
-  ['Sample 1', "$baseDir/input/K562-TIA1-chr20.xl_peaks.bed.gz"]
+  ['Sample1', "$baseDir/input/K562-TIA1-chr20.xl_peaks.bed.gz"]
 ]
 
 testXls = [
-  ['Sample 1', "$baseDir/input/K562-TIA1-chr20.xl.bed.gz"]
+  ['Sample1', "$baseDir/input/K562-TIA1-chr20.xl.bed.gz"]
 ]
 
 testGenome = [["$baseDir/input/chr20.fa"]]
