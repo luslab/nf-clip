@@ -23,6 +23,7 @@ module_order:
     - bowtie1:
         path_filters:
             - '*_bowtie.log'
+    - star
 
 remove_sections:
     - fastqc_sequence_duplication_levels

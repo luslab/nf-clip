@@ -156,7 +156,7 @@ workflow {
     bowtie_rrna( cutadapt.out.trimmedReads.combine(ch_bowtieIndex) )
     
     // Align
-    //star( bowtie_rrna.out.unmappedFq.combine(ch_starIndex) )
+    star( bowtie_rrna.out.unmappedFq.combine(ch_starIndex) )
    
     // Index the bam files
     //samtools( star.out.bamFiles )
@@ -192,7 +192,8 @@ workflow {
     ch_multiqc_input = prefastqc.out.report.flatten().mix(
         postfastqc.out.report.flatten(),
         cutadapt.out.report,
-        bowtie_rrna.out.report
+        bowtie_rrna.out.report,
+        star.out.report
     ).collect()
      .toList()
      .combine(ch_multiqc_config)// | view
