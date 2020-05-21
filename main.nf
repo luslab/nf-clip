@@ -137,6 +137,8 @@ workflow {
     ch_regions = Channel.fromPath ( params.peka_regions, checkIfExists: true )
     ch_multiqc_config = Channel.fromPath ( params.multiqc_config, checkIfExists: true )
 
+    //TODO - CHECK FOR SPACES IN SAMPLE ID NAMES
+
     // Get fastq paths 
     metadata( params.input )
 

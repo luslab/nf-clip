@@ -20,7 +20,7 @@ include icount from './icount.nf'
 --------------------------------------------------------------------------------------*/
 
 testMetaData = [
-  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.xl.bed.gz"]//,
+  ['Sample1', "$baseDir/input/prpf8_ctrl_rep1.xl.bed.gz"]//,
 //  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.xl.bed.gz"],
 //  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.xl.bed.gz"],
 //  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.xl.bed.gz"],

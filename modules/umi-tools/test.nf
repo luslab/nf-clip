@@ -16,21 +16,21 @@ include umi_tools from './umi-tools.nf'
 --------------------------------------------------------------------------------------*/
 
 testMetaDataBam = [
-  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.Aligned.sortedByCoord.out.bam"],
-  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.Aligned.sortedByCoord.out.bam"],
-  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.Aligned.sortedByCoord.out.bam"],
-  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.Aligned.sortedByCoord.out.bam"],
-  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.Aligned.sortedByCoord.out.bam"],
-  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.Aligned.sortedByCoord.out.bam"]
+  ['Sample1', "$baseDir/input/prpf8_ctrl_rep1.Aligned.sortedByCoord.out.bam"],
+  ['Sample2', "$baseDir/input/prpf8_ctrl_rep2.Aligned.sortedByCoord.out.bam"],
+  ['Sample3', "$baseDir/input/prpf8_ctrl_rep4.Aligned.sortedByCoord.out.bam"],
+  ['Sample4', "$baseDir/input/prpf8_eif4a3_rep1.Aligned.sortedByCoord.out.bam"],
+  ['Sample5', "$baseDir/input/prpf8_eif4a3_rep2.Aligned.sortedByCoord.out.bam"],
+  ['Sample6', "$baseDir/input/prpf8_eif4a3_rep4.Aligned.sortedByCoord.out.bam"]
 ]
 
 testMetaDataBai = [
-  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.Aligned.sortedByCoord.out.bai"],
-  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.Aligned.sortedByCoord.out.bai"],
-  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.Aligned.sortedByCoord.out.bai"],
-  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.Aligned.sortedByCoord.out.bai"],
-  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.Aligned.sortedByCoord.out.bai"],
-  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.Aligned.sortedByCoord.out.bai"]
+  ['Sample1', "$baseDir/input/prpf8_ctrl_rep1.Aligned.sortedByCoord.out.bai"],
+  ['Sample2', "$baseDir/input/prpf8_ctrl_rep2.Aligned.sortedByCoord.out.bai"],
+  ['Sample3', "$baseDir/input/prpf8_ctrl_rep4.Aligned.sortedByCoord.out.bai"],
+  ['Sample4', "$baseDir/input/prpf8_eif4a3_rep1.Aligned.sortedByCoord.out.bai"],
+  ['Sample5', "$baseDir/input/prpf8_eif4a3_rep2.Aligned.sortedByCoord.out.bai"],
+  ['Sample6', "$baseDir/input/prpf8_eif4a3_rep4.Aligned.sortedByCoord.out.bai"]
 ]
 
 // Create channels of test data 
