@@ -13,6 +13,7 @@ nextflow.preview.dsl = 2
 // Define default nextflow internals
 params.internal_outdir = params.outdir
 params.internal_process_name = 'bedtools'
+params.regions_file_prefix = 'regions_gencode_v30'
 
 // Check if globals need to 
 //nfUtils.check_internal_overrides(module_name, params)
@@ -30,6 +31,6 @@ process bedtools_intersect {
 
     shell:
     """
-    bedtools intersect -a regions_GENCODE_v30.gtf.gz -b $reads -wa -wb -s > ${reads.simpleName}.annotated.bam
+    bedtools intersect -a ${params.regions_file_prefix}.gtf.gz -b $reads -wa -wb -s > ${reads.simpleName}.annotated.bam
     """
 }
