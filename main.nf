@@ -39,6 +39,7 @@ include icount from './modules/icount/icount.nf'
 include paraclu from './modules/paraclu/paraclu.nf'
 include peka from './modules/peka/peka.nf'
 include multiqc from './modules/multiqc/multiqc.nf'
+include bedtools_intersect from './modules/bedtools-intersect/bedtools-intersect.nf'
 
 include star from './modules/star/star.nf' addParams(star_custom_args: 
       "--genomeLoad NoSharedMemory \
@@ -187,6 +188,9 @@ workflow {
 
     peka( ch_peka_input )
 
+    // Bedtools intersect
+    bedtools_intersect( getcrosslinks.out.crosslinkBed.combine(ch_regions) )
+
     // iCount peak call
     icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )
 
@@ -201,6 +205,7 @@ workflow {
      .combine(ch_multiqc_config)// | view
 
     multiqc(ch_multiqc_input)
+
 }
 
 workflow.onComplete {

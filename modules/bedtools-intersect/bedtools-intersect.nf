@@ -27,11 +27,11 @@ process bedtools_intersect {
         tuple val(sample_id), path(reads), path(regions_file)
 
     output: 
-        tuple val(sample_id), path("${reads.simpleName}.annotated.bed"), emit: annotatedBed
+        tuple val(sample_id), path("${sample_id}.annotated.bed"), emit: annotatedBed
 
     shell:
     """
-    bedtools intersect -a ${regions_file} -b $reads -wa -wb -s > ${reads.simpleName}.annotated.bed
+    bedtools intersect -a ${regions_file} -b $reads -wa -wb -s > ${sample_id}.annotated.bed
     """
 }
 
