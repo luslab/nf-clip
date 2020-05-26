@@ -14,6 +14,7 @@ RUN conda install --quiet --yes \
     'bioconductor-s4vectors' \
     'r-ggthemes' \
     'r-cowplot' \
+    'bioconductor-genomicranges' \
     && \
     conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
