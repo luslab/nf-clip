@@ -1,5 +1,5 @@
 sample_id,fastq
-sample1,/camp/lab/luscomben/working/charlotte/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_cutadapt_fastqs/PRP8_1.fq.gz
-sample2,/camp/lab/luscomben/working/charlotte/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_cutadapt_fastqs/PRP8_2.fq.gz
-sample3,/camp/lab/luscomben/working/charlotte/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_cutadapt_fastqs/PRP8_3.fq.gz
-sample4,/camp/lab/luscomben/working/charlotte/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_cutadapt_fastqs/PRP8_4.fq.gz
+sample1,/camp/lab/luscomben/home/users/capitac/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_cutadapt_fastqs/PRP8_1.fq.gz
+sample2,/camp/lab/luscomben/home/users/capitac/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_cutadapt_fastqs/PRP8_2.fq.gz
+sample3,/camp/lab/luscomben/home/users/capitac/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_cutadapt_fastqs/PRP8_3.fq.gz
+sample4,/camp/lab/luscomben/home/users/capitac/SM/hg38_Gencode29_BPs_LaBranchoR/PRP8_rupert/iMaps_cutadapt_fastqs/PRP8_4.fq.gz
