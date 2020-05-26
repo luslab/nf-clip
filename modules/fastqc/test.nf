@@ -20,12 +20,12 @@ include fastqc from './fastqc.nf'
 --------------------------------------------------------------------------------------*/
 
 testMetaData = [
-  ['Sample 1', "$baseDir/input/readfile1.fq.gz"],
-  ['Sample 2', "$baseDir/input/readfile2.fq.gz"],
-  ['Sample 3', "$baseDir/input/readfile3.fq.gz"],
-  ['Sample 4', "$baseDir/input/readfile4.fq.gz"],
-  ['Sample 5', "$baseDir/input/readfile5.fq.gz"],
-  ['Sample 6', "$baseDir/input/readfile6.fq.gz"]
+  ['Sample1', "$baseDir/input/readfile1.fq.gz"],
+  ['Sample2', "$baseDir/input/readfile2.fq.gz"],
+  ['Sample3', "$baseDir/input/readfile3.fq.gz"],
+  ['Sample4', "$baseDir/input/readfile4.fq.gz"],
+  ['Sample5', "$baseDir/input/readfile5.fq.gz"],
+  ['Sample6', "$baseDir/input/readfile6.fq.gz"]
 ] 
 
 

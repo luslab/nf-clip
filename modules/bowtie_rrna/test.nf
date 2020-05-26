@@ -23,12 +23,12 @@ include bowtie_rrna from './bowtie_rrna.nf'
 /*------------------------------------------------------------------------------------*/
 
 testMetaDataFq = [
-  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.fq.gz"],
-  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.fq.gz"],
-  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.fq.gz"],
-  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.fq.gz"],
-  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.fq.gz"],
-  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.fq.gz"]
+  ['Sample1', "$baseDir/input/prpf8_ctrl_rep1.fq.gz"],
+  ['Sample2', "$baseDir/input/prpf8_ctrl_rep2.fq.gz"],
+  ['Sample3', "$baseDir/input/prpf8_ctrl_rep4.fq.gz"],
+  ['Sample4', "$baseDir/input/prpf8_eif4a3_rep1.fq.gz"],
+  ['Sample5', "$baseDir/input/prpf8_eif4a3_rep2.fq.gz"],
+  ['Sample6', "$baseDir/input/prpf8_eif4a3_rep4.fq.gz"]
 ]
 
 // bowtie index channel

@@ -22,12 +22,12 @@ params.fai = [["$baseDir/input/GRCh38.primary_assembly.genome_chr6_34000000_3500
 --------------------------------------------------------------------------------------*/
 
 testMetaDataBam = [
-  ['Sample 1', "$baseDir/input/prpf8_ctrl_rep1.dedup.bam"],
-  ['Sample 2', "$baseDir/input/prpf8_ctrl_rep2.dedup.bam"],
-  ['Sample 3', "$baseDir/input/prpf8_ctrl_rep4.dedup.bam"],
-  ['Sample 4', "$baseDir/input/prpf8_eif4a3_rep1.dedup.bam"],
-  ['Sample 5', "$baseDir/input/prpf8_eif4a3_rep2.dedup.bam"],
-  ['Sample 6', "$baseDir/input/prpf8_eif4a3_rep4.dedup.bam"]
+  ['Sample1', "$baseDir/input/prpf8_ctrl_rep1.dedup.bam"],
+  ['Sample2', "$baseDir/input/prpf8_ctrl_rep2.dedup.bam"],
+  ['Sample3', "$baseDir/input/prpf8_ctrl_rep4.dedup.bam"],
+  ['Sample4', "$baseDir/input/prpf8_eif4a3_rep1.dedup.bam"],
+  ['Sample5', "$baseDir/input/prpf8_eif4a3_rep2.dedup.bam"],
+  ['Sample6', "$baseDir/input/prpf8_eif4a3_rep4.dedup.bam"]
 ]
 
 // Create channels of test data 
