@@ -13,6 +13,7 @@ RUN conda config --add channels defaults && \
 RUN conda install --quiet --yes \
     'bioconductor-s4vectors' \
     'r-ggthemes' \
+    'r-cowplot' \
     && \
     conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
