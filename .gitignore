@@ -5,3 +5,5 @@ results/
 modules/peka/bin/__pycache__/
 
 scripts/jupyter/.ipynb_checkpoints/
+
+containers/downstream/.ipynb_checkpoints/
