@@ -27,13 +27,13 @@ process bowtie_rrna {
     output:
         tuple val(sample_id), path("${sample_id}.sorted.bam"), emit: rrnaBam
         tuple val(sample_id), path("${sample_id}.unaligned.fq"), emit: unmappedFq
-        path "${sample_id}_bowtie.log", emit: report
+        path "${sample_id}.bowtie.log", emit: report
 
     shell:
     //bowtie [options]* <ebwt> {-1 <m1> -2 <m2> | --12 <r> | --interleaved <i> | <s>} [<hit>]
     """
     gunzip -c $reads | \
-    bowtie -v 2 -m 1 --best --strata --threads ${task.cpus} -q --sam --norc --un ${sample_id}.unaligned.fq ${bowtie_index}/small_rna_bowtie - 2> ${sample_id}_bowtie.log | \
+    bowtie -v 2 -m 1 --best --strata --threads ${task.cpus} -q --sam --norc --un ${sample_id}.unaligned.fq ${bowtie_index}/small_rna_bowtie - 2> ${sample_id}.bowtie.log | \
     samtools view -hu -F 4 - | \
     sambamba sort -t ${task.cpus} -o ${sample_id}.sorted.bam /dev/stdin
     """

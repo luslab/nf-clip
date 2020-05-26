@@ -22,7 +22,7 @@ module_order:
             - '*_trimmed_fastqc_fastqc.zip'
     - bowtie1:
         path_filters:
-            - '*_bowtie.log'
+            - '*.bowtie.log'
     - star
 
 remove_sections:
