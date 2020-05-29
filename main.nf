@@ -18,7 +18,7 @@ Module global params
 -------------------------------------------------------------------------------------------------------------------------------*/
 
 params.cutadapt_max_error_rate = 0.1
-params.rename_file_ext = '.bai'
+params.rename_file_ext = '.fq.gz'
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 Module inclusions
@@ -26,11 +26,11 @@ Module inclusions
 
 include luslabHeader from './modules/util/util.nf'
 include metadata from './modules/metadata/metadata.nf'
-include fastqc as prefastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'pre_fastqc') 
-include fastqc as postfastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'post_fastqc') 
+include fastqc as prefastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'raw_fastqc') 
+include fastqc as postfastqc from './modules/fastqc/fastqc.nf' addParams(fastqc_process_name: 'trimmed_fastqc') 
 include cutadapt from './modules/cutadapt/cutadapt.nf'
 include bowtie_rrna from './modules/bowtie_rrna/bowtie_rrna.nf'
-include rename_file from './modules/rename-file/rename-file.nf'
+include rename_files from './modules/rename-file/rename-file.nf'
 include samtools from './modules/samtools/samtools.nf'
 include umi_tools from './modules/umi-tools/umi-tools.nf'
 include getcrosslinks from './modules/get-crosslinks/get-crosslinks.nf'
@@ -39,6 +39,7 @@ include icount from './modules/icount/icount.nf'
 include paraclu from './modules/paraclu/paraclu.nf'
 include peka from './modules/peka/peka.nf'
 include multiqc from './modules/multiqc/multiqc.nf'
+include bedtools_intersect from './modules/bedtools-intersect/bedtools-intersect.nf'
 
 include star from './modules/star/star.nf' addParams(star_custom_args: 
       "--genomeLoad NoSharedMemory \
@@ -69,6 +70,9 @@ params.genome = ''
 params.genome_fai = ''
 params.segmentation = ''
 params.peka_regions = ''
+
+// Config params
+params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 
 /*-----------------------------------------------------------------------------------------------------------------------------
 Init
@@ -132,15 +136,21 @@ workflow {
     ch_genomeFai = Channel.fromPath( params.genome_fai, checkIfExists: true )
     ch_segmentation = Channel.fromPath ( params.segmentation, checkIfExists: true )
     ch_regions = Channel.fromPath ( params.peka_regions, checkIfExists: true )
+    ch_multiqc_config = Channel.fromPath ( params.multiqc_config, checkIfExists: true )
+
+    //TODO - CHECK FOR SPACES IN SAMPLE ID NAMES
 
     // Get fastq paths 
     metadata( params.input )
 
+    // Rename the input
+    rename_files( metadata.out.data )
+
     // Run fastqc
-    prefastqc( metadata.out.data )
+    prefastqc( rename_files.out.renamedFiles )
     
     //Run read trimming
-    cutadapt( metadata.out.data )
+    cutadapt( rename_files.out.renamedFiles )
 
     // Run post-trim fastqc
     postfastqc( cutadapt.out.trimmedReads )
@@ -153,9 +163,6 @@ workflow {
    
     // Index the bam files
     samtools( star.out.bamFiles )
-    
-    // Rename the bai files
-    //rename_file( samtools.out.baiFiles )
     
     if ( params.umidedup ) {
         // PCR duplicate removal (optional)
@@ -181,15 +188,24 @@ workflow {
 
     peka( ch_peka_input )
 
+    // Bedtools intersect
+    bedtools_intersect( getcrosslinks.out.crosslinkBed.combine(ch_regions) )
+
     // iCount peak call
     icount ( getcrosslinks.out.crosslinkBed.combine(ch_segmentation) )
 
     // Collect all data for multiqc
-    //ch_multiqc_input = prefastqc.out.report.mix(
-    //    postfastqc.out.report
-    //).collect()
+    ch_multiqc_input = prefastqc.out.report.flatten().mix(
+        postfastqc.out.report.flatten(),
+        cutadapt.out.report,
+        bowtie_rrna.out.report,
+        star.out.report
+    ).collect()
+     .toList()
+     .combine(ch_multiqc_config)// | view
 
-    //multiqc(ch_multiqc_input)
+    multiqc(ch_multiqc_input)
+
 }
 
 workflow.onComplete {
