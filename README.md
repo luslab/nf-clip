@@ -37,6 +37,7 @@ You will need the following software and tools installed on your dev machine to 
 - Install the nextflow code extensions to VS code
 - Clone this repo to a dev folder on your machine
 - Make sure you are logged into docker hub on your desktop and that you can see the luslab docker hub repo
+- From your local repo, run `nextflow run main.nf -profile docker,test --resume` (you can change the maximum memory from the default 8GB to what you have by adding the flag `--max_memory=16.GB` )
 
 ### Changing code and contributing
 
